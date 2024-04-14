@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257062255664",
+    "project_id": "imeasure-capstone",
+    "storage_bucket": "imeasure-capstone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257062255664:android:6a8b3fda86bc09fa7881f5",
+        "android_client_info": {
+          "package_name": "com.example.imeasure_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqvX8JWpopplUaxgYglwB9DKXMYwaLl2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
