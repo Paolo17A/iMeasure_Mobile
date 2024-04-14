@@ -67,6 +67,7 @@ Future registerNewUser(BuildContext context, WidgetRef ref,
               'The mobile number must be an 11 digit number formatted as: 09XXXXXXXXX')));
       return;
     }
+    FocusScope.of(context).unfocus();
     ref.read(loadingProvider.notifier).toggleLoading(true);
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(), password: passwordController.text);
@@ -78,6 +79,7 @@ Future registerNewUser(BuildContext context, WidgetRef ref,
       UserFields.password: passwordController.text,
       UserFields.firstName: firstNameController.text.trim(),
       UserFields.lastName: lastNameController.text.trim(),
+      UserFields.mobileNumber: mobileNumberController.text,
       UserFields.userType: UserTypes.client,
       UserFields.profileImageURL: '',
       UserFields.bookmarks: []
@@ -106,6 +108,7 @@ Future logInUser(BuildContext context, WidgetRef ref,
           const SnackBar(content: Text('Please fill up all given fields.')));
       return;
     }
+    FocusScope.of(context).unfocus();
     ref.read(loadingProvider.notifier).toggleLoading(true);
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text, password: passwordController.text);
@@ -113,6 +116,12 @@ Future logInUser(BuildContext context, WidgetRef ref,
     final userData = userDoc.data() as Map<dynamic, dynamic>;
 
     //  reset the password in firebase in case client reset it using an email link.
+    if (userData[UserFields.userType] == UserTypes.admin) {
+      scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text('This log-in is for clients only.')));
+      ref.read(loadingProvider).toggleLoading(false);
+      return;
+    }
     if (userData[UserFields.password] != passwordController.text) {
       await FirebaseFirestore.instance
           .collection(Collections.users)
@@ -142,6 +151,7 @@ Future sendResetPasswordEmail(BuildContext context, WidgetRef ref,
     return;
   }
   try {
+    FocusScope.of(context).unfocus();
     ref.read(loadingProvider.notifier).toggleLoading(true);
     final filteredUsers = await FirebaseFirestore.instance
         .collection(Collections.users)

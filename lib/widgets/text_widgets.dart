@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:imeasure_mobile/utils/color_util.dart';
 
 Text montserratWhiteBold(String label,
     {double fontSize = 20,
@@ -52,5 +53,33 @@ Text montserratBlackBold(String label,
         color: Colors.black,
         fontWeight: FontWeight.bold,
         decoration: textDecoration),
+  );
+}
+
+Text montserratMidnightBlueBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    overflow: textOverflow,
+    style: GoogleFonts.montserrat(
+        fontSize: fontSize,
+        color: CustomColors.midnightBlue,
+        fontWeight: FontWeight.bold),
+  );
+}
+
+Text montserratMidnightBlueRegular(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    overflow: textOverflow,
+    style: GoogleFonts.montserrat(
+        fontSize: fontSize, color: CustomColors.midnightBlue),
   );
 }

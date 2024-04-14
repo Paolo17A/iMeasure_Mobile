@@ -13,7 +13,7 @@ PreferredSizeWidget appBarWidget({bool mayPop = true, List<Widget>? actions}) {
         children: [
           Image.asset('assets/images/imeasure.png', scale: 5),
           const Gap(8),
-          montserratWhiteBold('One Velocity', fontSize: 20)
+          montserratMidnightBlueBold('iMeasure', fontSize: 20)
         ],
       ),
       actions: actions);

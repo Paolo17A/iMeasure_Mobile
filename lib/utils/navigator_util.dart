@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import '../screens/edit_profile_screen.dart';
+import '../screens/forgot_password_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/login_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/register_screen.dart';
 
 class NavigatorRoutes {
   static const String home = 'home';
@@ -24,12 +29,12 @@ class NavigatorRoutes {
 
 final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.home: (context) => const HomeScreen(),
-  /*NavigatorRoutes.login: (context) => const LoginScreen(),
+  NavigatorRoutes.login: (context) => const LoginScreen(),
   NavigatorRoutes.register: (context) => const RegisterScreen(),
   NavigatorRoutes.forgotPassword: (context) => const ForgotPasswordScreen(),
   NavigatorRoutes.profile: (context) => const ProfileScreen(),
   NavigatorRoutes.editProfile: (context) => const EditProfileScreen(),
-  NavigatorRoutes.products: (context) => const ProductsScreen(),
+  /*NavigatorRoutes.products: (context) => const ProductsScreen(),
   NavigatorRoutes.services: (context) => const ServicesScreen(),
   NavigatorRoutes.cart: (context) => const CartScreen(),
   NavigatorRoutes.checkout: (context) => const CheckoutScreen(),

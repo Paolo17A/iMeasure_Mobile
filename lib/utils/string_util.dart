@@ -1,7 +1,7 @@
 import 'dart:math';
 
 class ImagePaths {
-  static const String logo = 'assets/images/RentARide.png';
+  static const String logo = 'assets/images/imeasure.png';
 }
 
 class StorageFields {
@@ -28,10 +28,22 @@ class UserFields {
   static const String password = 'password';
   static const String firstName = 'firstName';
   static const String lastName = 'lastName';
+  static const String mobileNumber = 'mobileNumber';
   static const String userType = 'userType';
   static const String profileImageURL = 'profileImageURL';
   static const String address = 'address';
   static const String bookmarks = 'bookmarks';
+}
+
+class Windows {
+  static const String name = 'name';
+  static const String price = 'price';
+  static const String description = 'description';
+  static const String imageURL = 'imageURL';
+  static const String minWidth = 'minWidth';
+  static const String maxWidth = 'maxWidth';
+  static const String minHeight = 'minHeight';
+  static const String maxHeight = 'maxHeight';
 }
 
 class FAQFields {
