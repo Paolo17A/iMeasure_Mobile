@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/screens/selected_product_screen.dart';
+import 'package:imeasure_mobile/screens/windows_screen.dart';
+import '../screens/bookmarks_screen.dart';
+import '../screens/cart_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/forgot_password_screen.dart';
 import '../screens/home_screen.dart';
@@ -13,14 +18,13 @@ class NavigatorRoutes {
   static const String forgotPassword = 'forgotPassword';
   static const String profile = 'profile';
   static const String editProfile = 'editProfile';
-  /*static const String products = 'products';
-  static void selectedProduct(BuildContext context, WidgetRef ref,
-      {required String productID}) {
+  static const String windows = 'windows';
+  static void selectedWindow(BuildContext context, WidgetRef ref,
+      {required String windowID}) {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => SelectedProductScreen(productID: productID)));
-  }*/
+        builder: (context) => SelectedWindowScreen(windowID: windowID)));
+  }
 
-  static const String services = 'services';
   static const String cart = 'cart';
   static const String checkout = 'checkout';
   static const String bookmarks = 'bookmarks';
@@ -34,10 +38,9 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.forgotPassword: (context) => const ForgotPasswordScreen(),
   NavigatorRoutes.profile: (context) => const ProfileScreen(),
   NavigatorRoutes.editProfile: (context) => const EditProfileScreen(),
-  /*NavigatorRoutes.products: (context) => const ProductsScreen(),
-  NavigatorRoutes.services: (context) => const ServicesScreen(),
+  NavigatorRoutes.windows: (context) => const WindowsScreen(),
   NavigatorRoutes.cart: (context) => const CartScreen(),
-  NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
-  NavigatorRoutes.bookmarks: (context) => const BookMarksScreen(),
-  NavigatorRoutes.help: (context) => const HelpScreen(),*/
+  //NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
+  NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),
+  //NavigatorRoutes.help: (context) => const HelpScreen(),
 };

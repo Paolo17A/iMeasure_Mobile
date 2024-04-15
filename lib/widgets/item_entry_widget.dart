@@ -1,40 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:imeasure_mobile/utils/string_util.dart';
 import '../utils/color_util.dart';
 import 'custom_padding_widgets.dart';
 import 'text_widgets.dart';
 
 Widget itemEntry(BuildContext context,
-    {required DocumentSnapshot itemDoc,
+    {required DocumentSnapshot productDoc,
     required Function onPress,
     Color fontColor = Colors.black}) {
-  final itemData = itemDoc.data() as Map<dynamic, dynamic>;
-  List<dynamic> itemImages = itemData['imageURLs'];
-  String firstImage = itemImages[0];
-  String itemName = itemData['name'];
-  num price = itemData['price'];
+  final productData = productDoc.data() as Map<dynamic, dynamic>;
+  String imageURL = productData[WindowFields.imageURL];
+  String itemName = productData[WindowFields.name];
   return GestureDetector(
     onTap: () => onPress(),
     child: Container(
       width: 150,
-      decoration: const BoxDecoration(color: CustomColors.flaxen),
+      decoration: BoxDecoration(
+          color: CustomColors.slateBlue,
+          borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
-          _productImage(firstImage),
+          _productImage(imageURL),
           all10Pix(
             child: Container(
               width: 150,
-              decoration:
-                  BoxDecoration(color: CustomColors.flaxen.withOpacity(0.05)),
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: Column(
-                  children: [
-                    montserratWhiteBold(itemName,
-                        textOverflow: TextOverflow.ellipsis),
-                    _productPrice(price)
-                  ],
-                ),
+                child: montserratWhiteBold(itemName,
+                    textOverflow: TextOverflow.ellipsis, fontSize: 16),
               ),
             ),
           )
@@ -50,22 +44,10 @@ Widget _productImage(String firstImage) {
       child: Container(
         height: 150,
         decoration: BoxDecoration(
-            border: Border.all(),
+            border:
+                Border.all(color: CustomColors.midnightBlue.withOpacity(0.5)),
+            borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
                 fit: BoxFit.fill, image: NetworkImage(firstImage))),
       ));
-}
-
-Widget _productPrice(num price) {
-  return Row(
-    children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          montserratWhiteRegular('PHP ${price.toStringAsFixed(2)}',
-              fontSize: 14),
-        ],
-      ),
-    ],
-  );
 }

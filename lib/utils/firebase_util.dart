@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../providers/bookmarks_provider.dart';
+import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
 
 import '../providers/profile_image_url_provider.dart';
@@ -381,6 +382,72 @@ Future<List<DocumentSnapshot>> getSelectedWindowDocs(
       .where(FieldPath.documentId, whereIn: windowIDs)
       .get();
   return products.docs.map((doc) => doc as DocumentSnapshot).toList();
+}
+
+//==============================================================================
+//==CART--======================================================================
+//==============================================================================
+Future<List<DocumentSnapshot>> getCartEntries(BuildContext context) async {
+  final cartProducts = await FirebaseFirestore.instance
+      .collection(Collections.cart)
+      .where(CartFields.clientID,
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  return cartProducts.docs.map((doc) => doc as DocumentSnapshot).toList();
+}
+
+Future<DocumentSnapshot> getThisCartEntry(String cartID) async {
+  return await FirebaseFirestore.instance
+      .collection(Collections.cart)
+      .doc(cartID)
+      .get();
+}
+
+Future addProductToCart(BuildContext context, WidgetRef ref,
+    {required String productID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  if (!hasLoggedInUser()) {
+    scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Please log-in to your account first.')));
+    return;
+  }
+  try {
+    if (ref.read(cartProvider).cartContainsThisItem(productID)) {
+      scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('This item is already in your cart.')));
+      return;
+    }
+
+    final cartDocReference =
+        await FirebaseFirestore.instance.collection(Collections.cart).add({
+      CartFields.productID: productID,
+      CartFields.clientID: FirebaseAuth.instance.currentUser!.uid
+    });
+    ref.read(cartProvider.notifier).addCartItem(await cartDocReference.get());
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Successfully added this item to your cart.')));
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error adding product to cart: $error')));
+  }
+}
+
+Future removeCartItem(BuildContext context, WidgetRef ref,
+    {required DocumentSnapshot cartDoc}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    await cartDoc.reference.delete();
+
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Successfully removed this item from your cart.')));
+    ref.read(cartProvider).removeCartItem(cartDoc);
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error removing cart item: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
 }
 
 //==============================================================================

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 
 import '../providers/loading_provider.dart';
 import '../utils/color_util.dart';
 import '../utils/navigator_util.dart';
 import '../widgets/app_bar_widget.dart';
+import '../widgets/app_bottom_navbar_widget.dart';
 import '../widgets/app_drawer_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
@@ -43,7 +43,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Scaffold(
         appBar: appBarWidget(),
         drawer: appDrawer(context, route: NavigatorRoutes.home),
-        //bottomNavigationBar: bottomNavigationBar(context, index: 0),
+        bottomNavigationBar: bottomNavigationBar(context, index: 0),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
@@ -84,19 +84,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
                                       child: itemEntry(context,
-                                          itemDoc: item,
-                                          onPress: () {},
+                                          productDoc: item,
+                                          onPress: () =>
+                                              NavigatorRoutes.selectedWindow(
+                                                  context, ref,
+                                                  windowID: item.id),
                                           fontColor: Colors.white),
                                     ),
                                   ],
                                 ))
                             .toList()))
                 : all20Pix(
-                    child: montserratBlackBold(
-                      'NO AVAILABLE PRODUCTS TO DISPLAY',
-                    ),
+                    child:
+                        montserratBlackBold('NO AVAILABLE PRODUCTS TO DISPLAY'),
                   )),
-        const Gap(10),
       ],
     );
   }

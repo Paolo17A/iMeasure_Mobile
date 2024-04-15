@@ -19,6 +19,7 @@ class Collections {
   static const String users = 'users';
   static const String faqs = 'faqs';
   static const String windows = 'windows';
+  static const String cart = 'cart';
   static const String payments = 'payments';
   static const String orders = 'orders';
 }
@@ -35,7 +36,7 @@ class UserFields {
   static const String bookmarks = 'bookmarks';
 }
 
-class Windows {
+class WindowFields {
   static const String name = 'name';
   static const String price = 'price';
   static const String description = 'description';
@@ -44,6 +45,7 @@ class Windows {
   static const String maxWidth = 'maxWidth';
   static const String minHeight = 'minHeight';
   static const String maxHeight = 'maxHeight';
+  static const String isAvailable = 'isAvailable';
 }
 
 class FAQFields {
@@ -51,13 +53,18 @@ class FAQFields {
   static const String answer = 'answer';
 }
 
-class PurchaseFields {
+class OrderFields {
   static const String clientID = 'clientID';
   static const String productID = 'productID';
   static const String quantity = 'quantity';
   static const String purchaseStatus = 'purchaseStatus';
   static const String datePickedUp = 'datePickedUp';
   static const String rating = 'rating';
+}
+
+class CartFields {
+  static const String clientID = 'clientID';
+  static const String productID = 'productID';
 }
 
 class PaymentStatuses {

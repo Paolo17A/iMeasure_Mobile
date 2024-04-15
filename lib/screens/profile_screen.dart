@@ -148,18 +148,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         .toList()[index]);
                   })
               : vertical20Pix(
-                  child: montserratBlackBold(
-                      'YOU HAVE NOT MADE ANY PURCHASES YET.'))
+                  child:
+                      montserratBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
         ],
       ),
     );
   }
 
-  Widget _purchaseHistoryEntry(DocumentSnapshot purchaseDoc) {
-    final purchaseData = purchaseDoc.data() as Map<dynamic, dynamic>;
-    String status = purchaseData[PurchaseFields.purchaseStatus];
-    String productID = purchaseData[PurchaseFields.productID];
-    num quantity = purchaseData[PurchaseFields.quantity];
+  Widget _purchaseHistoryEntry(DocumentSnapshot orderDoc) {
+    final orderData = orderDoc.data() as Map<dynamic, dynamic>;
+    String status = orderData[OrderFields.purchaseStatus];
+    String productID = orderData[OrderFields.productID];
+    num quantity = orderData[OrderFields.quantity];
 
     return FutureBuilder(
       future: getThisWindowDoc(productID),
@@ -169,9 +169,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             snapshot.hasError) return snapshotHandler(snapshot);
 
         final productData = snapshot.data!.data() as Map<dynamic, dynamic>;
-        String imageURL = productData[Windows.imageURL];
-        String name = productData[Windows.name];
-        num price = productData[Windows.price];
+        String imageURL = productData[WindowFields.imageURL];
+        String name = productData[WindowFields.name];
         return GestureDetector(
             onTap: () {},
             child: all10Pix(
@@ -190,13 +189,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       montserratWhiteBold(name, fontSize: 25),
-                      montserratWhiteRegular('SRP: ${price.toStringAsFixed(2)}',
-                          fontSize: 15),
+                      /*montserratWhiteRegular('SRP: ${price.toStringAsFixed(2)}',
+                          fontSize: 15),*/
                       montserratWhiteRegular('Quantity: ${quantity.toString()}',
                           fontSize: 15),
                       montserratWhiteRegular('Status: $status', fontSize: 15),
-                      montserratWhiteBold(
-                          'PHP ${(price * quantity).toStringAsFixed(2)}'),
+                      /*montserratWhiteBold(
+                          'PHP ${(price * quantity).toStringAsFixed(2)}'),*/
                     ],
                   ),
                 ],
