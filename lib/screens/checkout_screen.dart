@@ -76,6 +76,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       onPopInvoked: (didPop) {
         ref.read(cartProvider).setSelectedCartItem('');
         ref.read(cartProvider).setGlassType('');
+        ref.read(cartProvider).setSelectedPaymentMethod('');
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -112,17 +113,20 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               width: MediaQuery.of(context).size.width * 0.3),
         ),
       Gap(20),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          montserratBlackBold(name),
-          montserratMidnightBlueRegular(
-              'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
-              fontSize: 12),
-          montserratMidnightBlueRegular(
-              'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
-              fontSize: 12),
-        ],
+      SizedBox(
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            montserratBlackBold(name),
+            montserratMidnightBlueRegular(
+                'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
+                fontSize: 12),
+            montserratMidnightBlueRegular(
+                'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
+                fontSize: 12),
+          ],
+        ),
       )
     ]);
   }
@@ -230,9 +234,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return Container(
       height: 60,
       child: ElevatedButton(
-          onPressed: ref.read(cartProvider).selectedPaymentMethod.isEmpty
+          onPressed: ref.read(cartProvider).selectedPaymentMethod.isEmpty ||
+                  ref.read(cartProvider).selectedGlassType.isEmpty
               ? null
-              : () => purchaseSelectedCartItem(context, ref),
+              : () => purchaseSelectedCartItem(context, ref,
+                  widthController: widthController,
+                  heightController: heightController,
+                  minWidth: minWidth,
+                  maxWidth: maxWidth,
+                  minHeight: minHeight,
+                  maxHeight: maxHeight),
           style: ElevatedButton.styleFrom(
               disabledBackgroundColor: Colors.blueGrey),
           child: montserratMidnightBlueBold('MAKE PAYMENT')),

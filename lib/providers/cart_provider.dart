@@ -9,7 +9,7 @@ class CartNotifier extends ChangeNotifier {
   List<DocumentSnapshot> windowDocs = [];
   String selectedPaymentMethod = '';
   String selectedCartItem = '';
-  String glassType = '';
+  String selectedGlassType = '';
 
   void setCartItems(List<DocumentSnapshot> items) {
     cartItems = items;
@@ -43,6 +43,8 @@ class CartNotifier extends ChangeNotifier {
 
   void setSelectedPaymentMethod(String paymentMethod) {
     selectedPaymentMethod = paymentMethod;
+    print('SELECTED PAYMENT METHOD: $selectedPaymentMethod');
+    print('GLASS: $selectedGlassType');
     notifyListeners();
   }
 
@@ -52,7 +54,7 @@ class CartNotifier extends ChangeNotifier {
   }
 
   void setGlassType(String glass) {
-    glassType = glass;
+    selectedGlassType = glass;
     notifyListeners();
   }
 

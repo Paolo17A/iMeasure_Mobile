@@ -83,7 +83,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
-            child: all20Pix(child: _windowsContainer()),
+            child: all10Pix(child: _windowsContainer()),
           )),
     );
   }

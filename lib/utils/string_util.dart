@@ -68,7 +68,7 @@ class TransactionFields {
 class OrderFields {
   static const String clientID = 'clientID';
   static const String windowID = 'windowID';
-  static const String quantity = 'quantity';
+  static const String glassType = 'glassType';
   static const String purchaseStatus = 'purchaseStatus';
   static const String datePickedUp = 'datePickedUp';
   static const String rating = 'rating';

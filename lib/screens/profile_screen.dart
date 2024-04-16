@@ -45,7 +45,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ref
             .read(profileImageURLProvider)
             .setImageURL(userData[UserFields.profileImageURL]);
-        //ref.read(ordersProvider).setOrderDocs(await getClientPurchaseHistory());
+        ref.read(ordersProvider).setOrderDocs(await getUserOrderHistory());
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
@@ -76,7 +76,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 profileDetails(),
                 const Divider(color: CustomColors.midnightBlue),
-                //purchaseHistory()
+                orderHistory()
               ],
             )),
           )),
@@ -120,16 +120,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget purchaseHistory() {
+  Widget orderHistory() {
     return Container(
       decoration: BoxDecoration(
-          color: CustomColors.slateBlue,
-          borderRadius: BorderRadius.circular(20)),
+          color: CustomColors.skyBlue, borderRadius: BorderRadius.circular(20)),
       padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          montserratWhiteBold('PURCHASE HISTORY'),
+          montserratMidnightBlueBold('ORDER HISTORY'),
           ref.read(ordersProvider).orderDocs.isNotEmpty
               ? ListView.builder(
                   shrinkWrap: true,
@@ -141,7 +140,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       .toList()
                       .length,
                   itemBuilder: (context, index) {
-                    return _purchaseHistoryEntry(ref
+                    return _orderHistoryEntry(ref
                         .read(ordersProvider)
                         .orderDocs
                         .reversed
@@ -155,11 +154,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _purchaseHistoryEntry(DocumentSnapshot orderDoc) {
+  Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
     String status = orderData[OrderFields.purchaseStatus];
     String windowID = orderData[OrderFields.windowID];
-    num quantity = orderData[OrderFields.quantity];
+    String glassType = orderData[OrderFields.glassType];
 
     return FutureBuilder(
       future: getThisWindowDoc(windowID),
@@ -172,28 +171,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         String imageURL = productData[WindowFields.imageURL];
         String name = productData[WindowFields.name];
         return GestureDetector(
-            onTap: () {},
+            onTap: () => NavigatorRoutes.selectedWindow(context, ref,
+                windowID: windowID),
             child: all10Pix(
                 child: Container(
-              decoration: const BoxDecoration(color: CustomColors.dandelion),
+              decoration: const BoxDecoration(color: CustomColors.slateBlue),
               padding: EdgeInsets.all(10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: NetworkImage(imageURL),
-                      radius: 30),
+                  Image.network(imageURL, width: 60),
                   Gap(4),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      montserratWhiteBold(name, fontSize: 25),
+                      montserratWhiteBold(name, fontSize: 15),
                       /*montserratWhiteRegular('SRP: ${price.toStringAsFixed(2)}',
                           fontSize: 15),*/
-                      montserratWhiteRegular('Quantity: ${quantity.toString()}',
-                          fontSize: 15),
-                      montserratWhiteRegular('Status: $status', fontSize: 15),
+                      montserratWhiteRegular('Glass Type: $glassType',
+                          fontSize: 12),
+                      montserratWhiteRegular('Status: $status', fontSize: 12),
                       /*montserratWhiteBold(
                           'PHP ${(price * quantity).toStringAsFixed(2)}'),*/
                     ],

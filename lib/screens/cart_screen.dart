@@ -158,18 +158,22 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               backgroundColor: Colors.transparent,
                               radius: 30),
                           Gap(20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              montserratWhiteBold(name,
-                                  textOverflow: TextOverflow.ellipsis),
-                              montserratWhiteRegular(
-                                  'Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
-                                  fontSize: 12),
-                              montserratWhiteRegular(
-                                  'Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
-                                  fontSize: 12)
-                            ],
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                montserratWhiteBold(name,
+                                    textAlign: TextAlign.left,
+                                    textOverflow: TextOverflow.ellipsis),
+                                montserratWhiteRegular(
+                                    'Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
+                                    fontSize: 12),
+                                montserratWhiteRegular(
+                                    'Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
+                                    fontSize: 12)
+                              ],
+                            ),
                           )
                         ],
                       ),

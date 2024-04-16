@@ -475,8 +475,47 @@ Future<List<DocumentSnapshot>> getAllOrderDocs() async {
   return orders.docs.reversed.toList();
 }
 
-Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref) async {
+Future<List<DocumentSnapshot>> getUserOrderHistory() async {
+  final orders = await FirebaseFirestore.instance
+      .collection(Collections.orders)
+      .where(OrderFields.clientID,
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  return orders.docs.reversed
+      .map((order) => order as DocumentSnapshot)
+      .toList();
+}
+
+Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref,
+    {required TextEditingController widthController,
+    required TextEditingController heightController,
+    required num minHeight,
+    required num maxHeight,
+    required num minWidth,
+    required num maxWidth}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
+  if (widthController.text.isEmpty || heightController.text.isEmpty) {
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Please input your desired window width and height (in cm).')));
+    return;
+  }
+  if (double.tryParse(widthController.text.trim()) == null ||
+      double.parse(widthController.text.trim()) < minWidth ||
+      double.parse(widthController.text.trim()) > maxWidth) {
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Please input a valid width value between ${minWidth}cm and ${maxWidth}cm.')));
+    return;
+  }
+  if (double.tryParse(heightController.text.trim()) == null ||
+      double.parse(heightController.text.trim()) < minHeight ||
+      double.parse(heightController.text.trim()) > maxHeight) {
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Please input a valid height value between ${minHeight}cm and ${maxHeight}cm.')));
+    return;
+  }
   ImagePicker imagePicker = ImagePicker();
   final selectedXFile =
       await imagePicker.pickImage(source: ImageSource.gallery);
@@ -498,6 +537,7 @@ Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref) async {
         await FirebaseFirestore.instance.collection(Collections.orders).add({
       OrderFields.windowID: cartData[CartFields.windowID],
       OrderFields.clientID: cartData[CartFields.clientID],
+      OrderFields.glassType: ref.read(cartProvider).selectedGlassType,
       OrderFields.purchaseStatus: OrderStatuses.pending,
       OrderFields.datePickedUp: DateTime(1970),
       OrderFields.rating: ''
