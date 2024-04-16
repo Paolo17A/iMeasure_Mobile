@@ -158,11 +158,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _purchaseHistoryEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
     String status = orderData[OrderFields.purchaseStatus];
-    String productID = orderData[OrderFields.productID];
+    String windowID = orderData[OrderFields.windowID];
     num quantity = orderData[OrderFields.quantity];
 
     return FutureBuilder(
-      future: getThisWindowDoc(productID),
+      future: getThisWindowDoc(windowID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             !snapshot.hasData ||

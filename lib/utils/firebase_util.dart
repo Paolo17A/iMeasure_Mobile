@@ -420,7 +420,7 @@ Future addProductToCart(BuildContext context, WidgetRef ref,
 
     final cartDocReference =
         await FirebaseFirestore.instance.collection(Collections.cart).add({
-      CartFields.productID: productID,
+      CartFields.windowID: productID,
       CartFields.clientID: FirebaseAuth.instance.currentUser!.uid
     });
     ref.read(cartProvider.notifier).addCartItem(await cartDocReference.get());
@@ -473,4 +473,77 @@ Future<List<DocumentSnapshot>> getAllOrderDocs() async {
   final orders =
       await FirebaseFirestore.instance.collection(Collections.orders).get();
   return orders.docs.reversed.toList();
+}
+
+Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  ImagePicker imagePicker = ImagePicker();
+  final selectedXFile =
+      await imagePicker.pickImage(source: ImageSource.gallery);
+  if (selectedXFile == null) {
+    return;
+  }
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+
+    //  1. Generate a purchase document for the selected cart item
+    final cartDoc =
+        await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
+    final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+    //final productID = cartData[CartFields.productID];
+    //final window = await getThisWindowDoc(productID);
+    //final windowData = window.data() as Map<dynamic, dynamic>;
+
+    final orderReference =
+        await FirebaseFirestore.instance.collection(Collections.orders).add({
+      OrderFields.windowID: cartData[CartFields.windowID],
+      OrderFields.clientID: cartData[CartFields.clientID],
+      OrderFields.purchaseStatus: OrderStatuses.pending,
+      OrderFields.datePickedUp: DateTime(1970),
+      OrderFields.rating: ''
+    });
+
+    //  2. Generate a payment document in Firestore
+    await FirebaseFirestore.instance
+        .collection(Collections.transactions)
+        .doc(orderReference.id)
+        .set({
+      TransactionFields.clientID: cartData[CartFields.clientID],
+      TransactionFields.paidAmount: 5000,
+      TransactionFields.paymentVerified: false,
+      TransactionFields.paymentStatus: PaymentStatuses.pending,
+      TransactionFields.paymentMethod:
+          ref.read(cartProvider).selectedPaymentMethod,
+      TransactionFields.dateCreated: DateTime.now(),
+      TransactionFields.dateApproved: DateTime(1970),
+    });
+
+    //  3. Upload the proof of payment image to Firebase Storage
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child(StorageFields.payments)
+        .child('${orderReference.id}.png');
+    final uploadTask = storageRef.putFile(File(selectedXFile.path));
+    final taskSnapshot = await uploadTask;
+    final downloadURL = await taskSnapshot.ref.getDownloadURL();
+
+    await FirebaseFirestore.instance
+        .collection(Collections.transactions)
+        .doc(orderReference.id)
+        .update({TransactionFields.proofOfPayment: downloadURL});
+
+    //  4. Delete cart entry
+    await cartDoc.reference.delete();
+    ref.read(cartProvider).cartItems = await getCartEntries(context);
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content:
+            Text('Successfully settled payment and created purchase order')));
+    Navigator.of(context).pop();
+    ref.read(cartProvider).setSelectedCartItem('');
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error purchasing this cart item: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
 }

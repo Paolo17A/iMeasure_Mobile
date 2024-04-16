@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="imeasure_mobile"
+        android:label="iMeasure"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

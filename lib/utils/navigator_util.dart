@@ -4,6 +4,7 @@ import 'package:imeasure_mobile/screens/selected_product_screen.dart';
 import 'package:imeasure_mobile/screens/windows_screen.dart';
 import '../screens/bookmarks_screen.dart';
 import '../screens/cart_screen.dart';
+import '../screens/checkout_screen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/forgot_password_screen.dart';
 import '../screens/home_screen.dart';
@@ -40,7 +41,7 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.editProfile: (context) => const EditProfileScreen(),
   NavigatorRoutes.windows: (context) => const WindowsScreen(),
   NavigatorRoutes.cart: (context) => const CartScreen(),
-  //NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
+  NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
   NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),
   //NavigatorRoutes.help: (context) => const HelpScreen(),
 };

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
+import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
+import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
 
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
@@ -48,6 +50,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       onPopInvoked: (didPop) => ref.read(cartProvider).setSelectedCartItem(''),
       child: Scaffold(
         appBar: appBarWidget(),
+        drawer: appDrawer(context, route: NavigatorRoutes.cart),
+        bottomNavigationBar: bottomNavigationBar(context, index: 2),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
@@ -80,7 +84,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   Widget _cartEntry(DocumentSnapshot cartDoc) {
     final cartData = cartDoc.data() as Map<dynamic, dynamic>;
     return FutureBuilder(
-        future: getThisWindowDoc(cartData[CartFields.productID]),
+        future: getThisWindowDoc(cartData[CartFields.windowID]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               !snapshot.hasData ||
@@ -92,6 +96,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
           String name = windowData[WindowFields.name];
           String imageURL = windowData[WindowFields.imageURL];
+          bool isAvailable = windowData[WindowFields.isAvailable];
           num minHeight = windowData[WindowFields.minHeight];
           num maxHeight = windowData[WindowFields.maxHeight];
           num minWidth = windowData[WindowFields.minWidth];
@@ -100,21 +105,40 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           return vertical10Pix(
               child: Dismissible(
             key: UniqueKey(),
-            direction: DismissDirection.endToStart,
+            direction: DismissDirection.horizontal,
             background: Container(
+              color: CustomColors.dandelion,
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: montserratBlackBold('\t\tPURCHASE')),
+            ),
+            secondaryBackground: Container(
                 color: Colors.redAccent,
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [Icon(Icons.delete, color: Colors.white)])),
-            dismissThresholds: {DismissDirection.endToStart: 0.2},
+                child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.delete, color: Colors.white))),
+            dismissThresholds: {
+              DismissDirection.endToStart: 0.2,
+              DismissDirection.startToEnd: 0.3
+            },
             confirmDismiss: (direction) async {
-              displayDeleteEntryDialog(context,
-                  message:
-                      'Are you sure you wish to remove ${name} from your cart?',
-                  deleteEntry: () {
-                removeCartItem(context, ref, cartDoc: cartDoc);
-              });
+              if (direction == DismissDirection.endToStart) {
+                displayDeleteEntryDialog(context,
+                    message:
+                        'Are you sure you wish to remove ${name} from your cart?',
+                    deleteEntry: () =>
+                        removeCartItem(context, ref, cartDoc: cartDoc));
+              } else if (direction == DismissDirection.startToEnd) {
+                if (isAvailable) {
+                  ref.read(cartProvider).setSelectedCartItem(cartDoc.id);
+                  Navigator.of(context).pushNamed(NavigatorRoutes.checkout);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text('This window is currently not available.')));
+                }
+              }
               return false;
             },
             child: Container(
@@ -123,18 +147,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Radio<String>(
-                        activeColor: CustomColors.flaxen,
-                        value: cartDoc.id,
-                        groupValue: ref.read(cartProvider).selectedCartItem,
-                        onChanged: (_) {
-                          ref
-                              .read(cartProvider)
-                              .setSelectedCartItem(cartDoc.id);
-                        }),
                     GestureDetector(
                       onTap: () => NavigatorRoutes.selectedWindow(context, ref,
-                          windowID: cartData[CartFields.productID]),
+                          windowID: cartData[CartFields.windowID]),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

@@ -47,10 +47,9 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
             icon: _buildIcon(Icons.window, 'Windows', index, 1),
             backgroundColor: bottomNavButtonColor,
             label: ''),
-        //  Organizations
         if (hasLoggedInUser())
           BottomNavigationBarItem(
-              icon: _buildIcon(Icons.shopping_cart, 'Cart', index, 3),
+              icon: _buildIcon(Icons.shopping_cart, 'Cart', index, 2),
               backgroundColor: bottomNavButtonColor,
               label: '')
       ],

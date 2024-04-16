@@ -9,13 +9,14 @@ class CartNotifier extends ChangeNotifier {
   List<DocumentSnapshot> windowDocs = [];
   String selectedPaymentMethod = '';
   String selectedCartItem = '';
+  String glassType = '';
 
   void setCartItems(List<DocumentSnapshot> items) {
     cartItems = items;
     notifyListeners();
   }
 
-  void setCartDocs(List<DocumentSnapshot> windows) {
+  void setWindowDocs(List<DocumentSnapshot> windows) {
     windowDocs = windows;
     notifyListeners();
   }
@@ -36,7 +37,7 @@ class CartNotifier extends ChangeNotifier {
   bool cartContainsThisItem(String itemID) {
     return cartItems.any((cartItem) {
       final cartData = cartItem.data() as Map<dynamic, dynamic>;
-      return cartData[CartFields.productID] == itemID;
+      return cartData[CartFields.windowID] == itemID;
     });
   }
 
@@ -47,6 +48,11 @@ class CartNotifier extends ChangeNotifier {
 
   void setSelectedCartItem(String cartID) {
     selectedCartItem = cartID;
+    notifyListeners();
+  }
+
+  void setGlassType(String glass) {
+    glassType = glass;
     notifyListeners();
   }
 
