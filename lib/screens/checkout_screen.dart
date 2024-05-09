@@ -155,10 +155,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           children: [
             montserratBlackBold(name),
             montserratMidnightBlueRegular(
-                'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
+                'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                 fontSize: 12),
             montserratMidnightBlueRegular(
-                'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
+                'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                 fontSize: 12),
           ],
         ),

@@ -143,22 +143,22 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         Divider(color: CustomColors.midnightBlue),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           montserratMidnightBlueRegular(
-              'Minimum Width: ${minWidth.toString()}cm',
+              'Minimum Width: ${minWidth.toString()}ft',
               fontSize: 12),
           Gap(40),
           montserratMidnightBlueRegular(
-              'Minimum Height: ${minHeight.toString()}cm',
+              'Minimum Height: ${minHeight.toString()}ft',
               fontSize: 12),
         ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             montserratMidnightBlueRegular(
-                'Maximum Width: ${maxWidth.toString()}cm',
+                'Maximum Width: ${maxWidth.toString()}ft',
                 fontSize: 12),
             Gap(40),
             montserratMidnightBlueRegular(
-                'Maximum Height: ${maxHeight.toString()}cm',
+                'Maximum Height: ${maxHeight.toString()}ft',
                 fontSize: 12)
           ],
         ),

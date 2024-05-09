@@ -707,7 +707,7 @@ Future settlePendingPayment(BuildContext context, WidgetRef ref,
   if (widthController.text.isEmpty || heightController.text.isEmpty) {
     scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(
-            'Please input your desired window width and height (in cm).')));
+            'Please input your desired window width and height (in ft).')));
     return;
   }
   if (double.tryParse(widthController.text.trim()) == null ||
@@ -715,7 +715,7 @@ Future settlePendingPayment(BuildContext context, WidgetRef ref,
       double.parse(widthController.text.trim()) > maxWidth) {
     scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(
-            'Please input a valid width value between ${minWidth}cm and ${maxWidth}cm.')));
+            'Please input a valid width value between ${minWidth}ft and ${maxWidth}ft.')));
     return;
   }
   if (double.tryParse(heightController.text.trim()) == null ||
@@ -723,7 +723,7 @@ Future settlePendingPayment(BuildContext context, WidgetRef ref,
       double.parse(heightController.text.trim()) > maxHeight) {
     scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(
-            'Please input a valid height value between ${minHeight}cm and ${maxHeight}cm.')));
+            'Please input a valid height value between ${minHeight}ft and ${maxHeight}ft.')));
     return;
   }
   ImagePicker imagePicker = ImagePicker();

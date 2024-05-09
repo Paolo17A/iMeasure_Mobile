@@ -167,10 +167,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                     textAlign: TextAlign.left,
                                     textOverflow: TextOverflow.ellipsis),
                                 montserratWhiteRegular(
-                                    'Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
+                                    'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                                     fontSize: 12),
                                 montserratWhiteRegular(
-                                    'Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
+                                    'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                                     fontSize: 12)
                               ],
                             ),

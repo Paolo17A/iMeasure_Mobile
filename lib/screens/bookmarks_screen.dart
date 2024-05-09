@@ -139,10 +139,10 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
                                   textOverflow: TextOverflow.ellipsis,
                                   fontSize: 16),
                               montserratWhiteRegular(
-                                  'Width: ${minWidth.toString()} - ${maxWidth.toString()}cm',
+                                  'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                                   fontSize: 12),
                               montserratWhiteRegular(
-                                  'Height: ${minHeight.toString()} - ${maxHeight.toString()}cm',
+                                  'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                                   fontSize: 12)
                             ],
                           )
