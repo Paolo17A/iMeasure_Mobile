@@ -47,11 +47,11 @@ Drawer appDrawer(BuildContext context, {required String route}) {
                         ? null
                         : Navigator.of(context)
                             .pushNamed(NavigatorRoutes.bookmarks)),
-              /*_drawerTile(context,
+              _drawerTile(context,
                   label: 'Help',
                   onPress: () => route == NavigatorRoutes.help
                       ? null
-                      : Navigator.of(context).pushNamed(NavigatorRoutes.help))*/
+                      : Navigator.of(context).pushNamed(NavigatorRoutes.help))
             ],
           ),
         ),

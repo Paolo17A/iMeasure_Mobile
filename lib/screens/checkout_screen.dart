@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/models/glass_model.dart';
 import 'package:imeasure_mobile/providers/cart_provider.dart';
 import 'package:imeasure_mobile/providers/loading_provider.dart';
+import 'package:imeasure_mobile/screens/initial_quotation_screen.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 import 'package:imeasure_mobile/utils/string_util.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
@@ -22,6 +24,7 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
+  String windowID = '';
   String name = '';
   String imageURL = '';
   num minHeight = 0;
@@ -41,8 +44,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         final cartEntry =
             await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
         final cartData = cartEntry.data() as Map<dynamic, dynamic>;
+        windowID = cartData[CartFields.windowID];
 
-        final window = await getThisWindowDoc(cartData[CartFields.windowID]);
+        final window = await getThisWindowDoc(windowID);
         final windowData = window.data() as Map<dynamic, dynamic>;
         name = windowData[WindowFields.name];
         imageURL = windowData[WindowFields.imageURL];
@@ -50,6 +54,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         maxHeight = windowData[WindowFields.maxHeight];
         minWidth = windowData[WindowFields.minWidth];
         maxWidth = windowData[WindowFields.maxWidth];
+
         ref.read(cartProvider).setSelectedPaymentMethod('');
         ref.read(loadingProvider).toggleLoading(false);
       } catch (error) {
@@ -68,6 +73,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     heightController.dispose();
   }
 
+  bool mayProceedToInitialQuotationScreen() {
+    return ref.read(cartProvider).selectedGlassType.isNotEmpty &&
+        ref.read(cartProvider).selectedColor.isNotEmpty &&
+        widthController.text.isNotEmpty &&
+        double.tryParse(widthController.text) != null &&
+        double.parse(widthController.text.trim()) >= minWidth &&
+        double.parse(widthController.text.trim()) <= maxWidth &&
+        heightController.text.isNotEmpty &&
+        double.tryParse(heightController.text) != null &&
+        double.parse(heightController.text.trim()) >= minHeight &&
+        double.parse(heightController.text.trim()) <= maxHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
@@ -77,6 +95,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         ref.read(cartProvider).setSelectedCartItem('');
         ref.read(cartProvider).setGlassType('');
         ref.read(cartProvider).setSelectedPaymentMethod('');
+        ref.read(cartProvider).setSelectedColor('');
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -94,7 +113,23 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       windowDetails(),
                       Divider(color: CustomColors.midnightBlue),
                       measurementWidgets(),
-                      paymentWidgets()
+                      ElevatedButton(
+                          onPressed: mayProceedToInitialQuotationScreen()
+                              ? () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InitialQuotationScreen(
+                                              windowID: windowID,
+                                              width: double.parse(
+                                                  widthController.text),
+                                              height: double.parse(
+                                                  heightController.text))))
+                              : null,
+                          child: montserratMidnightBlueBold(
+                              'VIEW INITIAL QUOTATION',
+                              fontSize: 14))
+
+                      //paymentWidgets()
                     ],
                   )),
                 ),
@@ -162,10 +197,31 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           Container(
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: dropdownWidget(ref.read(cartProvider).selectedPaymentMethod,
+            child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
                 (newVal) {
               ref.read(cartProvider).setGlassType(newVal!);
-            }, ['REGULAR', 'TEMPERED'], 'Select your glass type', false),
+            },
+                allGlassModels
+                    .map((glassModel) => glassModel.glassTypeName)
+                    .toList(),
+                'Select your glass type',
+                false),
+          ),
+          Gap(10),
+          montserratWhiteRegular('COLOR', fontSize: 16),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(5)),
+            child:
+                dropdownWidget(ref.read(cartProvider).selectedColor, (newVal) {
+              ref.read(cartProvider).setSelectedColor(newVal!);
+            }, [
+              WindowColors.brown,
+              WindowColors.white,
+              WindowColors.mattBlack,
+              WindowColors.mattGray,
+              WindowColors.woodFinish
+            ], 'Select your glass type', false),
           )
         ]),
       ),
@@ -183,7 +239,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         _paymentMethod(),
         if (ref.read(cartProvider).selectedPaymentMethod.isNotEmpty)
           _uploadPayment(),
-        _checkoutButton()
+        //_checkoutButton()
       ]),
     );
   }
@@ -230,7 +286,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     ));
   }
 
-  Widget _checkoutButton() {
+  /*Widget _checkoutButton() {
     return Container(
       height: 60,
       child: ElevatedButton(
@@ -248,5 +304,5 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               disabledBackgroundColor: Colors.blueGrey),
           child: montserratMidnightBlueBold('MAKE PAYMENT')),
     );
-  }
+  }*/
 }

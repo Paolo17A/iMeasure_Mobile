@@ -14,6 +14,7 @@ import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
 
 import '../providers/profile_image_url_provider.dart';
+import '../providers/settle_payment_provider.dart';
 import 'navigator_util.dart';
 import 'string_util.dart';
 
@@ -475,6 +476,13 @@ Future<List<DocumentSnapshot>> getAllOrderDocs() async {
   return orders.docs.reversed.toList();
 }
 
+Future<DocumentSnapshot> getThisOrderDoc(String orderID) async {
+  return await FirebaseFirestore.instance
+      .collection(Collections.orders)
+      .doc(orderID)
+      .get();
+}
+
 Future<List<DocumentSnapshot>> getUserOrderHistory() async {
   final orders = await FirebaseFirestore.instance
       .collection(Collections.orders)
@@ -486,7 +494,209 @@ Future<List<DocumentSnapshot>> getUserOrderHistory() async {
       .toList();
 }
 
-Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref,
+Future generateOrder(BuildContext context, WidgetRef ref,
+    {required num width,
+    required num height,
+    required List<dynamic> mandatoryWindowFields,
+    required List<Map<dynamic, dynamic>> optionalWindowFields,
+    required num totalGlassPrice,
+    required num totalOverallPayment}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider).toggleLoading(true);
+
+    List<Map<dynamic, dynamic>> mandatoryMap = [];
+    mandatoryMap.add({
+      OrderBreakdownMap.field: 'Glass',
+      OrderBreakdownMap.breakdownPrice: totalGlassPrice
+    });
+    for (var windowSubField in mandatoryWindowFields) {
+      if (windowSubField[WindowSubfields.priceBasis] == 'HEIGHT') {
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * height
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * height
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * height
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * height
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
+                      height
+            });
+            break;
+        }
+      } else if (windowSubField[WindowSubfields.priceBasis] == 'WIDTH') {
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * width
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * width
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * width
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * width
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) * width
+            });
+            break;
+        }
+      }
+    }
+
+    List<Map<dynamic, dynamic>> optionalMap = [];
+    for (var windowSubField in optionalWindowFields) {
+      if (windowSubField[OptionalWindowFields.isSelected]) {
+        optionalMap.add({
+          OrderBreakdownMap.field:
+              windowSubField[OptionalWindowFields.optionalFields]
+                  [WindowFields.name],
+          OrderBreakdownMap.breakdownPrice:
+              windowSubField[OptionalWindowFields.price]
+        });
+      }
+    }
+
+    //  1. Generate a purchase document for the selected cart item
+    final cartDoc =
+        await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
+    final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+
+    //  1. Generate Order Entry
+    await FirebaseFirestore.instance.collection(Collections.orders).add({
+      OrderFields.windowID: cartData[CartFields.windowID],
+      OrderFields.clientID: cartData[CartFields.clientID],
+      OrderFields.width: width,
+      OrderFields.height: height,
+      OrderFields.glassType: ref.read(cartProvider).selectedGlassType,
+      OrderFields.color: ref.read(cartProvider).selectedColor,
+      OrderFields.purchaseStatus: OrderStatuses.generated,
+      OrderFields.datePickedUp: DateTime(1970),
+      OrderFields.rating: '',
+      OrderFields.mandatoryMap: mandatoryMap,
+      OrderFields.optionalMap: optionalMap,
+      OrderFields.windowOverallPrice: totalOverallPayment,
+      OrderFields.laborPrice: 0,
+      OrderFields.quotationURL: ''
+    });
+
+    //  4. Delete cart entry
+    await FirebaseFirestore.instance
+        .collection(Collections.cart)
+        .doc(ref.read(cartProvider).selectedCartItem)
+        .delete();
+    ref.read(cartProvider).cartItems = await getCartEntries(context);
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content:
+            Text('Successfully settled payment and created purchase order')));
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    ref.read(cartProvider).setSelectedCartItem('');
+    ref.read(loadingProvider).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error generating new order: $error')));
+    ref.read(loadingProvider).toggleLoading(false);
+  }
+}
+
+Future settlePendingPayment(BuildContext context, WidgetRef ref,
+    {required String orderID, required num amount}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context);
+  try {
+    ref.read(loadingProvider).toggleLoading(true);
+    await FirebaseFirestore.instance
+        .collection(Collections.transactions)
+        .doc(orderID)
+        .set({
+      TransactionFields.clientID: FirebaseAuth.instance.currentUser!.uid,
+      TransactionFields.paidAmount: amount,
+      TransactionFields.paymentVerified: false,
+      TransactionFields.paymentStatus: PaymentStatuses.pending,
+      TransactionFields.paymentMethod:
+          ref.read(cartProvider).selectedPaymentMethod,
+      TransactionFields.dateCreated: DateTime.now(),
+      TransactionFields.dateApproved: DateTime(1970),
+    });
+
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child(StorageFields.payments)
+        .child('${orderID}.png');
+    final uploadTask = storageRef
+        .putFile(File(ref.read(settlePaymentProvider).paymentImage!.path));
+    final taskSnapshot = await uploadTask;
+    final downloadURL = await taskSnapshot.ref.getDownloadURL();
+    await FirebaseFirestore.instance
+        .collection(Collections.transactions)
+        .doc(orderID)
+        .update({TransactionFields.proofOfPayment: downloadURL});
+
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({OrderFields.purchaseStatus: OrderStatuses.processing});
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Successfully settled pending payment for this rental request.')));
+    ref.read(loadingProvider).toggleLoading(false);
+    navigator.pop();
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error settling pending payment: $error')));
+    ref.read(loadingProvider).toggleLoading(false);
+  }
+}
+
+/*Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref,
     {required TextEditingController widthController,
     required TextEditingController heightController,
     required num minHeight,
@@ -586,4 +796,4 @@ Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref,
         SnackBar(content: Text('Error purchasing this cart item: $error')));
     ref.read(loadingProvider.notifier).toggleLoading(false);
   }
-}
+}*/

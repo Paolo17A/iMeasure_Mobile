@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^1.0.8
   flutter_launcher_icons: ^0.13.1
   dropdown_search: ^5.0.6
+  easy_pdf_viewer: ^1.0.8
 
 dev_dependencies:
   flutter_test:

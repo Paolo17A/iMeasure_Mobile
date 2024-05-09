@@ -46,6 +46,43 @@ class WindowFields {
   static const String minHeight = 'minHeight';
   static const String maxHeight = 'maxHeight';
   static const String isAvailable = 'isAvailable';
+  static const String windowFields = 'windowFields';
+  static const String accessoryFields = 'accessoryFields';
+}
+
+class WindowColors {
+  static const String brown = 'BROWN';
+  static const String white = 'WHITE';
+  static const String mattBlack = 'MATT BLACK';
+  static const String mattGray = 'MATT GRAY';
+  static const String woodFinish = 'WOOD FINISH';
+}
+
+class WindowSubfields {
+  static const String name = 'name';
+  static const String isMandatory = 'isMandatory';
+  static const String priceBasis = 'priceBasis';
+  static const String brownPrice = 'brownPrice';
+  static const String mattBlackPrice = 'mattBlackPrice';
+  static const String mattGrayPrice = 'mattGrayPrice';
+  static const String woodFinishPrice = 'woodFinishPrice';
+  static const String whitePrice = 'whitePrice';
+}
+
+class WindowAccessorySubfields {
+  static const String name = 'name';
+  static const String price = 'price';
+}
+
+class OptionalWindowFields {
+  static const String isSelected = 'isSelected';
+  static const String optionalFields = 'optionalFields';
+  static const String price = 'price';
+}
+
+class OrderBreakdownMap {
+  static const String field = 'field';
+  static const String breakdownPrice = 'breakdownPrice';
 }
 
 class FAQFields {
@@ -68,14 +105,23 @@ class TransactionFields {
 class OrderFields {
   static const String clientID = 'clientID';
   static const String windowID = 'windowID';
+  static const String width = 'width';
+  static const String height = 'height';
   static const String glassType = 'glassType';
+  static const String color = 'color';
   static const String purchaseStatus = 'purchaseStatus';
   static const String datePickedUp = 'datePickedUp';
   static const String rating = 'rating';
+  static const String mandatoryMap = 'mandatoryMap';
+  static const String optionalMap = 'optionalMap';
+  static const String windowOverallPrice = 'windowOverallPrice';
+  static const String laborPrice = 'laborPrice';
+  static const String quotationURL = 'quotationURL';
 }
 
 class OrderStatuses {
   static const String denied = 'DENIED';
+  static const String generated = 'GENERATED';
   static const String pending = 'PENDING';
   static const String processing = 'PROCESSING';
   static const String forPickUp = 'FOR PICK UP';
@@ -107,4 +153,32 @@ String generateRandomHexString(int length) {
   final hexString =
       codeUnits.map((value) => value.toRadixString(16).padLeft(2, '0')).join();
   return hexString;
+}
+
+String formatPrice(double amount) {
+  // Round the amount to two decimal places
+  amount = double.parse((amount).toStringAsFixed(2));
+
+  // Convert the double to a string and split it into whole and decimal parts
+  List<String> parts = amount.toString().split('.');
+
+  // Format the whole part with commas
+  String formattedWhole = '';
+  for (int i = 0; i < parts[0].length; i++) {
+    if (i != 0 && (parts[0].length - i) % 3 == 0) {
+      formattedWhole += ',';
+    }
+    formattedWhole += parts[0][i];
+  }
+
+  // If there's a decimal part, add it back
+  String formattedAmount = formattedWhole;
+  if (parts.length > 1) {
+    formattedAmount += '.' + (parts[1].length == 1 ? '${parts[1]}0' : parts[1]);
+  } else {
+    // If there's no decimal part, append '.00'
+    formattedAmount += '.00';
+  }
+
+  return formattedAmount;
 }

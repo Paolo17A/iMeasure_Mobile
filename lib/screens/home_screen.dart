@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 
 import '../providers/loading_provider.dart';
+import '../providers/settle_payment_provider.dart';
 import '../utils/color_util.dart';
 import '../utils/navigator_util.dart';
+import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/app_bottom_navbar_widget.dart';
 import '../widgets/app_drawer_widget.dart';
@@ -50,6 +53,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: all20Pix(
                   child: Column(
                 children: [
+                  _pendingPaymentRentalRequestsContainer(),
                   _topProducts(),
                   const Divider(color: CustomColors.midnightBlue),
                 ],
@@ -57,6 +61,110 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             )),
       ),
     );
+  }
+
+  Widget _pendingPaymentRentalRequestsContainer() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection(Collections.orders)
+          .where(OrderFields.purchaseStatus, isEqualTo: OrderStatuses.pending)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            !snapshot.hasData ||
+            snapshot.hasError) return snapshotHandler(snapshot);
+        List<DocumentSnapshot> availableRentalRequests = snapshot.data!.docs;
+        return availableRentalRequests.isNotEmpty
+            ? ExpansionTile(
+                title: montserratWhiteBold('PENDING PAYMENTS'),
+                backgroundColor: CustomColors.slateBlue,
+                collapsedBackgroundColor: CustomColors.slateBlue,
+                iconColor: Colors.white,
+                collapsedIconColor: Colors.white,
+                collapsedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10))),
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: availableRentalRequests.length,
+                      itemBuilder: (context, index) {
+                        return pendingOrderEntry(
+                            availableRentalRequests[index]);
+                      })
+                ],
+              )
+            : Container();
+      },
+    );
+  }
+
+  Widget pendingOrderEntry(DocumentSnapshot orderDoc) {
+    final orderData = orderDoc.data() as Map<dynamic, dynamic>;
+    String windowID = orderData[OrderFields.windowID];
+    num totalPrice = orderData[OrderFields.windowOverallPrice] +
+        orderData[OrderFields.laborPrice];
+    return FutureBuilder(
+        future: getThisWindowDoc(windowID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              !snapshot.hasData ||
+              snapshot.hasError) return snapshotHandler(snapshot);
+          final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
+          String windowName = windowData[WindowFields.name];
+          String windowImage = windowData[WindowFields.imageURL];
+          return Container(
+            decoration: BoxDecoration(border: Border.all()),
+            padding: EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: CustomColors.midnightBlue)),
+                      child: Image.network(
+                        windowImage,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )),
+                ),
+                Gap(10),
+                Flexible(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      montserratWhiteBold(windowName),
+                      montserratWhiteRegular(
+                          'Total: PHP ${formatPrice(totalPrice.toDouble())}',
+                          fontSize: 16),
+                      Gap(21),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                ref.read(settlePaymentProvider).resetProvider();
+                                NavigatorRoutes.renterSettlePayment(context,
+                                    orderID: orderDoc.id);
+                              },
+                              child: montserratMidnightBlueBold(
+                                  'SETTLE PAYMENT',
+                                  fontSize: 12)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _topProducts() {
