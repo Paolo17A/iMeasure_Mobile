@@ -119,7 +119,8 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
                 return false;
               },
               child: Container(
-                  decoration: BoxDecoration(color: CustomColors.slateBlue),
+                  decoration: BoxDecoration(
+                      color: CustomColors.lavenderMist, border: Border.all()),
                   padding: EdgeInsets.all(10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,13 +136,13 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              montserratWhiteBold(name,
+                              montserratBlackBold(name,
                                   textOverflow: TextOverflow.ellipsis,
                                   fontSize: 16),
-                              montserratWhiteRegular(
+                              montserratBlackRegular(
                                   'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                                   fontSize: 12),
-                              montserratWhiteRegular(
+                              montserratBlackRegular(
                                   'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                                   fontSize: 12)
                             ],

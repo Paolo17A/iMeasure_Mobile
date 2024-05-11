@@ -125,7 +125,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       firstNameController: firstNameController,
                       lastNameController: lastNameController,
                       mobileNumberController: mobileNumberController)),
-              const Divider(color: CustomColors.midnightBlue),
+              const Divider(color: CustomColors.deepNavyBlue),
               TextButton(
                   onPressed: () => Navigator.of(context)
                       .pushNamed(NavigatorRoutes.forgotPassword),

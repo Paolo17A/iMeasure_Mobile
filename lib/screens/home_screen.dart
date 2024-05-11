@@ -55,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   _pendingPaymentRentalRequestsContainer(),
                   _topProducts(),
-                  const Divider(color: CustomColors.midnightBlue),
+                  const Divider(color: CustomColors.deepNavyBlue),
                 ],
               )),
             )),
@@ -77,8 +77,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return availableRentalRequests.isNotEmpty
             ? ExpansionTile(
                 title: montserratWhiteBold('PENDING PAYMENTS'),
-                backgroundColor: CustomColors.slateBlue,
-                collapsedBackgroundColor: CustomColors.slateBlue,
+                backgroundColor: CustomColors.deepNavyBlue.withOpacity(0.8),
+                collapsedBackgroundColor: CustomColors.deepNavyBlue,
                 iconColor: Colors.white,
                 collapsedIconColor: Colors.white,
                 collapsedShape: RoundedRectangleBorder(
@@ -125,7 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Flexible(
                   child: Container(
                       decoration: BoxDecoration(
-                          border: Border.all(color: CustomColors.midnightBlue)),
+                          border: Border.all(color: CustomColors.azure)),
                       child: Image.network(
                         windowImage,
                         height: 100,

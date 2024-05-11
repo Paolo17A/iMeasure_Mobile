@@ -2,6 +2,7 @@ import 'dart:math';
 
 class ImagePaths {
   static const String logo = 'assets/images/imeasure.png';
+  static const String heritageIcon = 'assets/images/heritage_icon.png';
 }
 
 class StorageFields {

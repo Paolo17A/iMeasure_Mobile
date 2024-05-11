@@ -111,7 +111,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       child: Column(
                     children: [
                       windowDetails(),
-                      Divider(color: CustomColors.midnightBlue),
+                      Divider(color: CustomColors.deepNavyBlue),
                       measurementWidgets(),
                       ElevatedButton(
                           onPressed: mayProceedToInitialQuotationScreen()
@@ -171,7 +171,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-            color: CustomColors.slateBlue,
+            color: CustomColors.deepNavyBlue,
             borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -232,7 +232,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: CustomColors.slateBlue,
+          color: CustomColors.deepNavyBlue,
           borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
       child: Column(children: [

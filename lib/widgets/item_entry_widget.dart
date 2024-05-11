@@ -17,7 +17,7 @@ Widget itemEntry(BuildContext context,
     child: Container(
       width: 150,
       decoration: BoxDecoration(
-          color: CustomColors.slateBlue,
+          color: CustomColors.deepNavyBlue,
           borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
@@ -45,7 +45,7 @@ Widget _productImage(String firstImage) {
         height: 150,
         decoration: BoxDecoration(
             border:
-                Border.all(color: CustomColors.midnightBlue.withOpacity(0.5)),
+                Border.all(color: CustomColors.deepNavyBlue.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
                 fit: BoxFit.fill, image: NetworkImage(firstImage))),

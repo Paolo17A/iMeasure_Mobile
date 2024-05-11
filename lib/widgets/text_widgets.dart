@@ -10,7 +10,7 @@ Text montserratWhiteBold(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(
+    style: GoogleFonts.quicksand(
         fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.bold),
   );
 }
@@ -23,7 +23,7 @@ Text montserratBlackRegular(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(fontSize: fontSize, color: Colors.black),
+    style: GoogleFonts.quicksand(fontSize: fontSize, color: Colors.black),
   );
 }
 
@@ -35,7 +35,7 @@ Text montserratWhiteRegular(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(fontSize: fontSize, color: Colors.white),
+    style: GoogleFonts.quicksand(fontSize: fontSize, color: Colors.white),
   );
 }
 
@@ -48,7 +48,7 @@ Text montserratBlackBold(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(
+    style: GoogleFonts.quicksand(
         fontSize: fontSize,
         color: Colors.black,
         fontWeight: FontWeight.bold,
@@ -64,9 +64,9 @@ Text montserratMidnightBlueBold(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(
+    style: GoogleFonts.quicksand(
         fontSize: fontSize,
-        color: CustomColors.midnightBlue,
+        color: CustomColors.deepNavyBlue,
         fontWeight: FontWeight.bold),
   );
 }
@@ -79,7 +79,24 @@ Text montserratMidnightBlueRegular(String label,
     label,
     textAlign: textAlign,
     overflow: textOverflow,
-    style: GoogleFonts.montserrat(
-        fontSize: fontSize, color: CustomColors.midnightBlue),
+    style: GoogleFonts.quicksand(
+        fontSize: fontSize, color: CustomColors.deepNavyBlue),
+  );
+}
+
+Text itcBaumansDeepNavyBlueBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    style: GoogleFonts.baumans(
+        fontSize: fontSize,
+        color: CustomColors.deepNavyBlue,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+        textStyle: TextStyle(overflow: textOverflow)),
   );
 }

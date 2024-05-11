@@ -107,7 +107,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero),
                   disabledBackgroundColor: Colors.blueGrey),
-              child: montserratMidnightBlueRegular('ADD TO CART',
+              child: montserratMidnightBlueBold('ADD TO CART',
                   textAlign: TextAlign.center)),
         ),
         vertical10Pix(
@@ -140,24 +140,23 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                 : 'Add to Bookmarks')
           ],
         ),
-        Divider(color: CustomColors.midnightBlue),
+        Divider(color: CustomColors.deepNavyBlue),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          montserratMidnightBlueRegular(
-              'Minimum Width: ${minWidth.toString()}ft',
+          montserratMidnightBlueBold('Minimum Width: ${minWidth.toString()}ft',
               fontSize: 12),
           Gap(40),
-          montserratMidnightBlueRegular(
+          montserratMidnightBlueBold(
               'Minimum Height: ${minHeight.toString()}ft',
               fontSize: 12),
         ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            montserratMidnightBlueRegular(
+            montserratMidnightBlueBold(
                 'Maximum Width: ${maxWidth.toString()}ft',
                 fontSize: 12),
             Gap(40),
-            montserratMidnightBlueRegular(
+            montserratMidnightBlueBold(
                 'Maximum Height: ${maxHeight.toString()}ft',
                 fontSize: 12)
           ],

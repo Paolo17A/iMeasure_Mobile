@@ -6,7 +6,7 @@ import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import 'text_widgets.dart';
 
-Color bottomNavButtonColor = CustomColors.powderBlue;
+Color bottomNavButtonColor = CustomColors.emeraldGreen;
 
 void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
   //  Do nothing if we are selecting the same bottom bar
@@ -69,7 +69,7 @@ Widget _buildIcon(
         size: currentIndex == thisIndex ? 30 : 20,
         color: currentIndex == thisIndex
             ? Colors.white
-            : CustomColors.midnightBlue,
+            : CustomColors.deepNavyBlue,
       ),
       currentIndex == thisIndex
           ? montserratWhiteBold(label, fontSize: 12)

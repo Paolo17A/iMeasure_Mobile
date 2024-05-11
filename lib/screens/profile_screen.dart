@@ -75,7 +75,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(
               children: [
                 profileDetails(),
-                const Divider(color: CustomColors.midnightBlue),
+                const Divider(color: CustomColors.deepNavyBlue),
                 orderHistory()
               ],
             )),
@@ -108,8 +108,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           fontSize: 14)),
                 ElevatedButton(
                     onPressed: () => uploadProfilePicture(context, ref),
-                    child: montserratMidnightBlueRegular(
-                        'UPLOAD\nPROFILE PICTURE',
+                    child: montserratMidnightBlueBold('UPLOAD\nPROFILE PICTURE',
                         fontSize: 14))
               ],
             ),
@@ -123,12 +122,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget orderHistory() {
     return Container(
       decoration: BoxDecoration(
-          color: CustomColors.skyBlue, borderRadius: BorderRadius.circular(20)),
+          color: CustomColors.deepNavyBlue,
+          borderRadius: BorderRadius.circular(20)),
       padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          montserratMidnightBlueBold('ORDER HISTORY'),
+          montserratWhiteBold('ORDER HISTORY'),
           ref.read(ordersProvider).orderDocs.isNotEmpty
               ? ListView.builder(
                   shrinkWrap: true,
@@ -175,7 +175,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 windowID: windowID),
             child: all10Pix(
                 child: Container(
-              decoration: const BoxDecoration(color: CustomColors.slateBlue),
+              decoration: const BoxDecoration(color: CustomColors.lavenderMist),
               padding: EdgeInsets.all(10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,12 +185,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      montserratWhiteBold(name, fontSize: 15),
-                      /*montserratWhiteRegular('SRP: ${price.toStringAsFixed(2)}',
+                      montserratBlackBold(name, fontSize: 15),
+                      /*m('SRP: ${price.toStringAsFixed(2)}',
                           fontSize: 15),*/
-                      montserratWhiteRegular('Glass Type: $glassType',
+                      montserratBlackRegular('Glass Type: $glassType',
                           fontSize: 12),
-                      montserratWhiteRegular('Status: $status', fontSize: 12),
+                      montserratBlackRegular('Status: $status', fontSize: 12),
                       /*montserratWhiteBold(
                           'PHP ${(price * quantity).toStringAsFixed(2)}'),*/
                     ],

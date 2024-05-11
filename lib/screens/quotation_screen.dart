@@ -23,7 +23,7 @@ class QuotationScreen extends StatelessWidget {
           }
           return PDFViewer(
             document: snapshot.data!,
-            pickerButtonColor: CustomColors.midnightBlue,
+            pickerButtonColor: CustomColors.deepNavyBlue,
           );
         },
       ),

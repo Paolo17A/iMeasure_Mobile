@@ -9,7 +9,7 @@ import 'text_widgets.dart';
 
 Drawer appDrawer(BuildContext context, {required String route}) {
   return Drawer(
-    backgroundColor: CustomColors.slateBlue,
+    backgroundColor: CustomColors.deepNavyBlue,
     child: Column(
       children: [
         const Gap(40),
@@ -24,7 +24,7 @@ Drawer appDrawer(BuildContext context, {required String route}) {
                       ? null
                       : Navigator.of(context).pushNamed(NavigatorRoutes.home)),
               const Divider(
-                color: CustomColors.midnightBlue,
+                color: CustomColors.azure,
                 indent: 20,
                 endIndent: 20,
               ),

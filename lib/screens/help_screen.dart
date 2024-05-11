@@ -74,8 +74,8 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
     String answer = faqData[FAQFields.answer];
     return vertical10Pix(
         child: ExpansionTile(
-      collapsedBackgroundColor: CustomColors.slateBlue,
-      backgroundColor: CustomColors.slateBlue.withOpacity(0.8),
+      collapsedBackgroundColor: CustomColors.deepNavyBlue,
+      backgroundColor: CustomColors.deepNavyBlue.withOpacity(0.8),
       collapsedIconColor: Colors.white,
       iconColor: Colors.white,
       collapsedShape:

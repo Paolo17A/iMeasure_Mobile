@@ -90,7 +90,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               !snapshot.hasData ||
               snapshot.hasError)
             return Container(
-                color: CustomColors.slateBlue,
+                color: CustomColors.lavenderMist,
                 height: 60,
                 child: snapshotHandler(snapshot));
           final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
@@ -107,7 +107,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             key: UniqueKey(),
             direction: DismissDirection.horizontal,
             background: Container(
-              color: CustomColors.dandelion,
+              color: CustomColors.emeraldGreen,
               child: Align(
                   alignment: Alignment.centerLeft,
                   child: montserratBlackBold('\t\tPURCHASE')),
@@ -142,7 +142,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               return false;
             },
             child: Container(
-                decoration: BoxDecoration(color: CustomColors.slateBlue),
+                decoration: BoxDecoration(
+                    color: CustomColors.lavenderMist, border: Border.all()),
                 padding: EdgeInsets.all(10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,13 +164,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                montserratWhiteBold(name,
+                                montserratBlackBold(name,
                                     textAlign: TextAlign.left,
                                     textOverflow: TextOverflow.ellipsis),
-                                montserratWhiteRegular(
+                                montserratBlackRegular(
                                     'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                                     fontSize: 12),
-                                montserratWhiteRegular(
+                                montserratBlackRegular(
                                     'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                                     fontSize: 12)
                               ],

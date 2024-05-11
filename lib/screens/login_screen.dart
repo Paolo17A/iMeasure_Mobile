@@ -77,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onPress: () => logInUser(context, ref,
                       emailController: emailController,
                       passwordController: passwordController)),
-              const Divider(color: CustomColors.midnightBlue),
+              const Divider(color: CustomColors.deepNavyBlue),
               TextButton(
                   onPressed: () => Navigator.of(context)
                       .pushNamed(NavigatorRoutes.forgotPassword),

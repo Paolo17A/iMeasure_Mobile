@@ -48,7 +48,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     Gap(20),
                     Container(
                       decoration: BoxDecoration(
-                          color: CustomColors.skyBlue,
+                          color: CustomColors.azure,
                           borderRadius: BorderRadius.circular(30)),
                       child: all20Pix(
                           child: Column(

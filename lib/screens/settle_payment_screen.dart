@@ -137,7 +137,7 @@ class _RenterSettlePaymentScreenState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-              color: CustomColors.slateBlue,
+              color: CustomColors.deepNavyBlue,
               borderRadius: BorderRadius.circular(10)),
           padding: EdgeInsets.all(10),
           child: Column(children: [
@@ -219,7 +219,7 @@ class _RenterSettlePaymentScreenState
                   : () => settlePendingPayment(context, ref,
                       orderID: widget.orderID, amount: orderPrice),
           style: ElevatedButton.styleFrom(
-              disabledBackgroundColor: CustomColors.powderBlue),
+              disabledBackgroundColor: CustomColors.lavenderMist),
           child: montserratMidnightBlueBold('PROCESS PAYMENT')),
     );
   }
