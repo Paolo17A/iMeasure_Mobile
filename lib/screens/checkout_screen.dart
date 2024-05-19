@@ -221,7 +221,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               WindowColors.mattBlack,
               WindowColors.mattGray,
               WindowColors.woodFinish
-            ], 'Select your glass type', false),
+            ], 'Select color', false),
           )
         ]),
       ),
@@ -274,10 +274,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               children: [
                 montserratWhiteBold('SEND YOUR PAYMENT HERE'),
                 if (ref.read(cartProvider).selectedPaymentMethod == 'GCASH')
-                  montserratWhiteBold('GCASH: +639221234567', fontSize: 14)
+                  montserratWhiteBold('GCASH: 09484548667\nJonas Banca',
+                      fontSize: 14)
                 else if (ref.read(cartProvider).selectedPaymentMethod ==
                     'PAYMAYA')
-                  montserratWhiteBold('PAYMAYA: +639221234567', fontSize: 14)
+                  montserratWhiteBold('PAYMAYA: 09484548667\nJonas Banca',
+                      fontSize: 14)
               ],
             )
           ],
