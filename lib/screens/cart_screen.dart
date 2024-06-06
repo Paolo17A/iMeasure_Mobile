@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
-import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
 
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
@@ -49,13 +48,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return PopScope(
       onPopInvoked: (didPop) => ref.read(cartProvider).setSelectedCartItem(''),
       child: Scaffold(
-        appBar: appBarWidget(),
-        drawer: appDrawer(context, route: NavigatorRoutes.cart),
+        appBar: appBarWidget(mayPop: false, actions: [
+          ElevatedButton(
+              onPressed: () => Navigator.of(context)
+                  .pushNamed(NavigatorRoutes.pendingPayments),
+              child: montserratMidnightBlueRegular('To Pay'))
+        ]),
         bottomNavigationBar: bottomNavigationBar(context, index: 2),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
-              child: all20Pix(child: _cartEntries()),
+              child: _cartEntries(),
             )),
       ),
     );
@@ -103,85 +106,82 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           num maxWidth = windowData[WindowFields.maxWidth];
 
           return vertical10Pix(
-              child: Dismissible(
-            key: UniqueKey(),
-            direction: DismissDirection.horizontal,
-            background: Container(
-              color: CustomColors.emeraldGreen,
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: montserratBlackBold('\t\tPURCHASE')),
-            ),
-            secondaryBackground: Container(
-                color: Colors.redAccent,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(Icons.delete, color: Colors.white))),
-            dismissThresholds: {
-              DismissDirection.endToStart: 0.2,
-              DismissDirection.startToEnd: 0.3
-            },
-            confirmDismiss: (direction) async {
-              if (direction == DismissDirection.endToStart) {
-                displayDeleteEntryDialog(context,
-                    message:
-                        'Are you sure you wish to remove ${name} from your cart?',
-                    deleteEntry: () =>
-                        removeCartItem(context, ref, cartDoc: cartDoc));
-              } else if (direction == DismissDirection.startToEnd) {
-                if (isAvailable) {
-                  ref.read(cartProvider).setSelectedCartItem(cartDoc.id);
-                  Navigator.of(context).pushNamed(NavigatorRoutes.checkout);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text('This window is currently not available.')));
-                }
-              }
-              return false;
-            },
-            child: Container(
-                decoration: BoxDecoration(
-                    color: CustomColors.lavenderMist, border: Border.all()),
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () => NavigatorRoutes.selectedWindow(context, ref,
-                          windowID: cartData[CartFields.windowID]),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                              backgroundImage: NetworkImage(imageURL),
-                              backgroundColor: Colors.transparent,
-                              radius: 30),
-                          Gap(20),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                montserratBlackBold(name,
-                                    textAlign: TextAlign.left,
-                                    textOverflow: TextOverflow.ellipsis),
-                                montserratBlackRegular(
-                                    'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
-                                    fontSize: 12),
-                                montserratBlackRegular(
-                                    'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
-                                    fontSize: 12)
-                              ],
+              child: Container(
+                  decoration: BoxDecoration(border: Border.all()),
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => NavigatorRoutes.selectedWindow(
+                            context, ref,
+                            windowID: cartData[CartFields.windowID]),
+                        child: Row(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                                backgroundImage: NetworkImage(imageURL),
+                                backgroundColor: Colors.transparent,
+                                radius: 30),
+                            Gap(10),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  montserratBlackBold(name,
+                                      textAlign: TextAlign.left,
+                                      textOverflow: TextOverflow.ellipsis),
+                                  montserratBlackRegular(
+                                      'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
+                                      fontSize: 12),
+                                  montserratBlackRegular(
+                                      'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
+                                      fontSize: 12)
+                                ],
+                              ),
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-          ));
+                      Container(
+                        decoration: BoxDecoration(
+                            color: CustomColors.emeraldGreen,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: TextButton(
+                            onPressed: () {
+                              if (isAvailable) {
+                                ref
+                                    .read(cartProvider)
+                                    .setSelectedCartItem(cartDoc.id);
+                                Navigator.of(context)
+                                    .pushNamed(NavigatorRoutes.checkout);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        'This window is currently not available.')));
+                              }
+                            },
+                            child: montserratMidnightBlueBold('PURCHASE',
+                                fontSize: 12)),
+                      ),
+                      Gap(4),
+                      Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 167, 55, 47)),
+                        child: TextButton(
+                            onPressed: () => displayDeleteEntryDialog(context,
+                                message:
+                                    'Are you sure you wish to remove ${name} from your cart?',
+                                deleteEntry: () => removeCartItem(context, ref,
+                                    cartDoc: cartDoc)),
+                            child: Icon(Icons.delete_outline,
+                                color: Colors.white)),
+                      )
+                    ],
+                  )));
         });
   }
 }

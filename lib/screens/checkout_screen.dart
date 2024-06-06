@@ -125,8 +125,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                               height: double.parse(
                                                   heightController.text))))
                               : null,
-                          child: montserratMidnightBlueBold(
-                              'VIEW INITIAL QUOTATION',
+                          child: montserratWhiteBold('VIEW INITIAL QUOTATION',
                               fontSize: 14))
 
                       //paymentWidgets()
@@ -169,59 +168,91 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Widget measurementWidgets() {
     return vertical20Pix(
       child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: CustomColors.deepNavyBlue,
-            borderRadius: BorderRadius.circular(10)),
+        width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          montserratWhiteBold('INPUT YOUR WINDOW DETAILS', fontSize: 18),
-          Gap(20),
-          montserratWhiteRegular('WIDTH', fontSize: 16),
-          CustomTextField(
-              text: 'Width',
-              controller: widthController,
-              textInputType: TextInputType.numberWithOptions(decimal: true),
-              fillColor: Colors.white,
-              displayPrefixIcon: null),
-          Gap(10),
-          montserratWhiteRegular('HEIGHT', fontSize: 16),
-          CustomTextField(
-              text: 'Height',
-              controller: heightController,
-              textInputType: TextInputType.numberWithOptions(decimal: true),
-              fillColor: Colors.white,
-              displayPrefixIcon: null),
-          Gap(10),
-          montserratWhiteRegular('GLASS TYPE', fontSize: 16),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
-                (newVal) {
-              ref.read(cartProvider).setGlassType(newVal!);
-            },
-                allGlassModels
-                    .map((glassModel) => glassModel.glassTypeName)
-                    .toList(),
-                'Select your glass type',
-                false),
+          //montserratBlackBold('INPUT YOUR WINDOW DETAILS', fontSize: 18),
+          //Gap(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              montserratBlackRegular('WIDTH', fontSize: 16),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: CustomTextField(
+                    text: 'Width',
+                    controller: widthController,
+                    textInputType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    fillColor: Colors.white,
+                    displayPrefixIcon: null),
+              ),
+            ],
           ),
+
           Gap(10),
-          montserratWhiteRegular('COLOR', fontSize: 16),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child:
-                dropdownWidget(ref.read(cartProvider).selectedColor, (newVal) {
-              ref.read(cartProvider).setSelectedColor(newVal!);
-            }, [
-              WindowColors.brown,
-              WindowColors.white,
-              WindowColors.mattBlack,
-              WindowColors.mattGray,
-              WindowColors.woodFinish
-            ], 'Select color', false),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              montserratBlackRegular('HEIGHT', fontSize: 16),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: CustomTextField(
+                    text: 'Height',
+                    controller: heightController,
+                    textInputType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    fillColor: Colors.white,
+                    displayPrefixIcon: null),
+              ),
+            ],
+          ),
+
+          Gap(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              montserratBlackRegular('GLASS\nTYPE', fontSize: 16),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.5,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+                child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
+                    (newVal) {
+                  ref.read(cartProvider).setGlassType(newVal!);
+                },
+                    allGlassModels
+                        .map((glassModel) => glassModel.glassTypeName)
+                        .toList(),
+                    'Select your glass type',
+                    false),
+              ),
+            ],
+          ),
+
+          Gap(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              montserratBlackRegular('COLOR', fontSize: 16),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.5,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+                child: dropdownWidget(ref.read(cartProvider).selectedColor,
+                    (newVal) {
+                  ref.read(cartProvider).setSelectedColor(newVal!);
+                }, [
+                  WindowColors.brown,
+                  WindowColors.white,
+                  WindowColors.mattBlack,
+                  WindowColors.mattGray,
+                  WindowColors.woodFinish
+                ], 'Select color', false),
+              )
+            ],
           )
         ]),
       ),

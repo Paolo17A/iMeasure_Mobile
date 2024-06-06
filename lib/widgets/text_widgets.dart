@@ -5,13 +5,18 @@ import 'package:imeasure_mobile/utils/color_util.dart';
 Text montserratWhiteBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
     TextOverflow? textOverflow}) {
   return Text(
     label,
     textAlign: textAlign,
     overflow: textOverflow,
     style: GoogleFonts.quicksand(
-        fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.bold),
+        decoration: textDecoration,
+        decorationColor: Colors.white,
+        fontSize: fontSize,
+        color: Colors.white,
+        fontWeight: FontWeight.bold),
   );
 }
 
@@ -39,6 +44,19 @@ Text montserratWhiteRegular(String label,
   );
 }
 
+Text quicksandRedBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    overflow: textOverflow,
+    style: GoogleFonts.quicksand(
+        fontSize: fontSize, color: Colors.red, fontWeight: FontWeight.bold),
+  );
+}
+
 Text montserratBlackBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
@@ -51,6 +69,23 @@ Text montserratBlackBold(String label,
     style: GoogleFonts.quicksand(
         fontSize: fontSize,
         color: Colors.black,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration),
+  );
+}
+
+Text quicksandEmeraldGreenBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    overflow: textOverflow,
+    style: GoogleFonts.quicksand(
+        fontSize: fontSize,
+        color: CustomColors.emeraldGreen,
         fontWeight: FontWeight.bold,
         decoration: textDecoration),
   );
@@ -95,6 +130,40 @@ Text itcBaumansDeepNavyBlueBold(String label,
     style: GoogleFonts.baumans(
         fontSize: fontSize,
         color: CustomColors.deepNavyBlue,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+        textStyle: TextStyle(overflow: textOverflow)),
+  );
+}
+
+Text itcBaumansWhiteBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    style: GoogleFonts.baumans(
+        fontSize: fontSize,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+        textStyle: TextStyle(overflow: textOverflow)),
+  );
+}
+
+Text itcBaumansAzureBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    style: GoogleFonts.baumans(
+        fontSize: fontSize,
+        color: CustomColors.azure,
         fontWeight: FontWeight.bold,
         decoration: textDecoration,
         textStyle: TextStyle(overflow: textOverflow)),

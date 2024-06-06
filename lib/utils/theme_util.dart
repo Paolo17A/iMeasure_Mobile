@@ -4,15 +4,16 @@ import 'color_util.dart';
 
 ThemeData themeData = ThemeData(
   colorSchemeSeed: CustomColors.deepNavyBlue,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: CustomColors.lavenderMist,
   appBarTheme: const AppBarTheme(
-      backgroundColor: CustomColors.emeraldGreen, toolbarHeight: 40),
+      backgroundColor: CustomColors.lavenderMist, toolbarHeight: 40),
   snackBarTheme: const SnackBarThemeData(
-      backgroundColor: CustomColors.deepNavyBlue,
-      contentTextStyle: TextStyle(fontWeight: FontWeight.bold)),
+      backgroundColor: CustomColors.aquaMarine,
+      contentTextStyle:
+          TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          backgroundColor: CustomColors.azure)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          backgroundColor: CustomColors.emeraldGreen)),
 );

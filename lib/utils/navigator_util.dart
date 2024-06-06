@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/screens/order_history_screen.dart';
+import 'package:imeasure_mobile/screens/pending_payments_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
 import 'package:imeasure_mobile/screens/selected_product_screen.dart';
 import 'package:imeasure_mobile/screens/windows_screen.dart';
@@ -44,6 +46,8 @@ class NavigatorRoutes {
   static const String checkout = 'checkout';
   static const String bookmarks = 'bookmarks';
   static const String help = 'help';
+  static const String pendingPayments = 'pendingPayments';
+  static const String orderHistory = 'orderHistory';
 }
 
 final Map<String, WidgetBuilder> routes = {
@@ -58,4 +62,6 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
   NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),
   NavigatorRoutes.help: (context) => const HelpScreen(),
+  NavigatorRoutes.pendingPayments: (context) => const PendingPaymentsScreen(),
+  NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen()
 };

@@ -7,8 +7,6 @@ import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import '../utils/string_util.dart';
-import '../widgets/app_bar_widget.dart';
-import '../widgets/custom_button_widgets.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/custom_text_field_widget.dart';
@@ -46,12 +44,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: appBarWidget(mayPop: true),
         body: stackedLoadingContainer(
           context,
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
-            child: all20Pix(child: _registerContainer()),
+            child: Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(ImagePaths.bg), fit: BoxFit.cover),
+                  ),
+                ),
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: CustomColors.deepNavyBlue.withOpacity(0.6)),
+                all20Pix(child: _registerContainer()),
+              ],
+            ),
           ),
         ),
       ),
@@ -60,96 +73,78 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget _registerContainer() {
     return SizedBox(
-      width: double.infinity,
-      child: roundedSkyBlueContainer(context,
-          child: Column(
-            children: [
-              vertical20Pix(
-                  child: Image.asset(
-                ImagePaths.logo,
-                scale: 4,
-              )),
-              montserratBlackBold('REGISTER', fontSize: 32),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomTextField(
-                      text: 'Email Address',
-                      controller: emailController,
-                      textInputType: TextInputType.emailAddress,
-                      displayPrefixIcon: const Icon(Icons.email))),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomTextField(
-                      text: 'Password',
-                      controller: passwordController,
-                      textInputType: TextInputType.visiblePassword,
-                      displayPrefixIcon: const Icon(Icons.lock))),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomTextField(
-                      text: 'Confirm Password',
-                      controller: confirmPasswordController,
-                      textInputType: TextInputType.visiblePassword,
-                      displayPrefixIcon: const Icon(Icons.lock))),
-              const Gap(30),
-              Padding(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Gap(MediaQuery.of(context).size.height * 0.1),
+            itcBaumansWhiteBold('REGISTER', fontSize: 32),
+            Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomTextField(
-                    text: 'First Name',
-                    controller: firstNameController,
-                    textInputType: TextInputType.name,
-                    displayPrefixIcon: const Icon(Icons.person)),
-              ),
-              Padding(
+                    text: 'Email Address',
+                    controller: emailController,
+                    textInputType: TextInputType.emailAddress,
+                    displayPrefixIcon: const Icon(Icons.email))),
+            Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomTextField(
-                    text: 'Last Name',
-                    controller: lastNameController,
-                    textInputType: TextInputType.name,
-                    displayPrefixIcon: const Icon(Icons.person)),
-              ),
-              Padding(
+                    text: 'Password',
+                    controller: passwordController,
+                    textInputType: TextInputType.visiblePassword,
+                    displayPrefixIcon: const Icon(Icons.lock))),
+            Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomTextField(
-                    text: 'Mobile Number',
-                    controller: mobileNumberController,
-                    textInputType: TextInputType.number,
-                    displayPrefixIcon: const Icon(Icons.phone)),
-              ),
-              submitButton(context,
-                  label: 'REGISTER',
-                  onPress: () => registerNewUser(context, ref,
-                      emailController: emailController,
-                      passwordController: passwordController,
-                      confirmPasswordController: confirmPasswordController,
-                      firstNameController: firstNameController,
-                      lastNameController: lastNameController,
-                      mobileNumberController: mobileNumberController)),
-              const Divider(color: CustomColors.deepNavyBlue),
-              TextButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(NavigatorRoutes.forgotPassword),
-                  child: const Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  )),
-              TextButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushReplacementNamed(NavigatorRoutes.login),
-                  child: const Text(
-                    'Already have an account?',
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ))
-            ],
-          )),
-    );
+                    text: 'Confirm Password',
+                    controller: confirmPasswordController,
+                    textInputType: TextInputType.visiblePassword,
+                    displayPrefixIcon: const Icon(Icons.lock))),
+            const Gap(30),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomTextField(
+                  text: 'First Name',
+                  controller: firstNameController,
+                  textInputType: TextInputType.name,
+                  displayPrefixIcon: const Icon(Icons.person)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomTextField(
+                  text: 'Last Name',
+                  controller: lastNameController,
+                  textInputType: TextInputType.name,
+                  displayPrefixIcon: const Icon(Icons.person)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomTextField(
+                  text: 'Mobile Number',
+                  controller: mobileNumberController,
+                  textInputType: TextInputType.number,
+                  displayPrefixIcon: const Icon(Icons.phone)),
+            ),
+            ElevatedButton(
+                onPressed: () => registerNewUser(context, ref,
+                    emailController: emailController,
+                    passwordController: passwordController,
+                    confirmPasswordController: confirmPasswordController,
+                    firstNameController: firstNameController,
+                    lastNameController: lastNameController,
+                    mobileNumberController: mobileNumberController),
+                child: montserratWhiteBold('REGISTER')),
+            const Divider(color: CustomColors.deepNavyBlue),
+            TextButton(
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(NavigatorRoutes.forgotPassword),
+                child: montserratWhiteBold('Forgot Password?',
+                    textDecoration: TextDecoration.underline)),
+            TextButton(
+                onPressed: () => Navigator.of(context)
+                    .pushReplacementNamed(NavigatorRoutes.login),
+                child: montserratWhiteBold('Already have an account?',
+                    textDecoration: TextDecoration.underline))
+          ],
+        ));
   }
 }

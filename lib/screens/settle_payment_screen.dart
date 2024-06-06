@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/navigator_util.dart';
 import 'package:imeasure_mobile/widgets/text_widgets.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/settle_payment_provider.dart';
-import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
@@ -78,24 +78,19 @@ class _RenterSettlePaymentScreenState
     ref.watch(loadingProvider);
     ref.watch(settlePaymentProvider);
     return Scaffold(
-      appBar: appBarWidget(mayPop: true, actions: [
-        if (quotationURL.isNotEmpty)
-          TextButton(
-              onPressed: () => NavigatorRoutes.quotation(context,
-                  quotationURL: quotationURL),
-              child:
-                  montserratMidnightBlueBold('VIEW\nBREAKDOWN', fontSize: 10))
-      ]),
-      body: stackedLoadingContainer(
+        appBar: appBarWidget(mayPop: true),
+        body: stackedLoadingContainer(
           context,
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
-            child: all10Pix(
-                child: Column(
-              children: [_settleRentHeader(), Divider(), paymentWidgets()],
-            )),
+              child: Column(
+            children: [
+              _settleRentHeader(),
+              Divider(color: Colors.black),
+              paymentWidgets()
+            ],
           )),
-    );
+        ));
   }
 
   Widget _settleRentHeader() {
@@ -104,8 +99,18 @@ class _RenterSettlePaymentScreenState
       vertical20Pix(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            if (windowImageURL.isNotEmpty)
+              Container(
+                decoration: BoxDecoration(border: Border.all()),
+                child: Image.network(
+                  windowImageURL,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: MediaQuery.of(context).size.width * 0.5,
+                  fit: BoxFit.cover,
+                ),
+              ),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               montserratBlackRegular('Window: $windowName'),
               montserratBlackRegular('Width: ${width.toStringAsFixed(1)} ft',
@@ -114,17 +119,12 @@ class _RenterSettlePaymentScreenState
                   fontSize: 14),
               montserratBlackRegular('Glass Type: $glassType', fontSize: 14),
               montserratBlackRegular('Color: $color', fontSize: 14),
+              Gap(20),
+              ElevatedButton(
+                  onPressed: () => NavigatorRoutes.quotation(context,
+                      quotationURL: quotationURL),
+                  child: montserratMidnightBlueBold('View\nBreakdown'))
             ]),
-            if (windowImageURL.isNotEmpty)
-              Container(
-                decoration: BoxDecoration(border: Border.all()),
-                child: Image.network(
-                  windowImageURL,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  height: MediaQuery.of(context).size.width * 0.3,
-                  fit: BoxFit.cover,
-                ),
-              )
           ],
         ),
       )
@@ -136,12 +136,9 @@ class _RenterSettlePaymentScreenState
       children: [
         Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: CustomColors.deepNavyBlue,
-              borderRadius: BorderRadius.circular(10)),
           padding: EdgeInsets.all(10),
           child: Column(children: [
-            montserratWhiteBold(
+            montserratBlackBold(
                 'TOTAL: PHP ${formatPrice(orderPrice.toDouble())}',
                 fontSize: 24),
             _paymentMethod(),
@@ -162,7 +159,7 @@ class _RenterSettlePaymentScreenState
         child: Column(
       children: [
         Row(
-          children: [montserratWhiteBold('PAYMENT METHOD')],
+          children: [montserratBlackBold('PAYMENT METHOD')],
         ),
         Container(
           decoration: BoxDecoration(
@@ -170,7 +167,7 @@ class _RenterSettlePaymentScreenState
           child: dropdownWidget(
               ref.read(settlePaymentProvider).selectedPaymentMethod, (newVal) {
             ref.read(settlePaymentProvider).setSelectedPaymentMethod(newVal!);
-          }, ['GCASH', 'PAYMAYA'], 'Select your payment method', false),
+          }, ['GCASH', 'GOTYME'], 'Select your payment method', false),
         )
       ],
     ));
@@ -185,15 +182,16 @@ class _RenterSettlePaymentScreenState
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                montserratWhiteBold('SEND YOUR PAYMENT HERE', fontSize: 18),
+                montserratBlackBold('SEND YOUR PAYMENT HERE', fontSize: 18),
                 if (ref.read(settlePaymentProvider).selectedPaymentMethod ==
                     'GCASH')
-                  montserratWhiteBold('GCASH: +639221234567', fontSize: 14)
+                  montserratBlackBold('GCASH: 09484548667\n()', fontSize: 14)
                 else if (ref
                         .read(settlePaymentProvider)
                         .selectedPaymentMethod ==
                     'PAYMAYA')
-                  montserratWhiteBold('PAYMAYA: +639221234567', fontSize: 14)
+                  montserratBlackBold('PAYMAYA: 019314378988', fontSize: 14),
+                montserratBlackBold('Jonas Tolentino Banca', fontSize: 10)
               ],
             )
           ],
@@ -218,8 +216,8 @@ class _RenterSettlePaymentScreenState
                   ? null
                   : () => settlePendingPayment(context, ref,
                       orderID: widget.orderID, amount: orderPrice),
-          style: ElevatedButton.styleFrom(
-              disabledBackgroundColor: CustomColors.lavenderMist),
+          style:
+              ElevatedButton.styleFrom(disabledBackgroundColor: Colors.white),
           child: montserratMidnightBlueBold('PROCESS PAYMENT')),
     );
   }

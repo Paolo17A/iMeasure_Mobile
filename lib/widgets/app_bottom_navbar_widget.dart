@@ -6,7 +6,7 @@ import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import 'text_widgets.dart';
 
-Color bottomNavButtonColor = CustomColors.emeraldGreen;
+Color bottomNavButtonColor = CustomColors.lavenderMist;
 
 void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
   //  Do nothing if we are selecting the same bottom bar
@@ -25,12 +25,17 @@ void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
     case 2:
       Navigator.of(context).pushNamed(NavigatorRoutes.cart);
       break;
+    case 3:
+      Navigator.of(context).pushNamed(NavigatorRoutes.profile);
+      break;
   }
 }
 
 Widget bottomNavigationBar(BuildContext context, {required int index}) {
-  return SizedBox(
+  return Container(
     height: 80,
+    decoration:
+        BoxDecoration(border: Border.all(color: CustomColors.deepNavyBlue)),
     child: BottomNavigationBar(
       currentIndex: index,
       selectedFontSize: 0,
@@ -40,16 +45,21 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
       items: [
         //  Self-Assessment
         BottomNavigationBarItem(
-            icon: _buildIcon(Icons.home, 'Home', index, 0),
+            icon: _buildIcon(Icons.home_outlined, 'HOME', index, 0),
             backgroundColor: bottomNavButtonColor,
             label: ''),
         BottomNavigationBarItem(
-            icon: _buildIcon(Icons.window, 'Windows', index, 1),
+            icon: _buildIcon(Icons.window_outlined, 'WINDOWS', index, 1),
             backgroundColor: bottomNavButtonColor,
             label: ''),
         if (hasLoggedInUser())
           BottomNavigationBarItem(
-              icon: _buildIcon(Icons.shopping_cart, 'Cart', index, 2),
+              icon: _buildIcon(Icons.shopping_cart_outlined, 'CART', index, 2),
+              backgroundColor: bottomNavButtonColor,
+              label: ''),
+        if (hasLoggedInUser())
+          BottomNavigationBarItem(
+              icon: _buildIcon(Icons.person_4_outlined, 'PROFILE', index, 3),
               backgroundColor: bottomNavButtonColor,
               label: '')
       ],
@@ -68,11 +78,11 @@ Widget _buildIcon(
         iconData,
         size: currentIndex == thisIndex ? 30 : 20,
         color: currentIndex == thisIndex
-            ? Colors.white
+            ? CustomColors.emeraldGreen
             : CustomColors.deepNavyBlue,
       ),
       currentIndex == thisIndex
-          ? montserratWhiteBold(label, fontSize: 12)
+          ? quicksandEmeraldGreenBold(label, fontSize: 12)
           : montserratMidnightBlueRegular(label, fontSize: 12)
     ],
   );

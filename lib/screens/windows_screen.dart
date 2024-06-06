@@ -7,7 +7,6 @@ import '../providers/loading_provider.dart';
 import '../utils/navigator_util.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/app_bottom_navbar_widget.dart';
-import '../widgets/app_drawer_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/item_entry_widget.dart';
@@ -45,15 +44,14 @@ class _WindowsScreenState extends ConsumerState<WindowsScreen> {
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
     return Scaffold(
-      appBar: appBarWidget(),
-      drawer: appDrawer(context, route: NavigatorRoutes.windows),
+      appBar: appBarWidget(mayPop: false),
       bottomNavigationBar: bottomNavigationBar(context, index: 1),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
             child: all20Pix(
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [windowsHeader(), _availableWindows()],
             )),
           )),
@@ -71,7 +69,7 @@ class _WindowsScreenState extends ConsumerState<WindowsScreen> {
         children: [
           allWindowDocs.isNotEmpty
               ? Wrap(
-                  alignment: WrapAlignment.spaceEvenly,
+                  alignment: WrapAlignment.start,
                   spacing: 10,
                   runSpacing: 10,
                   children: allWindowDocs.map((item) {

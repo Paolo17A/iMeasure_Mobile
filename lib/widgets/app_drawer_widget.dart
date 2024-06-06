@@ -9,7 +9,7 @@ import 'text_widgets.dart';
 
 Drawer appDrawer(BuildContext context, {required String route}) {
   return Drawer(
-    backgroundColor: CustomColors.deepNavyBlue,
+    backgroundColor: CustomColors.aquaMarine,
     child: Column(
       children: [
         const Gap(40),

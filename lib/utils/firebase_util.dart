@@ -134,7 +134,9 @@ Future logInUser(BuildContext context, WidgetRef ref,
         .read(profileImageURLProvider)
         .setImageURL(userData[UserFields.profileImageURL]);
     ref.read(loadingProvider.notifier).toggleLoading(false);
-    navigator.pushReplacementNamed(NavigatorRoutes.home);
+    emailController.clear();
+    passwordController.clear();
+    navigator.pushNamed(NavigatorRoutes.home);
   } catch (error) {
     scaffoldMessenger
         .showSnackBar(SnackBar(content: Text('Error logging in: $error')));

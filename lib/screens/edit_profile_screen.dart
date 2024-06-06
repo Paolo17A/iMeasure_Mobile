@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/loading_provider.dart';
+import '../providers/profile_image_url_provider.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
@@ -56,6 +57,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
+    ref.watch(profileImageURLProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -72,6 +74,37 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         Column(
                           //crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                buildProfileImage(
+                                    profileImageURL: ref
+                                        .read(profileImageURLProvider)
+                                        .profileImageURL,
+                                    radius: MediaQuery.of(context).size.width *
+                                        0.15),
+                                Column(
+                                  children: [
+                                    if (ref
+                                        .read(profileImageURLProvider)
+                                        .profileImageURL
+                                        .isNotEmpty)
+                                      ElevatedButton(
+                                          onPressed: () =>
+                                              removeProfilePic(context, ref),
+                                          child: montserratMidnightBlueBold(
+                                              'REMOVE\nPROFILE PICTURE',
+                                              fontSize: 14)),
+                                    ElevatedButton(
+                                        onPressed: () =>
+                                            uploadProfilePicture(context, ref),
+                                        child: montserratMidnightBlueBold(
+                                            'UPLOAD\nPROFILE PICTURE',
+                                            fontSize: 14))
+                                  ],
+                                ),
+                              ],
+                            ),
                             _editProfileHeader(),
                             _firstNameControllerWidget(),
                             _lasttNameControllerWidget(),

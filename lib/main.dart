@@ -24,7 +24,7 @@ class iMeasure extends StatelessWidget {
       title: 'Flutter Demo',
       theme: themeData,
       routes: routes,
-      initialRoute: NavigatorRoutes.home,
+      initialRoute: NavigatorRoutes.login,
     );
   }
 }

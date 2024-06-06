@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/providers/orders_provider.dart';
+import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/profile_image_url_provider.dart';
@@ -11,7 +11,6 @@ import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
-import '../widgets/app_drawer_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/text_widgets.dart';
@@ -61,13 +60,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     ref.watch(profileImageURLProvider);
     ref.watch(ordersProvider);
     return Scaffold(
-      appBar: appBarWidget(actions: [
-        IconButton(
-            onPressed: () =>
-                Navigator.of(context).pushNamed(NavigatorRoutes.editProfile),
-            icon: Icon(Icons.edit))
-      ]),
-      drawer: appDrawer(context, route: NavigatorRoutes.profile),
+      appBar: appBarWidget(mayPop: false),
+      /*floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: ElevatedButton(
+          onPressed: () {
+            FirebaseAuth.instance.signOut().then((value) {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            });
+          },
+          child: montserratMidnightBlueBold('LOG-OUT')),*/
+      bottomNavigationBar: bottomNavigationBar(context, index: 3),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
@@ -75,8 +77,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(
               children: [
                 profileDetails(),
-                const Divider(color: CustomColors.deepNavyBlue),
-                orderHistory()
+                // /const Divider(color: CustomColors.deepNavyBlue),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [],
+                )
+                //orderHistory()
               ],
             )),
           )),
@@ -85,120 +91,54 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget profileDetails() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        buildProfileImage(
+            profileImageURL: ref.read(profileImageURLProvider).profileImageURL,
+            radius: MediaQuery.of(context).size.width * 0.15),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildProfileImage(
-                profileImageURL:
-                    ref.read(profileImageURLProvider).profileImageURL,
-                radius: MediaQuery.of(context).size.width * 0.15),
-            Column(
-              children: [
-                if (ref
-                    .read(profileImageURLProvider)
-                    .profileImageURL
-                    .isNotEmpty)
-                  ElevatedButton(
-                      onPressed: () => removeProfilePic(context, ref),
-                      child: montserratMidnightBlueRegular(
-                          'REMOVE\nPROFILE PICTURE',
-                          fontSize: 14)),
-                ElevatedButton(
-                    onPressed: () => uploadProfilePicture(context, ref),
-                    child: montserratMidnightBlueBold('UPLOAD\nPROFILE PICTURE',
-                        fontSize: 14))
-              ],
+            Container(
+              decoration: BoxDecoration(
+                  color: CustomColors.azure, shape: BoxShape.circle),
+              child: TextButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(NavigatorRoutes.editProfile),
+                  child: Icon(
+                    Icons.mode_edit_outline,
+                    color: Colors.white,
+                  )),
             ),
-          ],
-        ),
-        montserratBlackBold(formattedName, fontSize: 22)
-      ],
-    );
-  }
-
-  Widget orderHistory() {
-    return Container(
-      decoration: BoxDecoration(
-          color: CustomColors.deepNavyBlue,
-          borderRadius: BorderRadius.circular(20)),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          montserratWhiteBold('ORDER HISTORY'),
-          ref.read(ordersProvider).orderDocs.isNotEmpty
-              ? ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: ref
-                      .read(ordersProvider)
-                      .orderDocs
-                      .reversed
-                      .toList()
-                      .length,
-                  itemBuilder: (context, index) {
-                    return _orderHistoryEntry(ref
-                        .read(ordersProvider)
-                        .orderDocs
-                        .reversed
-                        .toList()[index]);
-                  })
-              : vertical20Pix(
-                  child:
-                      montserratBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
-        ],
-      ),
-    );
-  }
-
-  Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
-    final orderData = orderDoc.data() as Map<dynamic, dynamic>;
-    String status = orderData[OrderFields.purchaseStatus];
-    String windowID = orderData[OrderFields.windowID];
-    String glassType = orderData[OrderFields.glassType];
-
-    return FutureBuilder(
-      future: getThisWindowDoc(windowID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData ||
-            snapshot.hasError) return snapshotHandler(snapshot);
-
-        final productData = snapshot.data!.data() as Map<dynamic, dynamic>;
-        String imageURL = productData[WindowFields.imageURL];
-        String name = productData[WindowFields.name];
-        return GestureDetector(
-            onTap: () => NavigatorRoutes.selectedWindow(context, ref,
-                windowID: windowID),
-            child: all10Pix(
-                child: Container(
-              decoration: const BoxDecoration(color: CustomColors.lavenderMist),
-              padding: EdgeInsets.all(10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Flexible(
+              flex: 3,
+              child: Column(
                 children: [
-                  Image.network(imageURL, width: 60),
-                  Gap(4),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      montserratBlackBold(name, fontSize: 15),
-                      /*m('SRP: ${price.toStringAsFixed(2)}',
-                          fontSize: 15),*/
-                      montserratBlackRegular('Glass Type: $glassType',
-                          fontSize: 12),
-                      montserratBlackRegular('Status: $status', fontSize: 12),
-                      /*montserratWhiteBold(
-                          'PHP ${(price * quantity).toStringAsFixed(2)}'),*/
-                    ],
-                  ),
+                  montserratBlackBold(formattedName, fontSize: 22),
+                  TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut().then((value) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                        });
+                      },
+                      child: quicksandRedBold('LOG-OUT', fontSize: 12))
                 ],
               ),
-            )));
-      },
+            ),
+            Flexible(
+              child: TextButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(NavigatorRoutes.orderHistory),
+                  child: Icon(
+                    Icons.visibility_outlined,
+                    color: Colors.black,
+                    size: 40,
+                  )),
+            )
+          ],
+        )
+      ],
     );
   }
 }

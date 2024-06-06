@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 
+import '../providers/bookmarks_provider.dart';
 import '../providers/loading_provider.dart';
-import '../providers/settle_payment_provider.dart';
 import '../utils/color_util.dart';
+import '../utils/delete_entry_dialog_util.dart';
 import '../utils/navigator_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/app_bottom_navbar_widget.dart';
-import '../widgets/app_drawer_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/item_entry_widget.dart';
@@ -33,7 +33,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.read(loadingProvider.notifier).toggleLoading(true);
 
       windowDocs = await getAllWindowDocs();
-
+      final userDoc = await getCurrentUserDoc();
+      final userData = userDoc.data() as Map<dynamic, dynamic>;
+      ref.read(bookmarksProvider).bookmarkedProducts =
+          userData[UserFields.bookmarks];
       ref.read(loadingProvider.notifier).toggleLoading(false);
     });
   }
@@ -41,11 +44,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
+    ref.watch(bookmarksProvider);
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: appBarWidget(),
-        drawer: appDrawer(context, route: NavigatorRoutes.home),
+        appBar: appBarWidget(mayPop: false),
         bottomNavigationBar: bottomNavigationBar(context, index: 0),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
@@ -53,9 +56,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: all20Pix(
                   child: Column(
                 children: [
-                  _pendingPaymentRentalRequestsContainer(),
                   _topProducts(),
                   const Divider(color: CustomColors.deepNavyBlue),
+                  //bookmarksContainer(),
+                  //const Divider(color: CustomColors.deepNavyBlue),
                 ],
               )),
             )),
@@ -63,116 +67,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _pendingPaymentRentalRequestsContainer() {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection(Collections.orders)
-          .where(OrderFields.purchaseStatus, isEqualTo: OrderStatuses.pending)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData ||
-            snapshot.hasError) return snapshotHandler(snapshot);
-        List<DocumentSnapshot> availableRentalRequests = snapshot.data!.docs;
-        return availableRentalRequests.isNotEmpty
-            ? ExpansionTile(
-                title: montserratWhiteBold('PENDING PAYMENTS'),
-                backgroundColor: CustomColors.deepNavyBlue.withOpacity(0.8),
-                collapsedBackgroundColor: CustomColors.deepNavyBlue,
-                iconColor: Colors.white,
-                collapsedIconColor: Colors.white,
-                collapsedShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10))),
-                children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: availableRentalRequests.length,
-                      itemBuilder: (context, index) {
-                        return pendingOrderEntry(
-                            availableRentalRequests[index]);
-                      })
-                ],
-              )
-            : Container();
-      },
-    );
-  }
-
-  Widget pendingOrderEntry(DocumentSnapshot orderDoc) {
-    final orderData = orderDoc.data() as Map<dynamic, dynamic>;
-    String windowID = orderData[OrderFields.windowID];
-    num totalPrice = orderData[OrderFields.windowOverallPrice] +
-        orderData[OrderFields.laborPrice];
-    return FutureBuilder(
-        future: getThisWindowDoc(windowID),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              !snapshot.hasData ||
-              snapshot.hasError) return snapshotHandler(snapshot);
-          final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
-          String windowName = windowData[WindowFields.name];
-          String windowImage = windowData[WindowFields.imageURL];
-          return Container(
-            decoration: BoxDecoration(border: Border.all()),
-            padding: EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: CustomColors.azure)),
-                      child: Image.network(
-                        windowImage,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )),
-                ),
-                Gap(10),
-                Flexible(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      montserratWhiteBold(windowName),
-                      montserratWhiteRegular(
-                          'Total: PHP ${formatPrice(totalPrice.toDouble())}',
-                          fontSize: 16),
-                      Gap(21),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                ref.read(settlePaymentProvider).resetProvider();
-                                NavigatorRoutes.renterSettlePayment(context,
-                                    orderID: orderDoc.id);
-                              },
-                              child: montserratMidnightBlueBold(
-                                  'SETTLE PAYMENT',
-                                  fontSize: 12)),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
   Widget _topProducts() {
     windowDocs.shuffle();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        all20Pix(child: montserratBlackBold('LATEST WINDOWS', fontSize: 26)),
+        montserratBlackBold('LATEST WINDOWS', fontSize: 30),
         SizedBox(
             width: MediaQuery.of(context).size.width,
             child: windowDocs.isNotEmpty
@@ -208,5 +108,101 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   )),
       ],
     );
+  }
+
+  Widget bookmarksContainer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        montserratBlackBold('BOOKMARKS', fontSize: 30),
+        if (ref.read(bookmarksProvider).bookmarkedProducts.isNotEmpty)
+          ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: ref.read(bookmarksProvider).bookmarkedProducts.length,
+              itemBuilder: (context, index) {
+                return _bookmarkedProductEntry(
+                    ref.read(bookmarksProvider).bookmarkedProducts[index]);
+              })
+        else
+          vertical20Pix(
+              child: montserratBlackBold('YOU HAVE NO\nBOOKMARKED ITEMS',
+                  fontSize: 16))
+      ],
+    );
+  }
+
+  Widget _bookmarkedProductEntry(String windowID) {
+    return FutureBuilder(
+        future: getThisWindowDoc(windowID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              !snapshot.hasData ||
+              snapshot.hasError) return snapshotHandler(snapshot);
+          final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
+          String name = windowData[WindowFields.name];
+          String imageURL = windowData[WindowFields.imageURL];
+          num minHeight = windowData[WindowFields.minHeight];
+          num maxHeight = windowData[WindowFields.maxHeight];
+          num minWidth = windowData[WindowFields.minWidth];
+          num maxWidth = windowData[WindowFields.maxWidth];
+          return GestureDetector(
+            onTap: () => NavigatorRoutes.selectedWindow(context, ref,
+                windowID: windowID),
+            child: all10Pix(
+                child: Dismissible(
+              key: UniqueKey(),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                  color: Colors.redAccent,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Icon(Icons.delete, color: Colors.white)])),
+              dismissThresholds: {DismissDirection.endToStart: 0.2},
+              confirmDismiss: (direction) async {
+                displayDeleteEntryDialog(context,
+                    message:
+                        'Are you sure you wish to remove this product from your bookmarks?',
+                    deleteEntry: () => removeBookmarkedProduct(context, ref,
+                        productID: windowID));
+                return false;
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: CustomColors.lavenderMist, border: Border.all()),
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                              backgroundImage: NetworkImage(imageURL),
+                              backgroundColor: Colors.transparent,
+                              radius: 30),
+                          Gap(20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              montserratBlackBold(name,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontSize: 16),
+                              montserratBlackRegular(
+                                  'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
+                                  fontSize: 12),
+                              montserratBlackRegular(
+                                  'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
+                                  fontSize: 12)
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  )),
+            )),
+          );
+        });
   }
 }

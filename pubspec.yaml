@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/images/imeasure.png
     - assets/images/heritage_icon.png
+    - assets/images/heritage_background.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
