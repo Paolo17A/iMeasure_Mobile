@@ -53,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    color: CustomColors.deepNavyBlue.withOpacity(0.6),
+                    color: CustomColors.deepCharcoal.withOpacity(0.6),
                   ),
                   _logInContainer(),
                 ],
@@ -66,7 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _logInContainer() {
     return Column(children: [
       Gap(MediaQuery.of(context).size.height * 0.2),
-      itcBaumansAzureBold('iMeasure'),
+      itcBaumansDeepSkyBlueBold('iMeasure'),
       Gap(40),
       vertical20Pix(child: Image.asset(ImagePaths.heritageIcon, scale: 2)),
       itcBaumansWhiteBold('HERITAGE ALUMINUM SALES CORPORATION', fontSize: 20),
@@ -96,18 +96,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       TextButton(
           onPressed: () =>
               Navigator.of(context).pushNamed(NavigatorRoutes.forgotPassword),
-          child: montserratWhiteBold('Forgot Password?',
+          child: quicksandWhiteBold('Forgot Password?',
               fontSize: 16, textDecoration: TextDecoration.underline)),
       ElevatedButton(
           onPressed: () => logInUser(context, ref,
               emailController: emailController,
               passwordController: passwordController),
-          child: montserratWhiteBold('LOG-IN')),
-      const Divider(color: CustomColors.deepNavyBlue),
+          child: quicksandWhiteBold('LOG-IN')),
+      const Divider(),
       TextButton(
           onPressed: () => Navigator.of(context)
               .pushReplacementNamed(NavigatorRoutes.register),
-          child: montserratWhiteBold('Don\'t have an account?',
+          child: quicksandWhiteBold('Don\'t have an account?',
               fontSize: 16, textDecoration: TextDecoration.underline))
     ]);
   }

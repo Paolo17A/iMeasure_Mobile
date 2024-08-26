@@ -95,7 +95,7 @@ class _RenterSettlePaymentScreenState
 
   Widget _settleRentHeader() {
     return Column(children: [
-      montserratBlackBold('SETTLE PENDING PAYMENT', fontSize: 26),
+      quicksandBlackBold('SETTLE PENDING PAYMENT', fontSize: 26),
       vertical20Pix(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +123,7 @@ class _RenterSettlePaymentScreenState
               ElevatedButton(
                   onPressed: () => NavigatorRoutes.quotation(context,
                       quotationURL: quotationURL),
-                  child: montserratMidnightBlueBold('View\nBreakdown'))
+                  child: quicksandDeepCharcoalBold('View\nBreakdown'))
             ]),
           ],
         ),
@@ -138,7 +138,7 @@ class _RenterSettlePaymentScreenState
           width: double.infinity,
           padding: EdgeInsets.all(10),
           child: Column(children: [
-            montserratBlackBold(
+            quicksandBlackBold(
                 'TOTAL: PHP ${formatPrice(orderPrice.toDouble())}',
                 fontSize: 24),
             _paymentMethod(),
@@ -159,7 +159,7 @@ class _RenterSettlePaymentScreenState
         child: Column(
       children: [
         Row(
-          children: [montserratBlackBold('PAYMENT METHOD')],
+          children: [quicksandBlackBold('PAYMENT METHOD')],
         ),
         Container(
           decoration: BoxDecoration(
@@ -182,16 +182,16 @@ class _RenterSettlePaymentScreenState
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                montserratBlackBold('SEND YOUR PAYMENT HERE', fontSize: 18),
+                quicksandBlackBold('SEND YOUR PAYMENT HERE', fontSize: 18),
                 if (ref.read(settlePaymentProvider).selectedPaymentMethod ==
                     'GCASH')
-                  montserratBlackBold('GCASH: 09484548667\n()', fontSize: 14)
+                  quicksandBlackBold('GCASH: 09484548667\n()', fontSize: 14)
                 else if (ref
                         .read(settlePaymentProvider)
                         .selectedPaymentMethod ==
                     'PAYMAYA')
-                  montserratBlackBold('PAYMAYA: 019314378988', fontSize: 14),
-                montserratBlackBold('Jonas Tolentino Banca', fontSize: 10)
+                  quicksandBlackBold('PAYMAYA: 019314378988', fontSize: 14),
+                quicksandBlackBold('Jonas Tolentino Banca', fontSize: 10)
               ],
             )
           ],
@@ -202,7 +202,7 @@ class _RenterSettlePaymentScreenState
         ElevatedButton(
             onPressed: () async =>
                 ref.read(settlePaymentProvider).setPaymentImage(),
-            child: montserratMidnightBlueBold('UPLOAD PAYMENT IMAGE'))
+            child: quicksandDeepCharcoalBold('UPLOAD PAYMENT IMAGE'))
       ],
     ));
   }
@@ -218,7 +218,7 @@ class _RenterSettlePaymentScreenState
                       orderID: widget.orderID, amount: orderPrice),
           style:
               ElevatedButton.styleFrom(disabledBackgroundColor: Colors.white),
-          child: montserratMidnightBlueBold('PROCESS PAYMENT')),
+          child: quicksandDeepCharcoalBold('PROCESS PAYMENT')),
     );
   }
 }

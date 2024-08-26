@@ -2,14 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import 'text_widgets.dart';
 
 Drawer appDrawer(BuildContext context, {required String route}) {
   return Drawer(
-    backgroundColor: CustomColors.aquaMarine,
+    backgroundColor: Colors.black,
     child: Column(
       children: [
         const Gap(40),
@@ -24,7 +23,6 @@ Drawer appDrawer(BuildContext context, {required String route}) {
                       ? null
                       : Navigator.of(context).pushNamed(NavigatorRoutes.home)),
               const Divider(
-                color: CustomColors.azure,
                 indent: 20,
                 endIndent: 20,
               ),
@@ -69,7 +67,7 @@ Drawer appDrawer(BuildContext context, {required String route}) {
 Widget _drawerTile(BuildContext context,
     {required String label, required Function onPress}) {
   return ListTile(
-    title: montserratWhiteBold(label, fontSize: 16),
+    title: quicksandWhiteBold(label, fontSize: 16),
     onTap: () {
       Navigator.of(context).pop();
       onPress();

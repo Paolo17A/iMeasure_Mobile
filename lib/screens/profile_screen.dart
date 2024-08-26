@@ -102,7 +102,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: CustomColors.azure, shape: BoxShape.circle),
+                  color: CustomColors.lavenderMist, shape: BoxShape.circle),
               child: TextButton(
                   onPressed: () => Navigator.of(context)
                       .pushNamed(NavigatorRoutes.editProfile),
@@ -115,7 +115,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               flex: 3,
               child: Column(
                 children: [
-                  montserratBlackBold(formattedName, fontSize: 22),
+                  quicksandBlackBold(formattedName, fontSize: 22),
                   TextButton(
                       onPressed: () {
                         FirebaseAuth.instance.signOut().then((value) {

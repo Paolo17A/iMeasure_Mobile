@@ -53,7 +53,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  color: CustomColors.deepNavyBlue.withOpacity(0.6)),
+                  color: CustomColors.deepCharcoal.withOpacity(0.6)),
               all20Pix(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +61,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     vertical20Pix(
                         child: ElevatedButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: montserratWhiteBold('BACK'))),
+                            child: quicksandWhiteBold('BACK'))),
                     Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -70,7 +70,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       child: Column(
                         children: [
                           vertical20Pix(
-                              child: montserratWhiteBold('RESET PASSWORD',
+                              child: quicksandWhiteBold('RESET PASSWORD',
                                   fontSize: 26)),
                           all20Pix(
                               child: Column(
@@ -85,7 +85,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                     onPressed: () => sendResetPasswordEmail(
                                         context, ref,
                                         emailController: emailController),
-                                    child: montserratWhiteBold(
+                                    child: quicksandWhiteBold(
                                         'SEND PASSWORD RESET EMAIL',
                                         fontSize: 16)),
                               )

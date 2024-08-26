@@ -61,7 +61,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    color: CustomColors.deepNavyBlue.withOpacity(0.6)),
+                    color: CustomColors.deepCharcoal.withOpacity(0.6)),
                 all20Pix(child: _registerContainer()),
               ],
             ),
@@ -132,17 +132,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     firstNameController: firstNameController,
                     lastNameController: lastNameController,
                     mobileNumberController: mobileNumberController),
-                child: montserratWhiteBold('REGISTER')),
-            const Divider(color: CustomColors.deepNavyBlue),
+                child: quicksandWhiteBold('REGISTER')),
+            const Divider(),
             TextButton(
                 onPressed: () => Navigator.of(context)
                     .pushNamed(NavigatorRoutes.forgotPassword),
-                child: montserratWhiteBold('Forgot Password?',
+                child: quicksandWhiteBold('Forgot Password?',
                     textDecoration: TextDecoration.underline)),
             TextButton(
                 onPressed: () => Navigator.of(context)
                     .pushReplacementNamed(NavigatorRoutes.login),
-                child: montserratWhiteBold('Already have an account?',
+                child: quicksandWhiteBold('Already have an account?',
                     textDecoration: TextDecoration.underline))
           ],
         ));

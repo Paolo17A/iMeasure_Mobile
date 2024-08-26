@@ -23,7 +23,7 @@ Widget itemEntry(BuildContext context,
             width: 150,
             child: Padding(
               padding: const EdgeInsets.all(4),
-              child: montserratBlackBold(itemName,
+              child: quicksandBlackBold(itemName,
                   textOverflow: TextOverflow.ellipsis, fontSize: 16),
             ),
           ),
@@ -40,7 +40,7 @@ Widget _productImage(String firstImage) {
         height: 150,
         decoration: BoxDecoration(
             border:
-                Border.all(color: CustomColors.deepNavyBlue.withOpacity(0.5)),
+                Border.all(color: CustomColors.deepCharcoal.withOpacity(0.5)),
             image: DecorationImage(
                 fit: BoxFit.fill, image: NetworkImage(firstImage))),
       ));

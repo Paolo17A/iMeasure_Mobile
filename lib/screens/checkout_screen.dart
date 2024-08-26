@@ -111,7 +111,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       child: Column(
                     children: [
                       windowDetails(),
-                      Divider(color: CustomColors.deepNavyBlue),
+                      Divider(),
                       measurementWidgets(),
                       ElevatedButton(
                           onPressed: mayProceedToInitialQuotationScreen()
@@ -125,7 +125,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                               height: double.parse(
                                                   heightController.text))))
                               : null,
-                          child: montserratWhiteBold('VIEW INITIAL QUOTATION',
+                          child: quicksandWhiteBold('VIEW INITIAL QUOTATION',
                               fontSize: 14))
 
                       //paymentWidgets()
@@ -152,11 +152,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            montserratBlackBold(name),
-            montserratMidnightBlueRegular(
+            quicksandBlackBold(name),
+            quicksandDeepCharcoalRegular(
                 'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
                 fontSize: 12),
-            montserratMidnightBlueRegular(
+            quicksandDeepCharcoalRegular(
                 'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
                 fontSize: 12),
           ],
@@ -263,7 +263,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: CustomColors.deepNavyBlue,
+          color: CustomColors.deepCharcoal,
           borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
       child: Column(children: [
@@ -280,7 +280,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         child: Column(
       children: [
         Row(
-          children: [montserratWhiteBold('PAYMENT METHOD')],
+          children: [quicksandWhiteBold('PAYMENT METHOD')],
         ),
         Container(
           decoration: BoxDecoration(
@@ -303,13 +303,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                montserratWhiteBold('SEND YOUR PAYMENT HERE'),
+                quicksandWhiteBold('SEND YOUR PAYMENT HERE'),
                 if (ref.read(cartProvider).selectedPaymentMethod == 'GCASH')
-                  montserratWhiteBold('GCASH: 09484548667\nJonas Banca',
+                  quicksandWhiteBold('GCASH:\n09484548667\nJonas Banca',
                       fontSize: 14)
                 else if (ref.read(cartProvider).selectedPaymentMethod ==
                     'PAYMAYA')
-                  montserratWhiteBold('PAYMAYA: 09484548667\nJonas Banca',
+                  quicksandWhiteBold('PAYMAYA:\n09484548667\nJonas Banca',
                       fontSize: 14)
               ],
             )

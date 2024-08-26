@@ -57,7 +57,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Column(
                 children: [
                   _topProducts(),
-                  const Divider(color: CustomColors.deepNavyBlue),
+                  const Divider(),
                   //bookmarksContainer(),
                   //const Divider(color: CustomColors.deepNavyBlue),
                 ],
@@ -72,7 +72,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        montserratBlackBold('LATEST WINDOWS', fontSize: 30),
+        quicksandBlackBold('LATEST WINDOWS', fontSize: 30),
         SizedBox(
             width: MediaQuery.of(context).size.width,
             child: windowDocs.isNotEmpty
@@ -104,7 +104,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             .toList()))
                 : all20Pix(
                     child:
-                        montserratBlackBold('NO AVAILABLE PRODUCTS TO DISPLAY'),
+                        quicksandBlackBold('NO AVAILABLE PRODUCTS TO DISPLAY'),
                   )),
       ],
     );
@@ -114,7 +114,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        montserratBlackBold('BOOKMARKS', fontSize: 30),
+        quicksandBlackBold('BOOKMARKS', fontSize: 30),
         if (ref.read(bookmarksProvider).bookmarkedProducts.isNotEmpty)
           ListView.builder(
               shrinkWrap: true,
@@ -126,7 +126,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               })
         else
           vertical20Pix(
-              child: montserratBlackBold('YOU HAVE NO\nBOOKMARKED ITEMS',
+              child: quicksandBlackBold('YOU HAVE NO\nBOOKMARKED ITEMS',
                   fontSize: 16))
       ],
     );
@@ -186,7 +186,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              montserratBlackBold(name,
+                              quicksandBlackBold(name,
                                   textOverflow: TextOverflow.ellipsis,
                                   fontSize: 16),
                               montserratBlackRegular(

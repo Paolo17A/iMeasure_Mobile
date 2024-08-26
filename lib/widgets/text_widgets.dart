@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imeasure_mobile/utils/color_util.dart';
 
-Text montserratWhiteBold(String label,
+Text quicksandWhiteBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextDecoration? textDecoration,
@@ -57,7 +57,7 @@ Text quicksandRedBold(String label,
   );
 }
 
-Text montserratBlackBold(String label,
+Text quicksandBlackBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextDecoration? textDecoration,
@@ -91,7 +91,7 @@ Text quicksandEmeraldGreenBold(String label,
   );
 }
 
-Text montserratMidnightBlueBold(String label,
+Text quicksandDeepCharcoalBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextOverflow? textOverflow}) {
@@ -101,12 +101,12 @@ Text montserratMidnightBlueBold(String label,
     overflow: textOverflow,
     style: GoogleFonts.quicksand(
         fontSize: fontSize,
-        color: CustomColors.deepNavyBlue,
+        color: CustomColors.deepCharcoal,
         fontWeight: FontWeight.bold),
   );
 }
 
-Text montserratMidnightBlueRegular(String label,
+Text quicksandDeepCharcoalRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextOverflow? textOverflow}) {
@@ -115,11 +115,11 @@ Text montserratMidnightBlueRegular(String label,
     textAlign: textAlign,
     overflow: textOverflow,
     style: GoogleFonts.quicksand(
-        fontSize: fontSize, color: CustomColors.deepNavyBlue),
+        fontSize: fontSize, color: CustomColors.deepCharcoal),
   );
 }
 
-Text itcBaumansDeepNavyBlueBold(String label,
+Text itcBaumansDeepCharcoalBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextDecoration? textDecoration,
@@ -129,7 +129,7 @@ Text itcBaumansDeepNavyBlueBold(String label,
     textAlign: textAlign,
     style: GoogleFonts.baumans(
         fontSize: fontSize,
-        color: CustomColors.deepNavyBlue,
+        color: CustomColors.deepCharcoal,
         fontWeight: FontWeight.bold,
         decoration: textDecoration,
         textStyle: TextStyle(overflow: textOverflow)),
@@ -153,7 +153,7 @@ Text itcBaumansWhiteBold(String label,
   );
 }
 
-Text itcBaumansAzureBold(String label,
+Text itcBaumansDeepSkyBlueBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextDecoration? textDecoration,
@@ -163,7 +163,7 @@ Text itcBaumansAzureBold(String label,
     textAlign: textAlign,
     style: GoogleFonts.baumans(
         fontSize: fontSize,
-        color: CustomColors.azure,
+        color: CustomColors.deepSkyBlue,
         fontWeight: FontWeight.bold,
         decoration: textDecoration,
         textStyle: TextStyle(overflow: textOverflow)),

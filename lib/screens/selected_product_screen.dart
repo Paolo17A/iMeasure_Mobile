@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import '../providers/bookmarks_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
-import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
@@ -91,7 +90,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
   Widget _windowsContainer() {
     return Column(
       children: [
-        montserratBlackBold(name, fontSize: 32),
+        quicksandBlackBold(name, fontSize: 32),
         _itemImagesDisplay(),
         //montserratBlackBold('PHP ${price.toStringAsFixed(2)}', fontSize: 20),
         //Divider(color: CustomColors.midnightBlue),
@@ -107,11 +106,11 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero),
                   disabledBackgroundColor: Colors.blueGrey),
-              child: montserratMidnightBlueBold('ADD TO CART',
+              child: quicksandDeepCharcoalBold('ADD TO CART',
                   textAlign: TextAlign.center)),
         ),
         vertical10Pix(
-            child: montserratBlackBold(
+            child: quicksandBlackBold(
                 'Is Available: ${isAvailable ? 'YES' : 'NO'}',
                 fontSize: 16)),
         Row(
@@ -140,23 +139,21 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                 : 'Add to Bookmarks')
           ],
         ),
-        Divider(color: CustomColors.deepNavyBlue),
+        Divider(),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          montserratMidnightBlueBold('Minimum Width: ${minWidth.toString()}ft',
+          quicksandDeepCharcoalBold('Minimum Width: ${minWidth.toString()}ft',
               fontSize: 12),
           Gap(40),
-          montserratMidnightBlueBold(
-              'Minimum Height: ${minHeight.toString()}ft',
+          quicksandDeepCharcoalBold('Minimum Height: ${minHeight.toString()}ft',
               fontSize: 12),
         ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            montserratMidnightBlueBold(
-                'Maximum Width: ${maxWidth.toString()}ft',
+            quicksandDeepCharcoalBold('Maximum Width: ${maxWidth.toString()}ft',
                 fontSize: 12),
             Gap(40),
-            montserratMidnightBlueBold(
+            quicksandDeepCharcoalBold(
                 'Maximum Height: ${maxHeight.toString()}ft',
                 fontSize: 12)
           ],

@@ -63,7 +63,7 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          montserratBlackBold('BOOKMARKS', fontSize: 30),
+          quicksandBlackBold('BOOKMARKS', fontSize: 30),
           if (ref.read(bookmarksProvider).bookmarkedProducts.isNotEmpty)
             ListView.builder(
                 shrinkWrap: true,
@@ -75,7 +75,7 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
                 })
           else
             vertical20Pix(
-                child: montserratBlackBold('YOU HAVE NO BOOKMARKED ITEMS',
+                child: quicksandBlackBold('YOU HAVE NO BOOKMARKED ITEMS',
                     fontSize: 24))
         ],
       )),
@@ -136,7 +136,7 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              montserratBlackBold(name,
+                              quicksandBlackBold(name,
                                   textOverflow: TextOverflow.ellipsis,
                                   fontSize: 16),
                               montserratBlackRegular(

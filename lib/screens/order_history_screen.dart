@@ -58,7 +58,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        all10Pix(child: montserratBlackBold('ORDER HISTORY', fontSize: 32)),
+        all10Pix(child: quicksandBlackBold('ORDER HISTORY', fontSize: 32)),
         ref.read(ordersProvider).orderDocs.isNotEmpty
             ? ListView.builder(
                 shrinkWrap: true,
@@ -73,7 +73,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       .toList()[index]);
                 })
             : vertical20Pix(
-                child: montserratBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
+                child: quicksandBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
       ],
     );
   }
@@ -109,7 +109,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      montserratBlackBold(name, fontSize: 15),
+                      quicksandBlackBold(name, fontSize: 15),
                       /*m('SRP: ${price.toStringAsFixed(2)}',
                           fontSize: 15),*/
                       montserratBlackRegular('Glass Type: $glassType',

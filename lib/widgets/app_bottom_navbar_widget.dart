@@ -35,7 +35,7 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
   return Container(
     height: 80,
     decoration:
-        BoxDecoration(border: Border.all(color: CustomColors.deepNavyBlue)),
+        BoxDecoration(border: Border.all(color: CustomColors.deepCharcoal)),
     child: BottomNavigationBar(
       currentIndex: index,
       selectedFontSize: 0,
@@ -79,11 +79,11 @@ Widget _buildIcon(
         size: currentIndex == thisIndex ? 30 : 20,
         color: currentIndex == thisIndex
             ? CustomColors.emeraldGreen
-            : CustomColors.deepNavyBlue,
+            : CustomColors.deepCharcoal,
       ),
       currentIndex == thisIndex
           ? quicksandEmeraldGreenBold(label, fontSize: 12)
-          : montserratMidnightBlueRegular(label, fontSize: 12)
+          : quicksandDeepCharcoalRegular(label, fontSize: 12)
     ],
   );
 }

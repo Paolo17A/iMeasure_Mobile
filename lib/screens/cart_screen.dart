@@ -52,7 +52,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           ElevatedButton(
               onPressed: () => Navigator.of(context)
                   .pushNamed(NavigatorRoutes.pendingPayments),
-              child: montserratMidnightBlueRegular('To Pay'))
+              child: quicksandDeepCharcoalRegular('To Pay'))
         ]),
         bottomNavigationBar: bottomNavigationBar(context, index: 2),
         body: switchedLoadingContainer(
@@ -68,7 +68,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        montserratBlackBold('CART', fontSize: 40),
+        quicksandBlackBold('CART', fontSize: 40),
         ref.read(cartProvider).cartItems.isNotEmpty
             ? ListView.builder(
                 shrinkWrap: true,
@@ -78,7 +78,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   return _cartEntry(ref.read(cartProvider).cartItems[index]);
                 })
             : vertical20Pix(
-                child: montserratBlackBold(
+                child: quicksandBlackBold(
                     'YOU DO NOT HAVE ANY ITEMS IN YOUR CART'))
       ],
     );
@@ -130,7 +130,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  montserratBlackBold(name,
+                                  quicksandBlackBold(name,
                                       textAlign: TextAlign.left,
                                       textOverflow: TextOverflow.ellipsis),
                                   montserratBlackRegular(
@@ -163,7 +163,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                         'This window is currently not available.')));
                               }
                             },
-                            child: montserratMidnightBlueBold('PURCHASE',
+                            child: quicksandDeepCharcoalBold('PURCHASE',
                                 fontSize: 12)),
                       ),
                       Gap(4),

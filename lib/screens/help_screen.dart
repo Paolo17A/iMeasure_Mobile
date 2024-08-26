@@ -61,7 +61,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
                     : SizedBox(
                         height: MediaQuery.of(context).size.height,
                         child: Center(
-                            child: montserratBlackBold('NO FAQS CREATED',
+                            child: quicksandBlackBold('NO FAQS CREATED',
                                 fontSize: 38)),
                       )),
           )),
@@ -74,15 +74,15 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
     String answer = faqData[FAQFields.answer];
     return vertical10Pix(
         child: ExpansionTile(
-      collapsedBackgroundColor: CustomColors.deepNavyBlue,
-      backgroundColor: CustomColors.deepNavyBlue.withOpacity(0.8),
+      collapsedBackgroundColor: CustomColors.deepCharcoal,
+      backgroundColor: CustomColors.deepCharcoal.withOpacity(0.8),
       collapsedIconColor: Colors.white,
       iconColor: Colors.white,
       collapsedShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: montserratWhiteBold(question, fontSize: 20),
-      children: [vertical20Pix(child: montserratWhiteBold(answer))],
+      title: quicksandWhiteBold(question, fontSize: 20),
+      children: [vertical20Pix(child: quicksandWhiteBold(answer))],
     ));
   }
 }

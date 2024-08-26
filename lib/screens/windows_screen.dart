@@ -60,7 +60,7 @@ class _WindowsScreenState extends ConsumerState<WindowsScreen> {
 
   Widget windowsHeader() {
     return Row(
-        children: [montserratBlackBold('ALL AVAILABLE WINDOWS', fontSize: 24)]);
+        children: [quicksandBlackBold('ALL AVAILABLE WINDOWS', fontSize: 24)]);
   }
 
   Widget _availableWindows() {
@@ -79,7 +79,7 @@ class _WindowsScreenState extends ConsumerState<WindowsScreen> {
                             context, ref,
                             windowID: item.id));
                   }).toList())
-              : montserratBlackBold('NO WINDOWS AVAILABLE', fontSize: 44),
+              : quicksandBlackBold('NO WINDOWS AVAILABLE', fontSize: 44),
         ],
       ),
     );

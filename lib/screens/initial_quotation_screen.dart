@@ -218,7 +218,7 @@ class _InitialQuotationScreenState
               if (optionalWindowFields.isNotEmpty) _optionalWindowFields(),
               all10Pix(
                 child: Row(children: [
-                  montserratBlackBold(
+                  quicksandBlackBold(
                       'Total Overall Quatation: PHP ${formatPrice(totalOverallPayment.toDouble())}',
                       fontSize: 16)
                 ]),
@@ -231,7 +231,7 @@ class _InitialQuotationScreenState
                       optionalWindowFields: optionalWindowFields,
                       totalGlassPrice: totalGlassPrice,
                       totalOverallPayment: totalOverallPayment),
-                  child: montserratMidnightBlueBold('GENERATE ORDER')),
+                  child: quicksandDeepCharcoalBold('GENERATE ORDER')),
               Gap(20),
             ],
           ))),
@@ -242,7 +242,7 @@ class _InitialQuotationScreenState
     return all10Pix(
       child: Row(children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          montserratBlackBold('Inputted Window Details'),
+          quicksandBlackBold('Inputted Window Details'),
           montserratBlackRegular('Width: ${widget.width} ft', fontSize: 14),
           montserratBlackRegular('Height: ${widget.height} ft', fontSize: 14),
           montserratBlackRegular(
@@ -275,7 +275,7 @@ class _InitialQuotationScreenState
               'Glass: PHP ${totalGlassPrice.toStringAsFixed(2)}',
               fontSize: 12),
           Divider(),
-          montserratBlackBold(
+          quicksandBlackBold(
               'Total Inital Quotation: PHP ${formatPrice(totalMandatoryPayment.toDouble())}',
               fontSize: 16)
         ]),
@@ -348,7 +348,7 @@ class _InitialQuotationScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          montserratBlackBold('Optional Window Fields', fontSize: 16),
+          quicksandBlackBold('Optional Window Fields', fontSize: 16),
           ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),

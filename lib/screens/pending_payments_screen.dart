@@ -30,7 +30,7 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            montserratBlackBold('PENDING PAYMENTS', fontSize: 32),
+            quicksandBlackBold('PENDING PAYMENTS', fontSize: 32),
             _pendingPaymentRentalRequestsContainer()
           ],
         ),
@@ -56,7 +56,7 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
                 itemBuilder: (context, index) {
                   return pendingOrderEntry(availableRentalRequests[index]);
                 })
-            : vertical20Pix(child: montserratBlackBold('NO PENDING PAYMENTS'));
+            : vertical20Pix(child: quicksandBlackBold('NO PENDING PAYMENTS'));
       },
     );
   }
@@ -99,7 +99,7 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          montserratBlackBold(windowName),
+                          quicksandBlackBold(windowName),
                           montserratBlackRegular(
                               'Total: PHP ${formatPrice(totalPrice.toDouble())}',
                               fontSize: 16),
@@ -114,7 +114,7 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
                       NavigatorRoutes.renterSettlePayment(context,
                           orderID: orderDoc.id);
                     },
-                    child: montserratMidnightBlueBold('SETTLE\nPAYMENT',
+                    child: quicksandDeepCharcoalBold('SETTLE\nPAYMENT',
                         fontSize: 12))
               ],
             ),

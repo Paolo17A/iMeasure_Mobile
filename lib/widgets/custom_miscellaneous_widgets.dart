@@ -26,15 +26,15 @@ Widget buildProfileImage(
   return profileImageURL.isNotEmpty
       ? CircleAvatar(
           radius: radius,
-          backgroundColor: CustomColors.deepNavyBlue,
+          backgroundColor: CustomColors.lavenderMist,
           backgroundImage: NetworkImage(profileImageURL),
         )
       : CircleAvatar(
           radius: radius,
-          backgroundColor: CustomColors.deepNavyBlue,
+          backgroundColor: CustomColors.lavenderMist,
           child: Icon(
             Icons.person,
-            color: Colors.white,
+            color: CustomColors.forestGreen,
             size: radius + 10,
           ));
 }
@@ -52,7 +52,8 @@ Widget roundedSkyBlueContainer(BuildContext context, {required Widget child}) {
   return Container(
       width: MediaQuery.of(context).size.width * 0.5,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20), color: CustomColors.azure),
+          borderRadius: BorderRadius.circular(20),
+          color: CustomColors.deepSkyBlue),
       padding: const EdgeInsets.all(20),
       child: child);
 }

@@ -90,17 +90,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                         .profileImageURL
                                         .isNotEmpty)
                                       ElevatedButton(
-                                          onPressed: () =>
-                                              removeProfilePic(context, ref),
-                                          child: montserratMidnightBlueBold(
-                                              'REMOVE\nPROFILE PICTURE',
-                                              fontSize: 14)),
-                                    ElevatedButton(
-                                        onPressed: () =>
-                                            uploadProfilePicture(context, ref),
-                                        child: montserratMidnightBlueBold(
-                                            'UPLOAD\nPROFILE PICTURE',
-                                            fontSize: 14))
+                                          onPressed: () => uploadProfilePicture(
+                                              context, ref),
+                                          child: quicksandDeepCharcoalBold(
+                                              'UPLOAD\nPROFILE PICTURE',
+                                              fontSize: 14))
                                   ],
                                 ),
                               ],
@@ -128,7 +122,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _editProfileHeader() {
-    return montserratBlackBold('EDIT PROFILE', fontSize: 40);
+    return quicksandBlackBold('EDIT PROFILE', fontSize: 40);
   }
 
   Widget _firstNameControllerWidget() {
