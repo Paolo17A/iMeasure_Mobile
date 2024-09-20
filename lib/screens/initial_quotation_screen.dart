@@ -43,7 +43,7 @@ class _InitialQuotationScreenState
       try {
         ref.read(loadingProvider).toggleLoading(true);
 
-        final window = await getThisWindowDoc(widget.windowID);
+        final window = await getThisItemDoc(widget.windowID);
         final windowData = window.data() as Map<dynamic, dynamic>;
 
         List<dynamic> windowFields = windowData[WindowFields.windowFields];

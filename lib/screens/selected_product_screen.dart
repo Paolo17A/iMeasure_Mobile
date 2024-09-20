@@ -41,7 +41,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
       final scaffoldMessenger = ScaffoldMessenger.of(context);
       try {
         //  GET PRODUCT DATA
-        final window = await getThisWindowDoc(widget.windowID);
+        final window = await getThisItemDoc(widget.windowID);
         final windowData = window.data() as Map<dynamic, dynamic>;
         name = windowData[WindowFields.name];
         description = windowData[WindowFields.description];
@@ -98,10 +98,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         SizedBox(
           height: 40,
           child: ElevatedButton(
-              onPressed: isAvailable
-                  ? () =>
-                      addProductToCart(context, ref, productID: widget.windowID)
-                  : null,
+              onPressed: isAvailable ? () {} : null,
               style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero),

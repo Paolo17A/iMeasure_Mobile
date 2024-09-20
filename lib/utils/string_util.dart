@@ -24,6 +24,9 @@ class Collections {
   static const String cart = 'cart';
   static const String transactions = 'transactions';
   static const String orders = 'orders';
+  static const String galleries = 'galleries';
+  static const String items = 'items';
+  static const String payments = 'payments';
 }
 
 class UserFields {
@@ -38,6 +41,37 @@ class UserFields {
   static const String bookmarks = 'bookmarks';
 }
 
+class ItemFields {
+  static const String name = 'name';
+  static const String price = 'price';
+  static const String description = 'description';
+  static const String imageURL = 'imageURL';
+  static const String itemType = 'itemType';
+
+  //  FURNITURE FIELDS
+  static const String minWidth = 'minWidth';
+  static const String maxWidth = 'maxWidth';
+  static const String minHeight = 'minHeight';
+  static const String maxHeight = 'maxHeight';
+  static const String isAvailable = 'isAvailable';
+  static const String windowFields = 'windowFields';
+  static const String accessoryFields = 'accessoryFields';
+}
+
+class ItemTypes {
+  static const String window = 'WINDOW';
+  static const String door = 'DOOR';
+  static const String rawMaterial = 'RAW MATERIAL';
+}
+
+class WindowColors {
+  static const String brown = 'BROWN';
+  static const String white = 'WHITE';
+  static const String mattBlack = 'MATT BLACK';
+  static const String mattGray = 'MATT GRAY';
+  static const String woodFinish = 'WOOD FINISH';
+}
+
 class WindowFields {
   static const String name = 'name';
   static const String price = 'price';
@@ -50,14 +84,6 @@ class WindowFields {
   static const String isAvailable = 'isAvailable';
   static const String windowFields = 'windowFields';
   static const String accessoryFields = 'accessoryFields';
-}
-
-class WindowColors {
-  static const String brown = 'BROWN';
-  static const String white = 'WHITE';
-  static const String mattBlack = 'MATT BLACK';
-  static const String mattGray = 'MATT GRAY';
-  static const String woodFinish = 'WOOD FINISH';
 }
 
 class WindowSubfields {
@@ -106,7 +132,7 @@ class TransactionFields {
 
 class OrderFields {
   static const String clientID = 'clientID';
-  static const String windowID = 'windowID';
+  static const String itemID = 'itemID';
   static const String width = 'width';
   static const String height = 'height';
   static const String glassType = 'glassType';
@@ -132,13 +158,42 @@ class OrderStatuses {
 
 class CartFields {
   static const String clientID = 'clientID';
-  static const String windowID = 'windowID';
+  static const String itemID = 'itemID';
+  static const String quantity = 'quantity';
+  static const String itemType = 'itemType';
+  static const String quotation = 'quotation';
 }
 
 class PaymentStatuses {
   static const String pending = 'PENDING';
   static const String approved = 'APPROVED';
   static const String denied = 'DENIED';
+}
+
+class QuotationFields {
+  static const String width = 'width';
+  static const String height = 'height';
+  static const String glassType = 'glassType';
+  static const String color = 'color';
+
+  static const String mandatoryMap = 'mandatoryMap';
+  static const String optionalMap = 'optionalMap';
+  static const String itemOverallPrice = 'itemOverallPrice';
+  static const String laborPrice = 'laborPrice';
+  static const String quotationURL = 'quotationURL';
+}
+
+class GalleryFields {
+  static const String galleryType = 'galleryType';
+  static const String title = 'title';
+  static const String content = 'content';
+  static const String imageURL = 'imageURL';
+}
+
+class GalleryTypes {
+  static const String service = 'service';
+  static const String portfolio = 'portfolio';
+  static const String testimonial = 'testimonial';
 }
 
 class PathParameters {

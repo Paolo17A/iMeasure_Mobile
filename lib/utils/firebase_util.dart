@@ -16,6 +16,7 @@ import '../providers/loading_provider.dart';
 import '../providers/profile_image_url_provider.dart';
 import '../providers/settle_payment_provider.dart';
 import 'navigator_util.dart';
+import 'quotation_dialog_util.dart';
 import 'string_util.dart';
 
 //==============================================================================
@@ -360,20 +361,58 @@ Future removeBookmarkedProduct(BuildContext context, WidgetRef ref,
 }
 
 //==============================================================================
-//WINDOWS=======================================================================
+//ITEMS=========================================================================
 //==============================================================================
-Future<List<DocumentSnapshot>> getAllWindowDocs() async {
-  final products =
-      await FirebaseFirestore.instance.collection(Collections.windows).get();
-  return products.docs;
+Future<List<DocumentSnapshot>> getAllItemDocs() async {
+  final items =
+      await FirebaseFirestore.instance.collection(Collections.items).get();
+  return items.docs.map((e) => e as DocumentSnapshot).toList();
 }
 
-Future<DocumentSnapshot> getThisWindowDoc(String productID) async {
+Future<List<DocumentSnapshot>> getSelectedItemDocs(
+    List<dynamic> itemIDs) async {
+  if (itemIDs.isEmpty) return [];
+  final items = await FirebaseFirestore.instance
+      .collection(Collections.items)
+      .where(FieldPath.documentId, whereIn: itemIDs)
+      .get();
+  return items.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+Future<List<DocumentSnapshot>> getAllWindowDocs() async {
+  final items = await FirebaseFirestore.instance
+      .collection(Collections.items)
+      .where(ItemFields.itemType, isEqualTo: ItemTypes.window)
+      .get();
+  return items.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+Future<List<DocumentSnapshot>> getAllDoorDocs() async {
+  final items = await FirebaseFirestore.instance
+      .collection(Collections.items)
+      .where(ItemFields.itemType, isEqualTo: ItemTypes.door)
+      .get();
+  return items.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+Future<List<DocumentSnapshot>> getAllRawMaterialDocs() async {
+  final items = await FirebaseFirestore.instance
+      .collection(Collections.items)
+      .where(ItemFields.itemType, isEqualTo: ItemTypes.rawMaterial)
+      .get();
+  return items.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+Future<DocumentSnapshot> getThisItemDoc(String itemID) async {
   return await FirebaseFirestore.instance
-      .collection(Collections.windows)
-      .doc(productID)
+      .collection(Collections.items)
+      .doc(itemID)
       .get();
 }
+
+//==============================================================================
+//WINDOWS=======================================================================
+//==============================================================================
 
 Future<List<DocumentSnapshot>> getSelectedWindowDocs(
     List<String> windowIDs) async {
@@ -388,7 +427,7 @@ Future<List<DocumentSnapshot>> getSelectedWindowDocs(
 }
 
 //==============================================================================
-//==CART--======================================================================
+//==CART========================================================================
 //==============================================================================
 Future<List<DocumentSnapshot>> getCartEntries(BuildContext context) async {
   final cartProducts = await FirebaseFirestore.instance
@@ -406,8 +445,13 @@ Future<DocumentSnapshot> getThisCartEntry(String cartID) async {
       .get();
 }
 
-Future addProductToCart(BuildContext context, WidgetRef ref,
-    {required String productID}) async {
+Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
+    {required String itemID,
+    required String itemType,
+    required double width,
+    required double height,
+    required List<dynamic> mandatoryWindowFields,
+    required List<Map<dynamic, dynamic>> optionalWindowFields}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   if (!hasLoggedInUser()) {
     scaffoldMessenger.showSnackBar(
@@ -415,41 +459,200 @@ Future addProductToCart(BuildContext context, WidgetRef ref,
     return;
   }
   try {
-    if (ref.read(cartProvider).cartContainsThisItem(productID)) {
-      scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('This item is already in your cart.')));
-      return;
+    List<Map<dynamic, dynamic>> mandatoryMap = [];
+    mandatoryMap.add({
+      OrderBreakdownMap.field: 'Glass',
+      OrderBreakdownMap.breakdownPrice: calculateGlassPrice(ref,
+          width: width.toDouble(), height: height.toDouble())
+    });
+    for (var windowSubField in mandatoryWindowFields) {
+      if (windowSubField[WindowSubfields.priceBasis] == 'HEIGHT') {
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * height
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * height
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * height
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * height
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
+                      height
+            });
+            break;
+        }
+      } else if (windowSubField[WindowSubfields.priceBasis] == 'WIDTH') {
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * width
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * width
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * width
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * width
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) * width
+            });
+            break;
+        }
+      }
     }
 
-    final cartDocReference =
-        await FirebaseFirestore.instance.collection(Collections.cart).add({
-      CartFields.windowID: productID,
-      CartFields.clientID: FirebaseAuth.instance.currentUser!.uid
+    List<Map<dynamic, dynamic>> optionalMap = [];
+    for (var windowSubField in optionalWindowFields) {
+      if (windowSubField[OptionalWindowFields.isSelected]) {
+        optionalMap.add({
+          OrderBreakdownMap.field:
+              windowSubField[OptionalWindowFields.optionalFields]
+                  [WindowFields.name],
+          OrderBreakdownMap.breakdownPrice:
+              windowSubField[OptionalWindowFields.price]
+        });
+      }
+    }
+
+    await FirebaseFirestore.instance.collection(Collections.cart).add({
+      CartFields.itemID: itemID,
+      CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
+      CartFields.quantity: 1,
+      CartFields.itemType: itemType,
+      CartFields.quotation: {
+        QuotationFields.width: width,
+        QuotationFields.height: height,
+        QuotationFields.glassType: ref.read(cartProvider).selectedGlassType,
+        QuotationFields.color: ref.read(cartProvider).selectedColor,
+        QuotationFields.mandatoryMap: mandatoryMap,
+        QuotationFields.optionalMap: optionalMap,
+        QuotationFields.itemOverallPrice:
+            calculateGlassPrice(ref, width: width, height: height) +
+                calculateTotalMandatoryPayment(ref,
+                    width: width,
+                    height: height,
+                    mandatoryWindowFields: mandatoryWindowFields) +
+                calculateOptionalPrice(optionalWindowFields),
+        QuotationFields.laborPrice: 0,
+        QuotationFields.quotationURL: ''
+      }
     });
-    ref.read(cartProvider.notifier).addCartItem(await cartDocReference.get());
+
     scaffoldMessenger.showSnackBar(const SnackBar(
         content: Text('Successfully added this item to your cart.')));
   } catch (error) {
+    ref.read(loadingProvider).toggleLoading(false);
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error adding product to cart: $error')));
   }
 }
 
-Future removeCartItem(BuildContext context, WidgetRef ref,
+Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
+    {required String itemID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    if (ref.read(cartProvider).cartContainsThisItem(itemID)) {
+      scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('This item is already in your cart.')));
+      return;
+    }
+    final cartDocReference =
+        await FirebaseFirestore.instance.collection(Collections.cart).add({
+      CartFields.itemID: itemID,
+      CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
+      CartFields.quantity: 1,
+      CartFields.itemType: ItemTypes.rawMaterial
+    });
+    ref.read(cartProvider.notifier).addCartItem(await cartDocReference.get());
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully added raw material to cart.')));
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error adding raw material to cart: $error')));
+  }
+}
+
+void removeCartItem(BuildContext context, WidgetRef ref,
     {required DocumentSnapshot cartDoc}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   try {
-    ref.read(loadingProvider.notifier).toggleLoading(true);
     await cartDoc.reference.delete();
 
     scaffoldMessenger.showSnackBar(const SnackBar(
         content: Text('Successfully removed this item from your cart.')));
     ref.read(cartProvider).removeCartItem(cartDoc);
-    ref.read(loadingProvider.notifier).toggleLoading(false);
   } catch (error) {
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error removing cart item: $error')));
     ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future changeCartItemQuantity(BuildContext context, WidgetRef ref,
+    {required DocumentSnapshot cartEntryDoc,
+    required bool isIncreasing}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    final cartEntryData = cartEntryDoc.data() as Map<dynamic, dynamic>;
+    int quantity = cartEntryData[CartFields.quantity];
+    if (isIncreasing) {
+      quantity++;
+    } else {
+      quantity--;
+    }
+    await FirebaseFirestore.instance
+        .collection(Collections.cart)
+        .doc(cartEntryDoc.id)
+        .update({CartFields.quantity: quantity});
+    ref.read(cartProvider).setCartItems(await getCartEntries(context));
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error changing item quantity: $error')));
   }
 }
 
@@ -613,7 +816,7 @@ Future generateOrder(BuildContext context, WidgetRef ref,
 
     //  1. Generate Order Entry
     await FirebaseFirestore.instance.collection(Collections.orders).add({
-      OrderFields.windowID: cartData[CartFields.windowID],
+      OrderFields.itemID: cartData[CartFields.itemID],
       OrderFields.clientID: cartData[CartFields.clientID],
       OrderFields.width: width,
       OrderFields.height: height,
@@ -698,104 +901,33 @@ Future settlePendingPayment(BuildContext context, WidgetRef ref,
   }
 }
 
-/*Future purchaseSelectedCartItem(BuildContext context, WidgetRef ref,
-    {required TextEditingController widthController,
-    required TextEditingController heightController,
-    required num minHeight,
-    required num maxHeight,
-    required num minWidth,
-    required num maxWidth}) async {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-  if (widthController.text.isEmpty || heightController.text.isEmpty) {
-    scaffoldMessenger.showSnackBar(SnackBar(
-        content: Text(
-            'Please input your desired window width and height (in ft).')));
-    return;
-  }
-  if (double.tryParse(widthController.text.trim()) == null ||
-      double.parse(widthController.text.trim()) < minWidth ||
-      double.parse(widthController.text.trim()) > maxWidth) {
-    scaffoldMessenger.showSnackBar(SnackBar(
-        content: Text(
-            'Please input a valid width value between ${minWidth}ft and ${maxWidth}ft.')));
-    return;
-  }
-  if (double.tryParse(heightController.text.trim()) == null ||
-      double.parse(heightController.text.trim()) < minHeight ||
-      double.parse(heightController.text.trim()) > maxHeight) {
-    scaffoldMessenger.showSnackBar(SnackBar(
-        content: Text(
-            'Please input a valid height value between ${minHeight}ft and ${maxHeight}ft.')));
-    return;
-  }
-  ImagePicker imagePicker = ImagePicker();
-  final selectedXFile =
-      await imagePicker.pickImage(source: ImageSource.gallery);
-  if (selectedXFile == null) {
-    return;
-  }
-  try {
-    ref.read(loadingProvider.notifier).toggleLoading(true);
+//==============================================================================
+//==GALLERY=====================================================================
+//==============================================================================
 
-    //  1. Generate a purchase document for the selected cart item
-    final cartDoc =
-        await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
-    final cartData = cartDoc.data() as Map<dynamic, dynamic>;
-    //final productID = cartData[CartFields.productID];
-    //final window = await getThisWindowDoc(productID);
-    //final windowData = window.data() as Map<dynamic, dynamic>;
+Future<List<DocumentSnapshot>> getAllServiceGalleryDocs() async {
+  final gallery = await FirebaseFirestore.instance
+      .collection(Collections.galleries)
+      .where(GalleryFields.galleryType, isEqualTo: GalleryTypes.service)
+      .get();
 
-    final orderReference =
-        await FirebaseFirestore.instance.collection(Collections.orders).add({
-      OrderFields.windowID: cartData[CartFields.windowID],
-      OrderFields.clientID: cartData[CartFields.clientID],
-      OrderFields.glassType: ref.read(cartProvider).selectedGlassType,
-      OrderFields.purchaseStatus: OrderStatuses.pending,
-      OrderFields.datePickedUp: DateTime(1970),
-      OrderFields.rating: ''
-    });
+  return gallery.docs.map((e) => e as DocumentSnapshot).toList();
+}
 
-    //  2. Generate a payment document in Firestore
-    await FirebaseFirestore.instance
-        .collection(Collections.transactions)
-        .doc(orderReference.id)
-        .set({
-      TransactionFields.clientID: cartData[CartFields.clientID],
-      TransactionFields.paidAmount: 5000,
-      TransactionFields.paymentVerified: false,
-      TransactionFields.paymentStatus: PaymentStatuses.pending,
-      TransactionFields.paymentMethod:
-          ref.read(cartProvider).selectedPaymentMethod,
-      TransactionFields.dateCreated: DateTime.now(),
-      TransactionFields.dateApproved: DateTime(1970),
-    });
+Future<List<DocumentSnapshot>> getAllTestimonialGalleryDocs() async {
+  final gallery = await FirebaseFirestore.instance
+      .collection(Collections.galleries)
+      .where(GalleryFields.galleryType, isEqualTo: GalleryTypes.testimonial)
+      .get();
 
-    //  3. Upload the proof of payment image to Firebase Storage
-    final storageRef = FirebaseStorage.instance
-        .ref()
-        .child(StorageFields.payments)
-        .child('${orderReference.id}.png');
-    final uploadTask = storageRef.putFile(File(selectedXFile.path));
-    final taskSnapshot = await uploadTask;
-    final downloadURL = await taskSnapshot.ref.getDownloadURL();
+  return gallery.docs.map((e) => e as DocumentSnapshot).toList();
+}
 
-    await FirebaseFirestore.instance
-        .collection(Collections.transactions)
-        .doc(orderReference.id)
-        .update({TransactionFields.proofOfPayment: downloadURL});
+Future<List<DocumentSnapshot>> getAllPortfolioGalleryDocs() async {
+  final gallery = await FirebaseFirestore.instance
+      .collection(Collections.galleries)
+      .where(GalleryFields.galleryType, isEqualTo: GalleryTypes.portfolio)
+      .get();
 
-    //  4. Delete cart entry
-    await cartDoc.reference.delete();
-    ref.read(cartProvider).cartItems = await getCartEntries(context);
-    scaffoldMessenger.showSnackBar(const SnackBar(
-        content:
-            Text('Successfully settled payment and created purchase order')));
-    Navigator.of(context).pop();
-    ref.read(cartProvider).setSelectedCartItem('');
-    ref.read(loadingProvider.notifier).toggleLoading(false);
-  } catch (error) {
-    scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Error purchasing this cart item: $error')));
-    ref.read(loadingProvider.notifier).toggleLoading(false);
-  }
-}*/
+  return gallery.docs.map((e) => e as DocumentSnapshot).toList();
+}

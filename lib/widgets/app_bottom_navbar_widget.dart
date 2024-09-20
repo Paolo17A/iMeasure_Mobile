@@ -4,9 +4,8 @@ import '../screens/home_screen.dart';
 import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
-import 'text_widgets.dart';
 
-Color bottomNavButtonColor = CustomColors.lavenderMist;
+Color bottomNavButtonColor = CustomColors.deepCharcoal;
 
 void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
   //  Do nothing if we are selecting the same bottom bar
@@ -34,14 +33,15 @@ void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
 Widget bottomNavigationBar(BuildContext context, {required int index}) {
   return Container(
     height: 80,
-    decoration:
-        BoxDecoration(border: Border.all(color: CustomColors.deepCharcoal)),
+    decoration: BoxDecoration(
+        border: Border.all(color: CustomColors.deepCharcoal),
+        borderRadius: BorderRadius.circular(20)),
     child: BottomNavigationBar(
       currentIndex: index,
       selectedFontSize: 0,
       backgroundColor: bottomNavButtonColor,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white,
+      selectedItemColor: CustomColors.deepCharcoal,
+      unselectedItemColor: CustomColors.deepCharcoal,
       items: [
         //  Self-Assessment
         BottomNavigationBarItem(
@@ -79,11 +79,11 @@ Widget _buildIcon(
         size: currentIndex == thisIndex ? 30 : 20,
         color: currentIndex == thisIndex
             ? CustomColors.emeraldGreen
-            : CustomColors.deepCharcoal,
+            : CustomColors.lavenderMist,
       ),
-      currentIndex == thisIndex
+      /* currentIndex == thisIndex
           ? quicksandEmeraldGreenBold(label, fontSize: 12)
-          : quicksandDeepCharcoalRegular(label, fontSize: 12)
+          : quicksandWhiteBold(label, fontSize: 12)*/
     ],
   );
 }

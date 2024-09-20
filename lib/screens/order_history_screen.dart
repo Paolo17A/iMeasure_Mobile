@@ -81,11 +81,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
     String status = orderData[OrderFields.purchaseStatus];
-    String windowID = orderData[OrderFields.windowID];
+    String windowID = orderData[OrderFields.itemID];
     String glassType = orderData[OrderFields.glassType];
 
     return FutureBuilder(
-      future: getThisWindowDoc(windowID),
+      future: getThisItemDoc(windowID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             !snapshot.hasData ||

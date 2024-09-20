@@ -87,7 +87,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   Widget _cartEntry(DocumentSnapshot cartDoc) {
     final cartData = cartDoc.data() as Map<dynamic, dynamic>;
     return FutureBuilder(
-        future: getThisWindowDoc(cartData[CartFields.windowID]),
+        future: getThisItemDoc(cartData[CartFields.itemID]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               !snapshot.hasData ||
@@ -116,7 +116,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       GestureDetector(
                         onTap: () => NavigatorRoutes.selectedWindow(
                             context, ref,
-                            windowID: cartData[CartFields.windowID]),
+                            windowID: cartData[CartFields.itemID]),
                         child: Row(
                           // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

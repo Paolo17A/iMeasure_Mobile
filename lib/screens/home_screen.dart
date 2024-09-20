@@ -25,18 +25,30 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  List<DocumentSnapshot> windowDocs = [];
+  List<DocumentSnapshot> itemDocs = [];
+
+  //  USER
+  List<DocumentSnapshot> serviceDocs = [];
+  List<DocumentSnapshot> testimonialDocs = [];
+  List<DocumentSnapshot> portfolioDocs = [];
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       ref.read(loadingProvider.notifier).toggleLoading(true);
 
-      windowDocs = await getAllWindowDocs();
       final userDoc = await getCurrentUserDoc();
       final userData = userDoc.data() as Map<dynamic, dynamic>;
       ref.read(bookmarksProvider).bookmarkedProducts =
           userData[UserFields.bookmarks];
+      serviceDocs = await getAllServiceGalleryDocs();
+      serviceDocs.shuffle();
+      testimonialDocs = await getAllTestimonialGalleryDocs();
+      testimonialDocs.shuffle();
+      portfolioDocs = await getAllPortfolioGalleryDocs();
+      portfolioDocs.shuffle();
+      itemDocs = await getAllItemDocs();
+      itemDocs.shuffle();
       ref.read(loadingProvider.notifier).toggleLoading(false);
     });
   }
@@ -68,22 +80,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _topProducts() {
-    windowDocs.shuffle();
+    itemDocs.shuffle();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         quicksandBlackBold('LATEST WINDOWS', fontSize: 30),
         SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: windowDocs.isNotEmpty
+            child: itemDocs.isNotEmpty
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: windowDocs.isNotEmpty
+                        mainAxisAlignment: itemDocs.isNotEmpty
                             ? MainAxisAlignment.start
                             : MainAxisAlignment.center,
-                        children: windowDocs.reversed
+                        children: itemDocs.reversed
                             .take(6)
                             .toList()
                             .map((item) => Row(
@@ -134,7 +146,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _bookmarkedProductEntry(String windowID) {
     return FutureBuilder(
-        future: getThisWindowDoc(windowID),
+        future: getThisItemDoc(windowID),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               !snapshot.hasData ||

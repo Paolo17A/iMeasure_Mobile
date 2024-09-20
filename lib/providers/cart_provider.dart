@@ -38,7 +38,7 @@ class CartNotifier extends ChangeNotifier {
   bool cartContainsThisItem(String itemID) {
     return cartItems.any((cartItem) {
       final cartData = cartItem.data() as Map<dynamic, dynamic>;
-      return cartData[CartFields.windowID] == itemID;
+      return cartData[CartFields.itemID] == itemID;
     });
   }
 

@@ -84,7 +84,7 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
 
   Widget _bookmarkedProductEntry(String windowID) {
     return FutureBuilder(
-        future: getThisWindowDoc(windowID),
+        future: getThisItemDoc(windowID),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               !snapshot.hasData ||

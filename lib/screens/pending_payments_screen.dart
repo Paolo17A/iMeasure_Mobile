@@ -63,11 +63,11 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
 
   Widget pendingOrderEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
-    String windowID = orderData[OrderFields.windowID];
+    String windowID = orderData[OrderFields.itemID];
     num totalPrice = orderData[OrderFields.windowOverallPrice] +
         orderData[OrderFields.laborPrice];
     return FutureBuilder(
-        future: getThisWindowDoc(windowID),
+        future: getThisItemDoc(windowID),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               !snapshot.hasData ||

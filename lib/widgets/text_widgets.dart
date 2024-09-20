@@ -20,6 +20,21 @@ Text quicksandWhiteBold(String label,
   );
 }
 
+Text quicksandWhiteRegular(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow,
+    TextDecoration? decoration}) {
+  return Text(label,
+      textAlign: textAlign,
+      style: GoogleFonts.quicksand(
+          fontSize: fontSize,
+          color: Colors.white,
+          decoration: decoration,
+          decorationColor: Colors.white,
+          textStyle: TextStyle(overflow: textOverflow)));
+}
+
 Text montserratBlackRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
@@ -29,6 +44,33 @@ Text montserratBlackRegular(String label,
     textAlign: textAlign,
     overflow: textOverflow,
     style: GoogleFonts.quicksand(fontSize: fontSize, color: Colors.black),
+  );
+}
+
+Text quicksandBlackRegular(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    style: GoogleFonts.quicksand(
+        fontSize: fontSize,
+        color: Colors.black,
+        textStyle: TextStyle(overflow: textOverflow)),
+  );
+}
+
+Text montserratWhiteBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(
+    label,
+    textAlign: textAlign,
+    overflow: textOverflow,
+    style: GoogleFonts.quicksand(
+        fontWeight: FontWeight.bold, fontSize: fontSize, color: Colors.white),
   );
 }
 
@@ -94,6 +136,7 @@ Text quicksandEmeraldGreenBold(String label,
 Text quicksandDeepCharcoalBold(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
+    TextDecoration? textDecoration,
     TextOverflow? textOverflow}) {
   return Text(
     label,
@@ -102,6 +145,7 @@ Text quicksandDeepCharcoalBold(String label,
     style: GoogleFonts.quicksand(
         fontSize: fontSize,
         color: CustomColors.deepCharcoal,
+        decoration: textDecoration,
         fontWeight: FontWeight.bold),
   );
 }

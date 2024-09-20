@@ -72,79 +72,86 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _registerContainer() {
-    return SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Gap(MediaQuery.of(context).size.height * 0.1),
-            itcBaumansWhiteBold('REGISTER', fontSize: 32),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomTextField(
-                    text: 'Email Address',
-                    controller: emailController,
-                    textInputType: TextInputType.emailAddress,
-                    displayPrefixIcon: const Icon(Icons.email))),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomTextField(
-                    text: 'Password',
-                    controller: passwordController,
-                    textInputType: TextInputType.visiblePassword,
-                    displayPrefixIcon: const Icon(Icons.lock))),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomTextField(
-                    text: 'Confirm Password',
-                    controller: confirmPasswordController,
-                    textInputType: TextInputType.visiblePassword,
-                    displayPrefixIcon: const Icon(Icons.lock))),
-            const Gap(30),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomTextField(
-                  text: 'First Name',
-                  controller: firstNameController,
-                  textInputType: TextInputType.name,
-                  displayPrefixIcon: const Icon(Icons.person)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomTextField(
-                  text: 'Last Name',
-                  controller: lastNameController,
-                  textInputType: TextInputType.name,
-                  displayPrefixIcon: const Icon(Icons.person)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomTextField(
-                  text: 'Mobile Number',
-                  controller: mobileNumberController,
-                  textInputType: TextInputType.number,
-                  displayPrefixIcon: const Icon(Icons.phone)),
-            ),
-            ElevatedButton(
-                onPressed: () => registerNewUser(context, ref,
-                    emailController: emailController,
-                    passwordController: passwordController,
-                    confirmPasswordController: confirmPasswordController,
-                    firstNameController: firstNameController,
-                    lastNameController: lastNameController,
-                    mobileNumberController: mobileNumberController),
-                child: quicksandWhiteBold('REGISTER')),
-            const Divider(),
-            TextButton(
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(NavigatorRoutes.forgotPassword),
-                child: quicksandWhiteBold('Forgot Password?',
-                    textDecoration: TextDecoration.underline)),
-            TextButton(
-                onPressed: () => Navigator.of(context)
-                    .pushReplacementNamed(NavigatorRoutes.login),
-                child: quicksandWhiteBold('Already have an account?',
-                    textDecoration: TextDecoration.underline))
-          ],
-        ));
+    return Column(
+      children: [
+        Gap(MediaQuery.of(context).size.height * 0.1),
+        SizedBox(
+            width: double.infinity,
+            child: roundedWhiteContainer(
+              context,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  vertical20Pix(
+                      child: quicksandBlackBold('CREATE A NEW ACCOUNT',
+                          fontSize: 28)),
+                  quicksandBlackBold('Already registered?'),
+                  TextButton(
+                      onPressed: () => Navigator.of(context)
+                          .pushReplacementNamed(NavigatorRoutes.login),
+                      child: quicksandBlackBold('Login Here',
+                          textDecoration: TextDecoration.underline)),
+                  Gap(20),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(
+                          text: 'Email Address',
+                          controller: emailController,
+                          textInputType: TextInputType.emailAddress,
+                          displayPrefixIcon: const Icon(Icons.email))),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(
+                          text: 'Password',
+                          controller: passwordController,
+                          textInputType: TextInputType.visiblePassword,
+                          displayPrefixIcon: const Icon(Icons.lock))),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(
+                          text: 'Confirm Password',
+                          controller: confirmPasswordController,
+                          textInputType: TextInputType.visiblePassword,
+                          displayPrefixIcon: const Icon(Icons.lock))),
+                  const Gap(30),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomTextField(
+                        text: 'First Name',
+                        controller: firstNameController,
+                        textInputType: TextInputType.name,
+                        displayPrefixIcon: const Icon(Icons.person)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomTextField(
+                        text: 'Last Name',
+                        controller: lastNameController,
+                        textInputType: TextInputType.name,
+                        displayPrefixIcon: const Icon(Icons.person)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomTextField(
+                        text: 'Mobile Number',
+                        controller: mobileNumberController,
+                        textInputType: TextInputType.number,
+                        displayPrefixIcon: const Icon(Icons.phone)),
+                  ),
+                  ElevatedButton(
+                      onPressed: () => registerNewUser(context, ref,
+                          emailController: emailController,
+                          passwordController: passwordController,
+                          confirmPasswordController: confirmPasswordController,
+                          firstNameController: firstNameController,
+                          lastNameController: lastNameController,
+                          mobileNumberController: mobileNumberController),
+                      child: quicksandWhiteBold('REGISTER')),
+                  const Divider(),
+                ],
+              ),
+            )),
+      ],
+    );
   }
 }

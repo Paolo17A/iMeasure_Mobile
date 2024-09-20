@@ -44,9 +44,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         final cartEntry =
             await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
         final cartData = cartEntry.data() as Map<dynamic, dynamic>;
-        windowID = cartData[CartFields.windowID];
+        windowID = cartData[CartFields.itemID];
 
-        final window = await getThisWindowDoc(windowID);
+        final window = await getThisItemDoc(windowID);
         final windowData = window.data() as Map<dynamic, dynamic>;
         name = windowData[WindowFields.name];
         imageURL = windowData[WindowFields.imageURL];

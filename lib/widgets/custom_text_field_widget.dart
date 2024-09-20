@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final bool hasSearchButton;
   final Function? onSearchPress;
   final Color? fillColor;
+  final Color? textColor;
   const CustomTextField(
       {super.key,
       required this.text,
@@ -18,7 +19,8 @@ class CustomTextField extends StatefulWidget {
       this.enabled = true,
       this.hasSearchButton = false,
       this.onSearchPress,
-      this.fillColor});
+      this.fillColor,
+      this.textColor});
 
   @override
   State<CustomTextField> createState() => _LiliwECommerceTextFieldState();
@@ -39,25 +41,30 @@ class _LiliwECommerceTextFieldState extends State<CustomTextField> {
         enabled: widget.enabled,
         controller: widget.controller,
         obscureText: isObscured,
-        cursorColor: Colors.black,
+        cursorColor: widget.textColor ?? Colors.black,
         onSubmitted: (value) {
           if (widget.onSearchPress != null &&
               widget.controller.text.isNotEmpty) {
             widget.onSearchPress!();
           }
         },
-        style: TextStyle(color: Colors.black.withOpacity(0.9)),
+        style: TextStyle(
+            color: widget.textColor != null
+                ? widget.textColor
+                : Colors.black.withOpacity(0.9)),
         decoration: InputDecoration(
             alignLabelWithHint: true,
             labelText: widget.text,
             labelStyle: TextStyle(
-                color: Colors.black.withOpacity(0.5),
+                color: widget.textColor != null
+                    ? widget.textColor!.withOpacity(0.5)
+                    : Colors.black.withOpacity(0.5),
                 fontStyle: FontStyle.italic),
             filled: true,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             fillColor: widget.fillColor ?? Colors.white,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(30),
                 borderSide: const BorderSide(color: Colors.black, width: 3.0)),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -71,7 +78,9 @@ class _LiliwECommerceTextFieldState extends State<CustomTextField> {
                     },
                     icon: Icon(
                       isObscured ? Icons.visibility : Icons.visibility_off,
-                      color: Colors.black.withOpacity(0.6),
+                      color: widget.textColor != null
+                          ? widget.textColor!.withOpacity(0.6)
+                          : Colors.black.withOpacity(0.6),
                     ))
                 : widget.hasSearchButton && widget.onSearchPress != null
                     ? Transform.scale(

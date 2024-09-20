@@ -64,51 +64,76 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _logInContainer() {
-    return Column(children: [
-      Gap(MediaQuery.of(context).size.height * 0.2),
-      itcBaumansDeepSkyBlueBold('iMeasure'),
-      Gap(40),
-      vertical20Pix(child: Image.asset(ImagePaths.heritageIcon, scale: 2)),
-      itcBaumansWhiteBold('HERITAGE ALUMINUM SALES CORPORATION', fontSize: 20),
-      itcBaumansWhiteBold('• LOS BAÑOS •', fontSize: 16),
-      Gap(40),
-      SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: CustomTextField(
-            text: 'Email Address',
-            controller: emailController,
-            textInputType: TextInputType.emailAddress,
-            displayPrefixIcon: const Icon(Icons.email)),
-      ),
-      const Gap(16),
-      SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: CustomTextField(
-          text: 'Password',
-          controller: passwordController,
-          textInputType: TextInputType.visiblePassword,
-          displayPrefixIcon: const Icon(Icons.lock),
-          onSearchPress: () => logInUser(context, ref,
-              emailController: emailController,
-              passwordController: passwordController),
-        ),
-      ),
-      TextButton(
-          onPressed: () =>
-              Navigator.of(context).pushNamed(NavigatorRoutes.forgotPassword),
-          child: quicksandWhiteBold('Forgot Password?',
-              fontSize: 16, textDecoration: TextDecoration.underline)),
-      ElevatedButton(
-          onPressed: () => logInUser(context, ref,
-              emailController: emailController,
-              passwordController: passwordController),
-          child: quicksandWhiteBold('LOG-IN')),
-      const Divider(),
-      TextButton(
-          onPressed: () => Navigator.of(context)
-              .pushReplacementNamed(NavigatorRoutes.register),
-          child: quicksandWhiteBold('Don\'t have an account?',
-              fontSize: 16, textDecoration: TextDecoration.underline))
-    ]);
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Column(children: [
+        Gap(MediaQuery.of(context).size.height * 0.2),
+        vertical20Pix(child: Image.asset(ImagePaths.heritageIcon, scale: 2)),
+        montserratWhiteBold('iMeasure', fontSize: 40),
+        //itcBaumansWhiteBold('• LOS BAÑOS •', fontSize: 16),
+        Gap(40),
+        roundedWhiteContainer(
+          context,
+          child: Column(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: CustomTextField(
+                    text: 'Email Address',
+                    controller: emailController,
+                    textInputType: TextInputType.emailAddress,
+                    fillColor: CustomColors.deepCharcoal,
+                    textColor: Colors.white,
+                    displayPrefixIcon:
+                        const Icon(Icons.email, color: Colors.white)),
+              ),
+              const Gap(16),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: CustomTextField(
+                  text: 'Password',
+                  controller: passwordController,
+                  textInputType: TextInputType.visiblePassword,
+                  fillColor: CustomColors.deepCharcoal,
+                  textColor: Colors.white,
+                  displayPrefixIcon:
+                      const Icon(Icons.lock, color: Colors.white),
+                  onSearchPress: () => logInUser(context, ref,
+                      emailController: emailController,
+                      passwordController: passwordController),
+                ),
+              ),
+              vertical20Pix(
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 2),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: ElevatedButton(
+                      onPressed: () => logInUser(context, ref,
+                          emailController: emailController,
+                          passwordController: passwordController),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white),
+                      child: quicksandBlackBold('LOG-IN')),
+                ),
+              ),
+              quicksandBlackBold('Don\'t have an account?', fontSize: 16),
+              TextButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushReplacementNamed(NavigatorRoutes.register),
+                  child: quicksandBlackBold('Create an account',
+                      fontSize: 16, textDecoration: TextDecoration.underline)),
+              TextButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(NavigatorRoutes.forgotPassword),
+                  child: quicksandDeepCharcoalBold('Forgot Password?',
+                      fontSize: 12, textDecoration: TextDecoration.underline)),
+            ],
+          ),
+        )
+      ]),
+    );
   }
 }

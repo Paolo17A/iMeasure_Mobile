@@ -58,8 +58,8 @@ class _RenterSettlePaymentScreenState
         quotationURL = orderData[OrderFields.quotationURL];
 
         //  Window Data
-        String windowID = orderData[OrderFields.windowID];
-        final windowDoc = await getThisWindowDoc(windowID);
+        String itemID = orderData[OrderFields.itemID];
+        final windowDoc = await getThisItemDoc(itemID);
         final windowData = windowDoc.data() as Map<dynamic, dynamic>;
         windowName = windowData[WindowFields.name];
         windowImageURL = windowData[WindowFields.imageURL];

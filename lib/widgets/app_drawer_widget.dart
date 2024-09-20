@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/utils/color_util.dart';
 
 import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
@@ -8,7 +9,7 @@ import 'text_widgets.dart';
 
 Drawer appDrawer(BuildContext context, {required String route}) {
   return Drawer(
-    backgroundColor: Colors.black,
+    backgroundColor: CustomColors.deepCharcoal,
     child: Column(
       children: [
         const Gap(40),
