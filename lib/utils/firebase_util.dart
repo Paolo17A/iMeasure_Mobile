@@ -14,7 +14,6 @@ import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
 
 import '../providers/profile_image_url_provider.dart';
-import '../providers/settle_payment_provider.dart';
 import 'navigator_util.dart';
 import 'quotation_dialog_util.dart';
 import 'string_util.dart';
@@ -699,7 +698,7 @@ Future<List<DocumentSnapshot>> getUserOrderHistory() async {
       .toList();
 }
 
-Future generateOrder(BuildContext context, WidgetRef ref,
+/*Future generateOrder(BuildContext context, WidgetRef ref,
     {required num width,
     required num height,
     required List<dynamic> mandatoryWindowFields,
@@ -850,9 +849,9 @@ Future generateOrder(BuildContext context, WidgetRef ref,
         SnackBar(content: Text('Error generating new order: $error')));
     ref.read(loadingProvider).toggleLoading(false);
   }
-}
+}*/
 
-Future settlePendingPayment(BuildContext context, WidgetRef ref,
+/*Future settlePendingPayment(BuildContext context, WidgetRef ref,
     {required String orderID, required num amount}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
@@ -899,7 +898,7 @@ Future settlePendingPayment(BuildContext context, WidgetRef ref,
         SnackBar(content: Text('Error settling pending payment: $error')));
     ref.read(loadingProvider).toggleLoading(false);
   }
-}
+}*/
 
 //==============================================================================
 //==GALLERY=====================================================================

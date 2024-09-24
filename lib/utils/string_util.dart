@@ -133,18 +133,11 @@ class TransactionFields {
 class OrderFields {
   static const String clientID = 'clientID';
   static const String itemID = 'itemID';
-  static const String width = 'width';
-  static const String height = 'height';
-  static const String glassType = 'glassType';
-  static const String color = 'color';
-  static const String purchaseStatus = 'purchaseStatus';
+  static const String quantity = 'quantity';
+  static const String orderStatus = 'orderStatus';
+  static const String quotation = 'quotation';
+  static const String dateCreated = 'dateCreated';
   static const String datePickedUp = 'datePickedUp';
-  static const String rating = 'rating';
-  static const String mandatoryMap = 'mandatoryMap';
-  static const String optionalMap = 'optionalMap';
-  static const String windowOverallPrice = 'windowOverallPrice';
-  static const String laborPrice = 'laborPrice';
-  static const String quotationURL = 'quotationURL';
 }
 
 class OrderStatuses {

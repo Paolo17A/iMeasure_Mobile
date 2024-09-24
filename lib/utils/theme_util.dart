@@ -6,7 +6,9 @@ ThemeData themeData = ThemeData(
   colorSchemeSeed: CustomColors.emeraldGreen,
   scaffoldBackgroundColor: CustomColors.lavenderMist,
   appBarTheme: const AppBarTheme(
-      backgroundColor: CustomColors.deepCharcoal, toolbarHeight: 40),
+      iconTheme: IconThemeData(color: Colors.white),
+      backgroundColor: CustomColors.deepCharcoal,
+      toolbarHeight: 40),
   snackBarTheme: const SnackBarThemeData(
       backgroundColor: CustomColors.deepCharcoal,
       contentTextStyle:

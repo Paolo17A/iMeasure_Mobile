@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/screens/items_screen.dart';
 import 'package:imeasure_mobile/screens/order_history_screen.dart';
 import 'package:imeasure_mobile/screens/pending_payments_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
-import 'package:imeasure_mobile/screens/selected_product_screen.dart';
-import 'package:imeasure_mobile/screens/windows_screen.dart';
+import 'package:imeasure_mobile/screens/selected_window_screen.dart';
 import '../screens/bookmarks_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/checkout_screen.dart';
@@ -24,7 +24,7 @@ class NavigatorRoutes {
   static const String forgotPassword = 'forgotPassword';
   static const String profile = 'profile';
   static const String editProfile = 'editProfile';
-  static const String windows = 'windows';
+  static const String items = 'items';
   static void selectedWindow(BuildContext context, WidgetRef ref,
       {required String windowID}) {
     Navigator.of(context).push(MaterialPageRoute(
@@ -57,7 +57,7 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.forgotPassword: (context) => const ForgotPasswordScreen(),
   NavigatorRoutes.profile: (context) => const ProfileScreen(),
   NavigatorRoutes.editProfile: (context) => const EditProfileScreen(),
-  NavigatorRoutes.windows: (context) => const WindowsScreen(),
+  NavigatorRoutes.items: (context) => const ItemsScreen(),
   NavigatorRoutes.cart: (context) => const CartScreen(),
   NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
   NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),

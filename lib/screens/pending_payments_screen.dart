@@ -31,14 +31,14 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
         child: Column(
           children: [
             quicksandBlackBold('PENDING PAYMENTS', fontSize: 32),
-            _pendingPaymentRentalRequestsContainer()
+            //_pendingPaymentRentalRequestsContainer()
           ],
         ),
       ),
     );
   }
 
-  Widget _pendingPaymentRentalRequestsContainer() {
+  /*Widget _pendingPaymentRentalRequestsContainer() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection(Collections.orders)
@@ -59,9 +59,9 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
             : vertical20Pix(child: quicksandBlackBold('NO PENDING PAYMENTS'));
       },
     );
-  }
+  }*/
 
-  Widget pendingOrderEntry(DocumentSnapshot orderDoc) {
+  /*Widget pendingOrderEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
     String windowID = orderData[OrderFields.itemID];
     num totalPrice = orderData[OrderFields.windowOverallPrice] +
@@ -120,5 +120,5 @@ class _PendingPaymentsScreenState extends ConsumerState<PendingPaymentsScreen> {
             ),
           );
         });
-  }
+  }*/
 }

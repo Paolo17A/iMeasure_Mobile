@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
   final Function? onSearchPress;
   final Color? fillColor;
   final Color? textColor;
+  final double? borderRadius;
   const CustomTextField(
       {super.key,
       required this.text,
@@ -20,7 +21,8 @@ class CustomTextField extends StatefulWidget {
       this.hasSearchButton = false,
       this.onSearchPress,
       this.fillColor,
-      this.textColor});
+      this.textColor,
+      this.borderRadius});
 
   @override
   State<CustomTextField> createState() => _LiliwECommerceTextFieldState();
@@ -64,7 +66,7 @@ class _LiliwECommerceTextFieldState extends State<CustomTextField> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             fillColor: widget.fillColor ?? Colors.white,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 30),
                 borderSide: const BorderSide(color: Colors.black, width: 3.0)),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

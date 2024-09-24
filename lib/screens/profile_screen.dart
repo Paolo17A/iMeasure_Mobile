@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imeasure_mobile/providers/orders_provider.dart';
 import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
+import 'package:imeasure_mobile/widgets/custom_button_widgets.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/profile_image_url_provider.dart';
@@ -61,30 +62,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     ref.watch(ordersProvider);
     return Scaffold(
       appBar: appBarWidget(mayPop: false),
-      /*floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ElevatedButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            });
-          },
-          child: montserratMidnightBlueBold('LOG-OUT')),*/
       bottomNavigationBar: bottomNavigationBar(context, index: 3),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
             child: all20Pix(
-                child: Column(
-              children: [
-                profileDetails(),
-                // /const Divider(color: CustomColors.deepNavyBlue),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [],
-                )
-                //orderHistory()
-              ],
-            )),
+                child: Column(children: [
+              profileDetails(),
+              _actionButtons(),
+              _logoutButton()
+            ])),
           )),
     );
   }
@@ -96,49 +83,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         buildProfileImage(
             profileImageURL: ref.read(profileImageURLProvider).profileImageURL,
             radius: MediaQuery.of(context).size.width * 0.15),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: CustomColors.lavenderMist, shape: BoxShape.circle),
-              child: TextButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(NavigatorRoutes.editProfile),
-                  child: Icon(
-                    Icons.mode_edit_outline,
-                    color: Colors.white,
-                  )),
-            ),
-            Flexible(
-              flex: 3,
-              child: Column(
-                children: [
-                  quicksandBlackBold(formattedName, fontSize: 22),
-                  TextButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut().then((value) {
-                          Navigator.popUntil(context, (route) => route.isFirst);
-                        });
-                      },
-                      child: quicksandRedBold('LOG-OUT', fontSize: 12))
-                ],
-              ),
-            ),
-            Flexible(
-              child: TextButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(NavigatorRoutes.orderHistory),
-                  child: Icon(
-                    Icons.visibility_outlined,
-                    color: Colors.black,
-                    size: 40,
-                  )),
-            )
-          ],
-        )
+        quicksandBlackBold(formattedName, fontSize: 22),
       ],
     );
+  }
+
+  Widget _actionButtons() {
+    return vertical20Pix(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          roundedLavenderMistButton(
+              onPress: () =>
+                  Navigator.of(context).pushNamed(NavigatorRoutes.editProfile),
+              child: quicksandBlackRegular('EDIT PROFILE INFO', fontSize: 12)),
+          roundedLavenderMistButton(
+              onPress: () =>
+                  Navigator.of(context).pushNamed(NavigatorRoutes.orderHistory),
+              child: quicksandBlackRegular('ORDER HISTORY', fontSize: 12))
+        ],
+      ),
+    );
+  }
+
+  Widget _logoutButton() {
+    return ElevatedButton(
+        onPressed: () {
+          FirebaseAuth.instance.signOut().then((value) {
+            Navigator.popUntil(context, (route) => route.isFirst);
+          });
+        },
+        style: ElevatedButton.styleFrom(backgroundColor: CustomColors.coralRed),
+        child: quicksandWhiteRegular('LOG-OUT', fontSize: 12));
   }
 }

@@ -66,11 +66,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                 itemCount:
                     ref.read(ordersProvider).orderDocs.reversed.toList().length,
                 itemBuilder: (context, index) {
-                  return _orderHistoryEntry(ref
-                      .read(ordersProvider)
-                      .orderDocs
-                      .reversed
-                      .toList()[index]);
+                  return Container();
                 })
             : vertical20Pix(
                 child: quicksandBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
@@ -78,7 +74,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     );
   }
 
-  Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
+  /*Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
     String status = orderData[OrderFields.purchaseStatus];
     String windowID = orderData[OrderFields.itemID];
@@ -124,5 +120,5 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             ));
       },
     );
-  }
+  }*/
 }

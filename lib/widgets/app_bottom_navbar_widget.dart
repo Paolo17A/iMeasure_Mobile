@@ -19,7 +19,7 @@ void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
           NavigatorRoutes.home, (route) => route is HomeScreen);
       break;
     case 1:
-      Navigator.of(context).pushNamed(NavigatorRoutes.windows);
+      Navigator.of(context).pushNamed(NavigatorRoutes.items);
       break;
     case 2:
       Navigator.of(context).pushNamed(NavigatorRoutes.cart);
@@ -34,12 +34,13 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
   return Container(
     height: 80,
     decoration: BoxDecoration(
-        border: Border.all(color: CustomColors.deepCharcoal),
+        color: Colors.transparent,
+        //border: Border.all(color: CustomColors.coralRed),
         borderRadius: BorderRadius.circular(20)),
     child: BottomNavigationBar(
       currentIndex: index,
       selectedFontSize: 0,
-      backgroundColor: bottomNavButtonColor,
+      backgroundColor: Colors.transparent,
       selectedItemColor: CustomColors.deepCharcoal,
       unselectedItemColor: CustomColors.deepCharcoal,
       items: [
@@ -49,7 +50,7 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
             backgroundColor: bottomNavButtonColor,
             label: ''),
         BottomNavigationBarItem(
-            icon: _buildIcon(Icons.window_outlined, 'WINDOWS', index, 1),
+            icon: _buildIcon(Icons.window_outlined, 'ITEMS', index, 1),
             backgroundColor: bottomNavButtonColor,
             label: ''),
         if (hasLoggedInUser())

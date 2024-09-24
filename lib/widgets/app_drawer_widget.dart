@@ -23,7 +23,7 @@ Drawer appDrawer(BuildContext context, {required String route}) {
                   onPress: () => route == NavigatorRoutes.home
                       ? null
                       : Navigator.of(context).pushNamed(NavigatorRoutes.home)),
-              const Divider(
+              /*const Divider(
                 indent: 20,
                 endIndent: 20,
               ),
@@ -50,7 +50,7 @@ Drawer appDrawer(BuildContext context, {required String route}) {
                   label: 'Help',
                   onPress: () => route == NavigatorRoutes.help
                       ? null
-                      : Navigator.of(context).pushNamed(NavigatorRoutes.help))
+                      : Navigator.of(context).pushNamed(NavigatorRoutes.help))*/
             ],
           ),
         ),

@@ -24,6 +24,9 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
+  List<DocumentSnapshot> associatedItemDocs = [];
+  num paidAmount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -31,8 +34,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       ref.read(loadingProvider).toggleLoading(true);
       final scaffoldMessenger = ScaffoldMessenger.of(context);
       try {
+        ref.read(loadingProvider).toggleLoading(true);
         ref.read(cartProvider).setCartItems(await getCartEntries(context));
-        ref.read(loadingProvider.notifier).toggleLoading(false);
+        associatedItemDocs = await getSelectedItemDocs(
+            ref.read(cartProvider).cartItems.map((cartDoc) {
+          final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+          return cartData[CartFields.itemID].toString();
+        }).toList());
+        setState(() {});
+        ref.read(loadingProvider).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
             SnackBar(content: Text('Error getting cart entries: $error')));

@@ -47,15 +47,15 @@ class _RenterSettlePaymentScreenState
         final orderDoc = await getThisOrderDoc(widget.orderID);
         final orderData = orderDoc.data() as Map<dynamic, dynamic>;
 
-        width = orderData[OrderFields.width];
-        height = orderData[OrderFields.height];
-        glassType = orderData[OrderFields.glassType];
-        color = orderData[OrderFields.color];
-        mandatoryMap = orderData[OrderFields.mandatoryMap];
-        optionalMap = orderData[OrderFields.optionalMap];
-        orderPrice = orderData[OrderFields.windowOverallPrice] +
-            orderData[OrderFields.laborPrice];
-        quotationURL = orderData[OrderFields.quotationURL];
+        // width = orderData[OrderFields.width];
+        // height = orderData[OrderFields.height];
+        // glassType = orderData[OrderFields.glassType];
+        // color = orderData[OrderFields.color];
+        // mandatoryMap = orderData[OrderFields.mandatoryMap];
+        // optionalMap = orderData[OrderFields.optionalMap];
+        // orderPrice = orderData[OrderFields.windowOverallPrice] +
+        //     orderData[OrderFields.laborPrice];
+        // quotationURL = orderData[OrderFields.quotationURL];
 
         //  Window Data
         String itemID = orderData[OrderFields.itemID];
@@ -214,8 +214,7 @@ class _RenterSettlePaymentScreenState
               ref.read(settlePaymentProvider).selectedPaymentMethod.isEmpty ||
                       ref.read(settlePaymentProvider).paymentImage == null
                   ? null
-                  : () => settlePendingPayment(context, ref,
-                      orderID: widget.orderID, amount: orderPrice),
+                  : () {},
           style:
               ElevatedButton.styleFrom(disabledBackgroundColor: Colors.white),
           child: quicksandDeepCharcoalBold('PROCESS PAYMENT')),

@@ -55,7 +55,7 @@ void showQuotationDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
+              width: MediaQuery.of(context).size.width * 0.85,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
