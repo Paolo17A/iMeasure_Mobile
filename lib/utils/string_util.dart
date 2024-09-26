@@ -120,14 +120,21 @@ class FAQFields {
 
 class TransactionFields {
   static const String clientID = 'clientID';
-  static const String productID = 'productID';
+  static const String orderIDs = 'orderIDs';
   static const String paidAmount = 'paidAmount';
   static const String paymentMethod = 'paymentMethod';
   static const String proofOfPayment = 'proofOfPayment';
+  static const String transactionStatus = 'transactionStatus';
   static const String paymentStatus = 'paymentStatus';
   static const String paymentVerified = 'paymentVerified';
   static const String dateCreated = 'dateCreated';
   static const String dateApproved = 'dateApproved';
+}
+
+class TransactionStatuses {
+  static const String pending = 'PENDING';
+  static const String approved = 'APPROVED';
+  static const String denied = 'DENIED';
 }
 
 class OrderFields {

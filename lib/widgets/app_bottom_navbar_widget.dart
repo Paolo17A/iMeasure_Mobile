@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/providers/cart_provider.dart';
 
 import '../screens/home_screen.dart';
 import '../utils/color_util.dart';
@@ -7,11 +9,13 @@ import '../utils/navigator_util.dart';
 
 Color bottomNavButtonColor = CustomColors.deepCharcoal;
 
-void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
+void _processPress(
+    BuildContext context, WidgetRef ref, int selectedIndex, int currentIndex) {
   //  Do nothing if we are selecting the same bottom bar
   if (selectedIndex == currentIndex) {
     return;
   }
+  ref.read(cartProvider).resetSelectedCartItems();
   switch (selectedIndex) {
     case 0:
       //Navigator.of(context).pushNamed(NavigatorRoutes.home);
@@ -30,7 +34,8 @@ void _processPress(BuildContext context, int selectedIndex, int currentIndex) {
   }
 }
 
-Widget bottomNavigationBar(BuildContext context, {required int index}) {
+Widget bottomNavigationBar(BuildContext context, WidgetRef ref,
+    {required int index}) {
   return Container(
     height: 80,
     decoration: BoxDecoration(
@@ -65,7 +70,7 @@ Widget bottomNavigationBar(BuildContext context, {required int index}) {
               label: '')
       ],
       onTap: (int tappedIndex) {
-        _processPress(context, tappedIndex, index);
+        _processPress(context, ref, tappedIndex, index);
       },
     ),
   );

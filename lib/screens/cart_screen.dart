@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
+import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
 
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
@@ -56,15 +57,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     ref.watch(loadingProvider);
     ref.watch(cartProvider);
     return PopScope(
-      onPopInvoked: (didPop) => ref.read(cartProvider).setSelectedCartItem(''),
+      onPopInvoked: (didPop) => ref.read(cartProvider).resetSelectedCartItems(),
       child: Scaffold(
-        appBar: appBarWidget(mayPop: false, actions: [
-          ElevatedButton(
-              onPressed: () => Navigator.of(context)
-                  .pushNamed(NavigatorRoutes.pendingPayments),
-              child: quicksandDeepCharcoalRegular('To Pay'))
-        ]),
-        bottomNavigationBar: bottomNavigationBar(context, index: 2),
+        appBar: appBarWidget(mayPop: true),
+        drawer: appDrawer(context, ref, route: NavigatorRoutes.cart),
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _checkoutBar(),
+            bottomNavigationBar(context, ref, index: 2)
+          ],
+        ),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
@@ -78,7 +81,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        quicksandBlackBold('CART', fontSize: 40),
+        all10Pix(child: quicksandBlackBold('CART', fontSize: 40)),
         ref.read(cartProvider).cartItems.isNotEmpty
             ? ListView.builder(
                 shrinkWrap: true,
@@ -96,102 +99,261 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _cartEntry(DocumentSnapshot cartDoc) {
     final cartData = cartDoc.data() as Map<dynamic, dynamic>;
-    return FutureBuilder(
-        future: getThisItemDoc(cartData[CartFields.itemID]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              !snapshot.hasData ||
-              snapshot.hasError)
-            return Container(
-                color: CustomColors.lavenderMist,
-                height: 60,
-                child: snapshotHandler(snapshot));
-          final windowData = snapshot.data!.data() as Map<dynamic, dynamic>;
-          String name = windowData[WindowFields.name];
-          String imageURL = windowData[WindowFields.imageURL];
-          bool isAvailable = windowData[WindowFields.isAvailable];
-          num minHeight = windowData[WindowFields.minHeight];
-          num maxHeight = windowData[WindowFields.maxHeight];
-          num minWidth = windowData[WindowFields.minWidth];
-          num maxWidth = windowData[WindowFields.maxWidth];
-
-          return vertical10Pix(
-              child: Container(
-                  decoration: BoxDecoration(border: Border.all()),
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => NavigatorRoutes.selectedWindow(
-                            context, ref,
-                            windowID: cartData[CartFields.itemID]),
-                        child: Row(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                                backgroundImage: NetworkImage(imageURL),
-                                backgroundColor: Colors.transparent,
-                                radius: 30),
-                            Gap(10),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+    String itemType = cartData[CartFields.itemType];
+    int quantity = cartData[CartFields.quantity];
+    Map<dynamic, dynamic> quotation = {};
+    num price = 0;
+    num laborPrice = 0;
+    DocumentSnapshot? associatedItemDoc =
+        associatedItemDocs.where((productDoc) {
+      return productDoc.id == cartData[CartFields.itemID].toString();
+    }).firstOrNull;
+    if (associatedItemDoc == null)
+      return Container();
+    else {
+      String name = associatedItemDoc[ItemFields.name];
+      String imageURL = associatedItemDoc[ItemFields.imageURL];
+      if (itemType == ItemTypes.rawMaterial) {
+        price = associatedItemDoc[ItemFields.price];
+      } else {
+        quotation = cartData[CartFields.quotation];
+        price = quotation[QuotationFields.itemOverallPrice];
+        laborPrice = quotation[QuotationFields.laborPrice];
+      }
+      //num price = associatedItemDoc[ItemFields.price];
+      return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: CustomColors.deepCharcoal)),
+          padding: EdgeInsets.all(10),
+          child: Row(
+            children: [
+              //  CHECKBOX
+              Checkbox(
+                  value: ref
+                      .read(cartProvider)
+                      .selectedCartItemIDs
+                      .contains(cartDoc.id),
+                  onChanged: (itemType == ItemTypes.rawMaterial ||
+                          laborPrice > 0)
+                      ? (newVal) {
+                          if (newVal == null) return;
+                          setState(() {
+                            if (newVal) {
+                              ref.read(cartProvider).selectCartItem(cartDoc.id);
+                            } else {
+                              ref
+                                  .read(cartProvider)
+                                  .deselectCartItem(cartDoc.id);
+                            }
+                          });
+                        }
+                      : null),
+              Flexible(
+                flex: 4,
+                child: Column(
+                  children: [
+                    //ITEM DATA
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Container(
+                            width: 96,
+                            height: 96,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(imageURL))),
+                          ),
+                        ),
+                        Gap(24),
+                        Flexible(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              quicksandBlackBold(name),
+                              Row(
                                 children: [
-                                  quicksandBlackBold(name,
-                                      textAlign: TextAlign.left,
-                                      textOverflow: TextOverflow.ellipsis),
-                                  montserratBlackRegular(
-                                      'Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
-                                      fontSize: 12),
-                                  montserratBlackRegular(
-                                      'Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
-                                      fontSize: 12)
+                                  quicksandBlackRegular(
+                                      'PHP ${formatPrice(price.toDouble())}',
+                                      fontSize: 16),
                                 ],
                               ),
-                            ),
-                          ],
+                              if (itemType != ItemTypes.rawMaterial ||
+                                  laborPrice > 0)
+                                quicksandBlackRegular(
+                                    'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
+                                    fontSize: 14),
+                              if (itemType != ItemTypes.rawMaterial)
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      quicksandBlackRegular(
+                                          'Width: ${quotation[QuotationFields.width]}ft',
+                                          fontSize: 12),
+                                      quicksandBlackRegular(
+                                          'Height: ${quotation[QuotationFields.height]}ft',
+                                          fontSize: 12)
+                                    ])
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    //  CART DATA
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          flex: 2,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: CustomColors.deepCharcoal)),
+                                  child: TextButton(
+                                      onPressed: quantity == 1
+                                          ? null
+                                          : () => changeCartItemQuantity(
+                                              context, ref,
+                                              cartEntryDoc: cartDoc,
+                                              isIncreasing: false),
+                                      child: quicksandBlackRegular('-',
+                                          fontSize: 16))),
+                              Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: CustomColors.deepCharcoal)),
+                                  child: Center(
+                                    child: quicksandBlackRegular(
+                                        quantity.toString(),
+                                        fontSize: 15),
+                                  )),
+                              Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: CustomColors.deepCharcoal)),
+                                  child: TextButton(
+                                      onPressed: () => changeCartItemQuantity(
+                                          context, ref,
+                                          cartEntryDoc: cartDoc,
+                                          isIncreasing: true),
+                                      child: quicksandBlackRegular('+',
+                                          fontSize: 16)))
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: CustomColors.emeraldGreen,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: TextButton(
-                            onPressed: () {
-                              if (isAvailable) {
-                                ref
-                                    .read(cartProvider)
-                                    .setSelectedCartItem(cartDoc.id);
-                                Navigator.of(context)
-                                    .pushNamed(NavigatorRoutes.checkout);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        'This window is currently not available.')));
-                              }
-                            },
-                            child: quicksandDeepCharcoalBold('PURCHASE',
-                                fontSize: 12)),
-                      ),
-                      Gap(4),
-                      Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 167, 55, 47)),
-                        child: TextButton(
-                            onPressed: () => displayDeleteEntryDialog(context,
-                                message:
-                                    'Are you sure you wish to remove ${name} from your cart?',
-                                deleteEntry: () => removeCartItem(context, ref,
-                                    cartDoc: cartDoc)),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.white)),
-                      )
-                    ],
-                  )));
-        });
+                        Flexible(
+                          flex: 2,
+                          child: IconButton(
+                              onPressed: () => displayDeleteEntryDialog(context,
+                                      message:
+                                          'Are you sure you wish to remove ${name} from your cart?',
+                                      deleteEntry: () {
+                                    if (ref
+                                        .read(cartProvider)
+                                        .selectedCartItemIDs
+                                        .contains(cartDoc.id)) {
+                                      ref
+                                          .read(cartProvider)
+                                          .deselectCartItem(cartDoc.id);
+                                    }
+                                    removeCartItem(context, ref,
+                                        cartDoc: cartDoc);
+                                  }),
+                              icon: Icon(Icons.delete,
+                                  color: CustomColors.coralRed)),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ));
+    }
+  }
+
+  Widget _totalAmountWidget() {
+    //  1. Get every associated cart DocumentSnapshot
+    List<DocumentSnapshot> selectedCartDocs = [];
+    for (var cartID in ref.read(cartProvider).selectedCartItemIDs) {
+      selectedCartDocs.add(ref
+          .read(cartProvider)
+          .cartItems
+          .where((element) => element.id == cartID)
+          .first);
+    }
+    //  2. get list of associated products
+    num totalAmount = 0;
+    //  Go through every selected cart item
+    for (var cartDoc in selectedCartDocs) {
+      final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+      String itemID = cartData[CartFields.itemID];
+      num quantity = cartData[CartFields.quantity];
+      DocumentSnapshot? itemDoc =
+          associatedItemDocs.where((item) => item.id == itemID).firstOrNull;
+      if (itemDoc == null) {
+        continue;
+      }
+      final itemData = itemDoc.data() as Map<dynamic, dynamic>;
+      if (itemData[ItemFields.itemType] == ItemTypes.rawMaterial) {
+        num price = itemData[ItemFields.price];
+        totalAmount += quantity * price;
+      } else {
+        Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+        totalAmount +=
+            (quantity * quotation[QuotationFields.itemOverallPrice]) +
+                quotation[QuotationFields.laborPrice];
+      }
+    }
+    paidAmount = totalAmount;
+    return quicksandWhiteBold('PHP ${formatPrice(totalAmount.toDouble())}',
+        textAlign: TextAlign.left);
+  }
+
+  Widget _checkoutBar() {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+          border:
+              Border.symmetric(horizontal: BorderSide(color: Colors.white))),
+      child: BottomAppBar(
+        color: CustomColors.deepCharcoal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(flex: 2, child: _totalAmountWidget()),
+            Flexible(
+                //flex: 2,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        disabledBackgroundColor: CustomColors.lavenderMist,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side:
+                                BorderSide(color: CustomColors.lavenderMist))),
+                    onPressed:
+                        ref.read(cartProvider).selectedCartItemIDs.isEmpty
+                            ? null
+                            : () => Navigator.of(context)
+                                .pushNamed(NavigatorRoutes.checkout),
+                    child: quicksandWhiteRegular('CHECKOUT', fontSize: 10)))
+          ],
+        ),
+      ),
+    );
   }
 }

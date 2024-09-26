@@ -7,7 +7,7 @@ Widget submitButton(BuildContext context,
   return Padding(
       padding: const EdgeInsets.all(20),
       child: ElevatedButton(
-          onPressed: () => onPress(), child: quicksandDeepCharcoalBold(label)));
+          onPressed: () => onPress(), child: quicksandWhiteRegular(label)));
 }
 
 Widget roundedLavenderMistButton(

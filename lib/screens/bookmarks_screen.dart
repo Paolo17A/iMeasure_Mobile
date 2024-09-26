@@ -51,7 +51,7 @@ class _BookMarksScreenState extends ConsumerState<BookmarksScreen> {
     ref.watch(bookmarksProvider);
     return Scaffold(
       appBar: appBarWidget(),
-      drawer: appDrawer(context, route: NavigatorRoutes.bookmarks),
+      drawer: appDrawer(context, ref, route: NavigatorRoutes.bookmarks),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading, bookmarksContainer()),
     );

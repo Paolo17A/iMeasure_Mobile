@@ -12,6 +12,7 @@ import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
+import '../widgets/app_drawer_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/text_widgets.dart';
@@ -61,8 +62,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     ref.watch(profileImageURLProvider);
     ref.watch(ordersProvider);
     return Scaffold(
-      appBar: appBarWidget(mayPop: false),
-      bottomNavigationBar: bottomNavigationBar(context, index: 3),
+      appBar: appBarWidget(mayPop: true),
+      bottomNavigationBar: bottomNavigationBar(context, ref, index: 3),
+      drawer: appDrawer(context, ref, route: NavigatorRoutes.profile),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(
@@ -92,7 +94,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return vertical20Pix(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           roundedLavenderMistButton(
               onPress: () =>

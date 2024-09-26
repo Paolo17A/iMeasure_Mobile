@@ -1,65 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/providers/profile_image_url_provider.dart';
 import 'package:imeasure_mobile/utils/color_util.dart';
+import 'package:imeasure_mobile/widgets/custom_padding_widgets.dart';
 
-import '../utils/firebase_util.dart';
-import '../utils/navigator_util.dart';
 import 'text_widgets.dart';
 
-Drawer appDrawer(BuildContext context, {required String route}) {
+Drawer appDrawer(BuildContext context, WidgetRef ref, {required String route}) {
   return Drawer(
     backgroundColor: CustomColors.deepCharcoal,
     child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Gap(40),
-        Flexible(
-          flex: 1,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              _drawerTile(context,
-                  label: 'Home',
-                  onPress: () => route == NavigatorRoutes.home
-                      ? null
-                      : Navigator.of(context).pushNamed(NavigatorRoutes.home)),
-              /*const Divider(
-                indent: 20,
-                endIndent: 20,
+        Column(children: [
+          const Gap(40),
+          if (ref.read(profileImageURLProvider).profileImageURL.isNotEmpty)
+            all20Pix(
+              child: Image.network(
+                ref.read(profileImageURLProvider).profileImageURL,
+                width: 120,
+                height: 120,
+                fit: BoxFit.fill,
               ),
-              if (hasLoggedInUser())
-                _drawerTile(context,
-                    label: 'Profile',
-                    onPress: () => route == NavigatorRoutes.profile
-                        ? null
-                        : Navigator.of(context)
-                            .pushNamed(NavigatorRoutes.profile))
-              else
-                _drawerTile(context,
-                    label: 'Log-In',
-                    onPress: () =>
-                        Navigator.of(context).pushNamed(NavigatorRoutes.login)),
-              if (hasLoggedInUser())
-                _drawerTile(context,
-                    label: 'Bookmarks',
-                    onPress: () => route == NavigatorRoutes.bookmarks
-                        ? null
-                        : Navigator.of(context)
-                            .pushNamed(NavigatorRoutes.bookmarks)),
-              _drawerTile(context,
-                  label: 'Help',
-                  onPress: () => route == NavigatorRoutes.help
-                      ? null
-                      : Navigator.of(context).pushNamed(NavigatorRoutes.help))*/
-            ],
-          ),
-        ),
-        if (hasLoggedInUser())
-          _drawerTile(context, label: 'Log-Out', onPress: () {
-            FirebaseAuth.instance.signOut().then((value) =>
-                Navigator.of(context)
-                    .pushReplacementNamed(NavigatorRoutes.home));
-          })
+            ),
+          quicksandWhiteBold(ref.read(profileImageURLProvider).formattedName)
+        ]),
+        _drawerTile(context, label: 'Log-Out', onPress: () {
+          FirebaseAuth.instance.signOut().then((value) =>
+              Navigator.of(context).popUntil((route) => route.isFirst));
+        })
       ],
     ),
   );

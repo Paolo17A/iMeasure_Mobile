@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/profile_image_url_provider.dart';
+import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bar_widget.dart';
@@ -74,29 +75,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         Column(
                           //crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            Stack(
                               children: [
                                 buildProfileImage(
                                     profileImageURL: ref
                                         .read(profileImageURLProvider)
-                                        .profileImageURL,
-                                    radius: MediaQuery.of(context).size.width *
-                                        0.15),
-                                Column(
-                                  children: [
-                                    if (ref
-                                        .read(profileImageURLProvider)
-                                        .profileImageURL
-                                        .isNotEmpty)
-                                      ElevatedButton(
-                                          onPressed: () => uploadProfilePicture(
-                                              context, ref),
-                                          child: quicksandDeepCharcoalBold(
-                                              'UPLOAD\nPROFILE PICTURE',
-                                              fontSize: 14))
-                                  ],
-                                ),
+                                        .profileImageURL),
+                                Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          uploadProfilePicture(context, ref),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(),
+                                            color: CustomColors.lavenderMist,
+                                            shape: BoxShape.circle),
+                                        child: Icon(Icons.photo_camera),
+                                      ),
+                                    ))
                               ],
                             ),
                             _editProfileHeader(),

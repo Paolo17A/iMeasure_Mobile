@@ -58,8 +58,8 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
     ref.watch(loadingProvider);
     return Scaffold(
         appBar: appBarWidget(mayPop: true),
-        drawer: appDrawer(context, route: ''),
-        bottomNavigationBar: bottomNavigationBar(context, index: 1),
+        drawer: appDrawer(context, ref, route: ''),
+        bottomNavigationBar: bottomNavigationBar(context, ref, index: 1),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             Column(
@@ -130,14 +130,14 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
     String itemType = itemData[ItemFields.itemType];
     return Container(
       width: MediaQuery.of(context).size.width * 0.45,
-      decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+      //decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       padding: EdgeInsets.all(12),
       child: Column(
         children: [
           square150NetworkImage(imageURL),
           vertical10Pix(child: quicksandBlackBold(name)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (itemType == ItemTypes.window || itemType == ItemTypes.door)
                 ElevatedButton(
@@ -146,8 +146,8 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
                         NavigatorRoutes.selectedWindow(context, ref,
                             windowID: itemDoc.id);
                       } else if (itemType == ItemTypes.door) {
-                      } else if (itemType == ItemTypes.rawMaterial) {
-                        //addRawMaterialToCart(context, ref, itemID: itemDoc.id);
+                        NavigatorRoutes.selectedDoor(context, ref,
+                            doorID: itemDoc.id);
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -169,14 +169,16 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
                   ),
                 ),
               Gap(4),
-              /*ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(),
-                          borderRadius: BorderRadius.circular(10))),
-                  child: Icon(Icons.shopping_cart, color: Colors.black))*/
+              if (itemType == ItemTypes.rawMaterial)
+                ElevatedButton(
+                    onPressed: () =>
+                        addRawMaterialToCart(context, ref, itemID: itemDoc.id),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(),
+                            borderRadius: BorderRadius.circular(10))),
+                    child: Icon(Icons.shopping_cart, color: Colors.black))
             ],
           )
         ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
+import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
 
 import '../providers/bookmarks_provider.dart';
 import '../providers/loading_provider.dart';
@@ -57,8 +58,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: appBarWidget(mayPop: false),
-        bottomNavigationBar: bottomNavigationBar(context, index: 0),
+        appBar: appBarWidget(mayPop: true),
+        drawer: appDrawer(context, ref, route: NavigatorRoutes.home),
+        bottomNavigationBar: bottomNavigationBar(context, ref, index: 0),
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
@@ -140,8 +142,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
-                                  child: itemEntry(context, productDoc: item,
-                                      onPress: () {
+                                  child: itemEntry(context, ref,
+                                      productDoc: item, onPress: () {
                                     final itemData =
                                         item.data() as Map<dynamic, dynamic>;
                                     String itemType =

@@ -4,12 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
 import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
+import 'package:intl/intl.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/orders_provider.dart';
-import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
-import '../utils/navigator_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/custom_padding_widgets.dart';
 import '../widgets/text_widgets.dart';
@@ -65,60 +64,69 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount:
                     ref.read(ordersProvider).orderDocs.reversed.toList().length,
-                itemBuilder: (context, index) {
-                  return Container();
-                })
+                itemBuilder: (context, index) => _orderEntry(ref
+                    .read(ordersProvider)
+                    .orderDocs
+                    .reversed
+                    .toList()[index]))
             : vertical20Pix(
                 child: quicksandBlackBold('YOU HAVE NOT MADE ANY ORDERS YET.'))
       ],
     );
   }
 
-  /*Widget _orderHistoryEntry(DocumentSnapshot orderDoc) {
+  Widget _orderEntry(DocumentSnapshot orderDoc) {
     final orderData = orderDoc.data() as Map<dynamic, dynamic>;
-    String status = orderData[OrderFields.purchaseStatus];
-    String windowID = orderData[OrderFields.itemID];
-    String glassType = orderData[OrderFields.glassType];
-
+    String itemID = orderData[OrderFields.itemID];
+    String orderStatus = orderData[OrderFields.orderStatus];
+    num quantity = orderData[OrderFields.quantity];
+    DateTime dateCreated =
+        (orderData[OrderFields.dateCreated] as Timestamp).toDate();
+    Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
+    num itemOverallPrice = quotation[QuotationFields.itemOverallPrice];
     return FutureBuilder(
-      future: getThisItemDoc(windowID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData ||
-            snapshot.hasError) return snapshotHandler(snapshot);
+        future: getThisItemDoc(itemID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              !snapshot.hasData ||
+              snapshot.hasError) return snapshotHandler(snapshot);
 
-        final productData = snapshot.data!.data() as Map<dynamic, dynamic>;
-        String imageURL = productData[WindowFields.imageURL];
-        String name = productData[WindowFields.name];
-        return GestureDetector(
-            onTap: () => NavigatorRoutes.selectedWindow(context, ref,
-                windowID: windowID),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: CustomColors.lavenderMist, border: Border.all()),
-              padding: EdgeInsets.all(10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(imageURL, width: 60),
-                  Gap(4),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      quicksandBlackBold(name, fontSize: 15),
-                      /*m('SRP: ${price.toStringAsFixed(2)}',
-                          fontSize: 15),*/
-                      montserratBlackRegular('Glass Type: $glassType',
-                          fontSize: 12),
-                      montserratBlackRegular('Status: $status', fontSize: 12),
-                      /*montserratWhiteBold(
-                          'PHP ${(price * quantity).toStringAsFixed(2)}'),*/
-                    ],
-                  ),
-                ],
-              ),
-            ));
-      },
-    );
-  }*/
+          final itemData = snapshot.data!.data() as Map<dynamic, dynamic>;
+          //String itemType = itemData[ItemFields.itemType];
+          String imageURL = itemData[ItemFields.imageURL];
+          String name = itemData[ItemFields.name];
+          return Container(
+            //width: 400,
+            height: 150,
+            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            padding: EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(imageURL), fit: BoxFit.cover))),
+                Gap(12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    quicksandBlackBold(name),
+                    quicksandBlackRegular('Quantity: $quantity', fontSize: 14),
+                    quicksandBlackRegular(
+                        'Date Ordered: ${DateFormat('MMM dd, yyyy').format(dateCreated)}',
+                        fontSize: 14),
+                    quicksandBlackRegular('Status: $orderStatus', fontSize: 14),
+                    quicksandBlackBold(
+                        'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
 }

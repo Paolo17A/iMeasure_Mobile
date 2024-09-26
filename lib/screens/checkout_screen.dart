@@ -1,16 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:imeasure_mobile/models/glass_model.dart';
 import 'package:imeasure_mobile/providers/cart_provider.dart';
 import 'package:imeasure_mobile/providers/loading_provider.dart';
-import 'package:imeasure_mobile/screens/initial_quotation_screen.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 import 'package:imeasure_mobile/utils/string_util.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
 import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 import 'package:imeasure_mobile/widgets/custom_padding_widgets.dart';
-import 'package:imeasure_mobile/widgets/custom_text_field_widget.dart';
 import 'package:imeasure_mobile/widgets/text_widgets.dart';
 
 import '../utils/color_util.dart';
@@ -24,16 +22,8 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
-  String windowID = '';
-  String name = '';
-  String imageURL = '';
-  num minHeight = 0;
-  num maxHeight = 0;
-  num minWidth = 0;
-  num maxWidth = 0;
-
-  final widthController = TextEditingController();
-  final heightController = TextEditingController();
+  List<Map<dynamic, dynamic>> productEntries = [];
+  num totalAmount = 0;
 
   @override
   void initState() {
@@ -41,21 +31,50 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         ref.read(loadingProvider).toggleLoading(true);
-        final cartEntry =
-            await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
-        final cartData = cartEntry.data() as Map<dynamic, dynamic>;
-        windowID = cartData[CartFields.itemID];
+        ref.read(loadingProvider).toggleLoading(true);
+        //  1. Get every associated cart DocumentSnapshot
+        List<DocumentSnapshot> selectedCartDocs = [];
+        for (var cartID in ref.read(cartProvider).selectedCartItemIDs) {
+          selectedCartDocs.add(ref
+              .read(cartProvider)
+              .cartItems
+              .where((element) => element.id == cartID)
+              .first);
+        }
 
-        final window = await getThisItemDoc(windowID);
-        final windowData = window.data() as Map<dynamic, dynamic>;
-        name = windowData[WindowFields.name];
-        imageURL = windowData[WindowFields.imageURL];
-        minHeight = windowData[WindowFields.minHeight];
-        maxHeight = windowData[WindowFields.maxHeight];
-        minWidth = windowData[WindowFields.minWidth];
-        maxWidth = windowData[WindowFields.maxWidth];
-
-        ref.read(cartProvider).setSelectedPaymentMethod('');
+        //  Get product details
+        for (var cartDoc in selectedCartDocs) {
+          final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+          String itemID = cartData[CartFields.itemID];
+          final item = await getThisItemDoc(itemID);
+          final itemData = item.data() as Map<dynamic, dynamic>;
+          String itemType = itemData[ItemFields.itemType];
+          num quantity = cartData[CartFields.quantity];
+          if (itemType == ItemTypes.rawMaterial) {
+            Map<dynamic, dynamic> productEntry = {
+              ItemFields.imageURL: itemData[ItemFields.imageURL],
+              ItemFields.name: itemData[ItemFields.name],
+              ItemFields.price: itemData[ItemFields.price],
+              CartFields.quantity: cartData[CartFields.quantity]
+            };
+            productEntries.add(productEntry);
+            totalAmount +=
+                cartData[CartFields.quantity] * itemData[ItemFields.price];
+          } else {
+            Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+            num itemPrice =
+                (quantity * quotation[QuotationFields.itemOverallPrice]) +
+                    quotation[QuotationFields.laborPrice];
+            Map<dynamic, dynamic> productEntry = {
+              ItemFields.imageURL: itemData[ItemFields.imageURL],
+              ItemFields.name: itemData[ItemFields.name],
+              ItemFields.price: itemPrice,
+              CartFields.quantity: cartData[CartFields.quantity]
+            };
+            productEntries.add(productEntry);
+            totalAmount += itemPrice;
+          }
+        }
         ref.read(loadingProvider).toggleLoading(false);
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -67,35 +86,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    widthController.dispose();
-    heightController.dispose();
-  }
-
-  bool mayProceedToInitialQuotationScreen() {
-    return ref.read(cartProvider).selectedGlassType.isNotEmpty &&
-        ref.read(cartProvider).selectedColor.isNotEmpty &&
-        widthController.text.isNotEmpty &&
-        double.tryParse(widthController.text) != null &&
-        double.parse(widthController.text.trim()) >= minWidth &&
-        double.parse(widthController.text.trim()) <= maxWidth &&
-        heightController.text.isNotEmpty &&
-        double.tryParse(heightController.text) != null &&
-        double.parse(heightController.text.trim()) >= minHeight &&
-        double.parse(heightController.text.trim()) <= maxHeight;
-  }
-
-  @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
     ref.watch(cartProvider);
     return PopScope(
       onPopInvoked: (didPop) {
-        ref.read(cartProvider).setSelectedCartItem('');
-        ref.read(cartProvider).setGlassType('');
         ref.read(cartProvider).setSelectedPaymentMethod('');
-        ref.read(cartProvider).setSelectedColor('');
+        ref.read(cartProvider).resetProofOfPaymentFile();
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -110,25 +107,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   child: all20Pix(
                       child: Column(
                     children: [
-                      windowDetails(),
-                      Divider(),
-                      measurementWidgets(),
-                      ElevatedButton(
-                          onPressed: mayProceedToInitialQuotationScreen()
-                              ? () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          InitialQuotationScreen(
-                                              windowID: windowID,
-                                              width: double.parse(
-                                                  widthController.text),
-                                              height: double.parse(
-                                                  heightController.text))))
-                              : null,
-                          child: quicksandWhiteBold('VIEW INITIAL QUOTATION',
-                              fontSize: 14))
-
-                      //paymentWidgets()
+                      quicksandBlackBold('PRODUCT CHECKOUT', fontSize: 28),
+                      Column(
+                          children: productEntries
+                              .map(
+                                  (productEntry) => _productEntry(productEntry))
+                              .toList()),
+                      quicksandBlackRegular(
+                          'TOTAL: PHP ${formatPrice(totalAmount.toDouble())}'),
+                      Divider(color: CustomColors.deepCharcoal),
+                      paymentWidgets(),
+                      _checkoutButton()
                     ],
                   )),
                 ),
@@ -138,124 +127,35 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget windowDetails() {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (imageURL.isNotEmpty)
-        Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-          child: Image.network(imageURL,
-              width: MediaQuery.of(context).size.width * 0.3),
-        ),
-      Gap(20),
-      SizedBox(
-        width: MediaQuery.of(context).size.width * 0.5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            quicksandBlackBold(name),
-            quicksandDeepCharcoalRegular(
-                'Available Width: ${minWidth.toString()} - ${maxWidth.toString()}ft',
-                fontSize: 12),
-            quicksandDeepCharcoalRegular(
-                'Available Height: ${minHeight.toString()} - ${maxHeight.toString()}ft',
-                fontSize: 12),
-          ],
-        ),
-      )
-    ]);
-  }
-
-  Widget measurementWidgets() {
-    return vertical20Pix(
+  Widget _productEntry(Map<dynamic, dynamic> productEntry) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
       child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(10),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          //montserratBlackBold('INPUT YOUR WINDOW DETAILS', fontSize: 18),
-          //Gap(20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(4)),
+          padding: EdgeInsets.all(4),
+          child: Row(
+            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              montserratBlackRegular('WIDTH', fontSize: 16),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: CustomTextField(
-                    text: 'Width',
-                    controller: widthController,
-                    textInputType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    fillColor: Colors.white,
-                    displayPrefixIcon: null),
-              ),
+              Image.network(productEntry[ItemFields.imageURL],
+                  width: 50, height: 50, fit: BoxFit.cover),
+              Gap(4),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                quicksandBlackBold(productEntry[ItemFields.name],
+                    fontSize: 16, textOverflow: TextOverflow.ellipsis),
+                quicksandBlackRegular(
+                    'Quanitity: ${productEntry[CartFields.quantity]}',
+                    fontSize: 12,
+                    textAlign: TextAlign.left),
+                quicksandBlackRegular(
+                    'SRP: PHP ${formatPrice(productEntry[ItemFields.price].toDouble())}',
+                    fontSize: 12,
+                    textAlign: TextAlign.left),
+              ]),
             ],
-          ),
-
-          Gap(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              montserratBlackRegular('HEIGHT', fontSize: 16),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: CustomTextField(
-                    text: 'Height',
-                    controller: heightController,
-                    textInputType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    fillColor: Colors.white,
-                    displayPrefixIcon: null),
-              ),
-            ],
-          ),
-
-          Gap(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              montserratBlackRegular('GLASS\nTYPE', fontSize: 16),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5)),
-                child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
-                    (newVal) {
-                  ref.read(cartProvider).setGlassType(newVal!);
-                },
-                    allGlassModels
-                        .map((glassModel) => glassModel.glassTypeName)
-                        .toList(),
-                    'Select your glass type',
-                    false),
-              ),
-            ],
-          ),
-
-          Gap(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              montserratBlackRegular('COLOR', fontSize: 16),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5)),
-                child: dropdownWidget(ref.read(cartProvider).selectedColor,
-                    (newVal) {
-                  ref.read(cartProvider).setSelectedColor(newVal!);
-                }, [
-                  WindowColors.brown,
-                  WindowColors.white,
-                  WindowColors.mattBlack,
-                  WindowColors.mattGray,
-                  WindowColors.woodFinish
-                ], 'Select color', false),
-              )
-            ],
-          )
-        ]),
-      ),
+          )),
     );
   }
 
@@ -270,7 +170,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         _paymentMethod(),
         if (ref.read(cartProvider).selectedPaymentMethod.isNotEmpty)
           _uploadPayment(),
-        //_checkoutButton()
       ]),
     );
   }
@@ -289,7 +188,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               (newVal) {
             ref.read(cartProvider).setSelectedPaymentMethod(newVal!);
           }, ['GCASH', 'PAYMAYA'], 'Select your payment method', false),
-        )
+        ),
       ],
     ));
   }
@@ -315,27 +214,64 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             )
           ],
         ),
+        if (ref.read(cartProvider).proofOfPaymentFile != null) ...[
+          Divider(),
+          Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: MemoryImage(ref
+                        .read(cartProvider)
+                        .proofOfPaymentFile!
+                        .readAsBytesSync()))),
+          ),
+          Gap(8),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: IconButton(
+                onPressed: () =>
+                    ref.read(cartProvider).resetProofOfPaymentFile(),
+                icon: Icon(Icons.delete, color: Colors.white)),
+          )
+        ],
+        all10Pix(
+          child: ElevatedButton(
+              onPressed: () => ref.read(cartProvider).setProofOfPaymentFile(),
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Colors.white))),
+              child: quicksandWhiteRegular('UPLOAD PROOF OF PAYMENT',
+                  fontSize: 12)),
+        )
       ],
     ));
   }
 
-  /*Widget _checkoutButton() {
-    return Container(
-      height: 60,
-      child: ElevatedButton(
-          onPressed: ref.read(cartProvider).selectedPaymentMethod.isEmpty ||
-                  ref.read(cartProvider).selectedGlassType.isEmpty
-              ? null
-              : () => purchaseSelectedCartItem(context, ref,
-                  widthController: widthController,
-                  heightController: heightController,
-                  minWidth: minWidth,
-                  maxWidth: maxWidth,
-                  minHeight: minHeight,
-                  maxHeight: maxHeight),
-          style: ElevatedButton.styleFrom(
-              disabledBackgroundColor: Colors.blueGrey),
-          child: montserratMidnightBlueBold('MAKE PAYMENT')),
-    );
-  }*/
+  Widget _checkoutButton() {
+    return Builder(builder: (context) {
+      return vertical10Pix(
+        child: Container(
+          width: double.infinity,
+          height: 60,
+          child: ElevatedButton(
+              onPressed: ref.read(cartProvider).selectedPaymentMethod.isEmpty
+                  ? null
+                  : () => purchaseSelectedCartItems(context, ref,
+                      paidAmount: totalAmount),
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  disabledBackgroundColor: Colors.grey.withOpacity(0.4)),
+              child: quicksandWhiteRegular('MAKE PAYMENT')),
+        ),
+      );
+    });
+  }
 }

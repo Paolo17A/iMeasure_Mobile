@@ -133,6 +133,8 @@ Future logInUser(BuildContext context, WidgetRef ref,
     ref
         .read(profileImageURLProvider)
         .setImageURL(userData[UserFields.profileImageURL]);
+    ref.read(profileImageURLProvider).setFormattedName(
+        '${userData[UserFields.firstName]} ${userData[UserFields.lastName]}');
     ref.read(loadingProvider.notifier).toggleLoading(false);
     emailController.clear();
     passwordController.clear();
@@ -243,6 +245,8 @@ Future editClientProfile(BuildContext context, WidgetRef ref,
       UserFields.firstName: firstNameController.text.trim(),
       UserFields.lastName: lastNameController.text.trim(),
     });
+    ref.read(profileImageURLProvider).setFormattedName(
+        '${firstNameController.text.trim()} ${lastNameController.text.trim()}');
     ref.read(loadingProvider.notifier).toggleLoading(false);
     navigator.pop();
     navigator.pushReplacementNamed(NavigatorRoutes.profile);
@@ -698,208 +702,96 @@ Future<List<DocumentSnapshot>> getUserOrderHistory() async {
       .toList();
 }
 
-/*Future generateOrder(BuildContext context, WidgetRef ref,
-    {required num width,
-    required num height,
-    required List<dynamic> mandatoryWindowFields,
-    required List<Map<dynamic, dynamic>> optionalWindowFields,
-    required num totalGlassPrice,
-    required num totalOverallPayment}) async {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-  try {
-    ref.read(loadingProvider).toggleLoading(true);
-
-    List<Map<dynamic, dynamic>> mandatoryMap = [];
-    mandatoryMap.add({
-      OrderBreakdownMap.field: 'Glass',
-      OrderBreakdownMap.breakdownPrice: totalGlassPrice
-    });
-    for (var windowSubField in mandatoryWindowFields) {
-      if (windowSubField[WindowSubfields.priceBasis] == 'HEIGHT') {
-        switch (ref.read(cartProvider).selectedColor) {
-          case WindowColors.brown:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.brownPrice] / 21) * height
-            });
-            break;
-          case WindowColors.white:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.whitePrice] / 21) * height
-            });
-            break;
-          case WindowColors.mattBlack:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * height
-            });
-            break;
-          case WindowColors.mattGray:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * height
-            });
-            break;
-          case WindowColors.woodFinish:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
-                      height
-            });
-            break;
-        }
-      } else if (windowSubField[WindowSubfields.priceBasis] == 'WIDTH') {
-        switch (ref.read(cartProvider).selectedColor) {
-          case WindowColors.brown:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.brownPrice] / 21) * width
-            });
-            break;
-          case WindowColors.white:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.whitePrice] / 21) * width
-            });
-            break;
-          case WindowColors.mattBlack:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) * width
-            });
-            break;
-          case WindowColors.mattGray:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) * width
-            });
-            break;
-          case WindowColors.woodFinish:
-            mandatoryMap.add({
-              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
-              OrderBreakdownMap.breakdownPrice:
-                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) * width
-            });
-            break;
-        }
-      }
-    }
-
-    List<Map<dynamic, dynamic>> optionalMap = [];
-    for (var windowSubField in optionalWindowFields) {
-      if (windowSubField[OptionalWindowFields.isSelected]) {
-        optionalMap.add({
-          OrderBreakdownMap.field:
-              windowSubField[OptionalWindowFields.optionalFields]
-                  [WindowFields.name],
-          OrderBreakdownMap.breakdownPrice:
-              windowSubField[OptionalWindowFields.price]
-        });
-      }
-    }
-
-    //  1. Generate a purchase document for the selected cart item
-    final cartDoc =
-        await getThisCartEntry(ref.read(cartProvider).selectedCartItem);
-    final cartData = cartDoc.data() as Map<dynamic, dynamic>;
-
-    //  1. Generate Order Entry
-    await FirebaseFirestore.instance.collection(Collections.orders).add({
-      OrderFields.itemID: cartData[CartFields.itemID],
-      OrderFields.clientID: cartData[CartFields.clientID],
-      OrderFields.width: width,
-      OrderFields.height: height,
-      OrderFields.glassType: ref.read(cartProvider).selectedGlassType,
-      OrderFields.color: ref.read(cartProvider).selectedColor,
-      OrderFields.purchaseStatus: OrderStatuses.generated,
-      OrderFields.datePickedUp: DateTime(1970),
-      OrderFields.rating: '',
-      OrderFields.mandatoryMap: mandatoryMap,
-      OrderFields.optionalMap: optionalMap,
-      OrderFields.windowOverallPrice: totalOverallPayment,
-      OrderFields.laborPrice: 0,
-      OrderFields.quotationURL: ''
-    });
-
-    //  4. Delete cart entry
-    await FirebaseFirestore.instance
-        .collection(Collections.cart)
-        .doc(ref.read(cartProvider).selectedCartItem)
-        .delete();
-    ref.read(cartProvider).cartItems = await getCartEntries(context);
-    scaffoldMessenger.showSnackBar(const SnackBar(
-        content:
-            Text('Successfully settled payment and created purchase order')));
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    ref.read(cartProvider).setSelectedCartItem('');
-    ref.read(loadingProvider).toggleLoading(false);
-  } catch (error) {
-    scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Error generating new order: $error')));
-    ref.read(loadingProvider).toggleLoading(false);
-  }
-}*/
-
-/*Future settlePendingPayment(BuildContext context, WidgetRef ref,
-    {required String orderID, required num amount}) async {
+Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
+    {required num paidAmount}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
   try {
-    ref.read(loadingProvider).toggleLoading(true);
-    await FirebaseFirestore.instance
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    //  1. Generate a purchase document for the selected cart item
+    List<String> orderIDs = [];
+    for (var cartItem in ref.read(cartProvider).selectedCartItemIDs) {
+      final cartDoc = await getThisCartEntry(cartItem);
+      final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+      Map<dynamic, dynamic> quotation = {};
+      num price = 0;
+      if (cartData[CartFields.itemType] != ItemTypes.rawMaterial) {
+        quotation = cartData[CartFields.quotation];
+        quotation[QuotationFields.laborPrice] = 0;
+      } else {
+        String itemID = cartData[CartFields.itemID];
+        final item = await getThisItemDoc(itemID);
+        final itemData = item.data() as Map<dynamic, dynamic>;
+        price = itemData[ItemFields.price];
+      }
+
+      DocumentReference orderReference =
+          await FirebaseFirestore.instance.collection(Collections.orders).add({
+        OrderFields.itemID: cartData[CartFields.itemID],
+        OrderFields.clientID: cartData[CartFields.clientID],
+        OrderFields.quantity: cartData[CartFields.quantity],
+        OrderFields.orderStatus: OrderStatuses.pending,
+        OrderFields.dateCreated: DateTime.now(),
+        OrderFields.quotation:
+            cartData[CartFields.itemType] != ItemTypes.rawMaterial
+                ? quotation
+                : {QuotationFields.itemOverallPrice: price}
+      });
+
+      orderIDs.add(orderReference.id);
+
+      await FirebaseFirestore.instance
+          .collection(Collections.cart)
+          .doc(cartItem)
+          .delete();
+    }
+
+    //  2. Generate a payment document in Firestore
+    DocumentReference transactionReference = await FirebaseFirestore.instance
         .collection(Collections.transactions)
-        .doc(orderID)
-        .set({
+        .add({
       TransactionFields.clientID: FirebaseAuth.instance.currentUser!.uid,
-      TransactionFields.paidAmount: amount,
+      TransactionFields.paidAmount: paidAmount,
       TransactionFields.paymentVerified: false,
-      TransactionFields.paymentStatus: PaymentStatuses.pending,
+      TransactionFields.transactionStatus: TransactionStatuses.pending,
       TransactionFields.paymentMethod:
           ref.read(cartProvider).selectedPaymentMethod,
       TransactionFields.dateCreated: DateTime.now(),
       TransactionFields.dateApproved: DateTime(1970),
+      TransactionFields.orderIDs: orderIDs
     });
 
+    //  2. Upload the proof of payment image to Firebase Storage
     final storageRef = FirebaseStorage.instance
         .ref()
         .child(StorageFields.payments)
-        .child('${orderID}.png');
-    final uploadTask = storageRef
-        .putFile(File(ref.read(settlePaymentProvider).paymentImage!.path));
+        .child('${transactionReference.id}.png');
+    final uploadTask =
+        storageRef.putFile(ref.read(cartProvider).proofOfPaymentFile!);
     final taskSnapshot = await uploadTask;
     final downloadURL = await taskSnapshot.ref.getDownloadURL();
+
     await FirebaseFirestore.instance
         .collection(Collections.transactions)
-        .doc(orderID)
+        .doc(transactionReference.id)
         .update({TransactionFields.proofOfPayment: downloadURL});
 
-    await FirebaseFirestore.instance
-        .collection(Collections.orders)
-        .doc(orderID)
-        .update({OrderFields.purchaseStatus: OrderStatuses.processing});
-    scaffoldMessenger.showSnackBar(SnackBar(
-        content: Text(
-            'Successfully settled pending payment for this rental request.')));
-    ref.read(loadingProvider).toggleLoading(false);
+    ref.read(cartProvider).setCartItems(await getCartEntries(context));
+    ref.read(cartProvider).resetSelectedCartItems();
+    ref.read(cartProvider).resetProofOfPaymentFile();
+    ref.read(cartProvider).setSelectedPaymentMethod('');
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content:
+            Text('Successfully settled payment and created purchase order')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
     navigator.pop();
+    Navigator.of(context).pushReplacementNamed(NavigatorRoutes.cart);
   } catch (error) {
     scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Error settling pending payment: $error')));
-    ref.read(loadingProvider).toggleLoading(false);
+        SnackBar(content: Text('Error purchasing this cart item: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
   }
-}*/
-
+}
 //==============================================================================
 //==GALLERY=====================================================================
 //==============================================================================

@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileImageURLNotifier extends ChangeNotifier {
   String profileImageURL = '';
+  String _formattedName = '';
+
+  String get formattedName => _formattedName;
 
   void removeImageURL() {
     profileImageURL = '';
@@ -11,6 +14,11 @@ class ProfileImageURLNotifier extends ChangeNotifier {
 
   void setImageURL(String image) {
     profileImageURL = image;
+    notifyListeners();
+  }
+
+  void setFormattedName(String name) {
+    _formattedName = name;
     notifyListeners();
   }
 }

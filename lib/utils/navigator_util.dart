@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imeasure_mobile/screens/items_screen.dart';
 import 'package:imeasure_mobile/screens/order_history_screen.dart';
-import 'package:imeasure_mobile/screens/pending_payments_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
+import 'package:imeasure_mobile/screens/selected_door_screen.dart';
 import 'package:imeasure_mobile/screens/selected_window_screen.dart';
 import '../screens/bookmarks_screen.dart';
 import '../screens/cart_screen.dart';
@@ -31,6 +31,12 @@ class NavigatorRoutes {
         builder: (context) => SelectedWindowScreen(windowID: windowID)));
   }
 
+  static void selectedDoor(BuildContext context, WidgetRef ref,
+      {required String doorID}) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => SelectedDoorScreen(doorID: doorID)));
+  }
+
   static void renterSettlePayment(BuildContext context,
       {required String orderID}) {
     Navigator.of(context).push(MaterialPageRoute(
@@ -46,7 +52,6 @@ class NavigatorRoutes {
   static const String checkout = 'checkout';
   static const String bookmarks = 'bookmarks';
   static const String help = 'help';
-  static const String pendingPayments = 'pendingPayments';
   static const String orderHistory = 'orderHistory';
 }
 
@@ -62,6 +67,5 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
   NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),
   NavigatorRoutes.help: (context) => const HelpScreen(),
-  NavigatorRoutes.pendingPayments: (context) => const PendingPaymentsScreen(),
   NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen()
 };

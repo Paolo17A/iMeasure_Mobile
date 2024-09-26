@@ -45,7 +45,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
     ref.watch(loadingProvider);
     return Scaffold(
       appBar: appBarWidget(mayPop: true),
-      drawer: appDrawer(context, route: NavigatorRoutes.help),
+      drawer: appDrawer(context, ref, route: NavigatorRoutes.help),
       body: switchedLoadingContainer(
           ref.read(loadingProvider).isLoading,
           SingleChildScrollView(

@@ -17,16 +17,15 @@ import '../widgets/custom_text_field_widget.dart';
 import '../widgets/dropdown_widget.dart';
 import '../widgets/text_widgets.dart';
 
-class SelectedWindowScreen extends ConsumerStatefulWidget {
-  final String windowID;
-  const SelectedWindowScreen({super.key, required this.windowID});
+class SelectedDoorScreen extends ConsumerStatefulWidget {
+  final String doorID;
+  const SelectedDoorScreen({super.key, required this.doorID});
 
   @override
-  ConsumerState<SelectedWindowScreen> createState() =>
-      _SelectedWindowScreenState();
+  ConsumerState<SelectedDoorScreen> createState() => _SelectedDoorScreenState();
 }
 
-class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
+class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   //  PRODUCT VARIABLES
   String name = '';
   String description = '';
@@ -54,7 +53,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
       final scaffoldMessenger = ScaffoldMessenger.of(context);
       try {
         //  GET PRODUCT DATA
-        final item = await getThisItemDoc(widget.windowID);
+        final item = await getThisItemDoc(widget.doorID);
         final itemData = item.data() as Map<dynamic, dynamic>;
         name = itemData[ItemFields.name];
         description = itemData[ItemFields.description];
@@ -235,8 +234,8 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                   ? () {
                       if (mayProceedToInitialQuotationScreen()) {
                         addFurnitureItemToCart(context, ref,
-                            itemID: widget.windowID,
-                            itemType: ItemTypes.window,
+                            itemID: widget.doorID,
+                            itemType: ItemTypes.door,
                             width: double.parse(widthController.text),
                             height: double.parse(heightController.text),
                             mandatoryWindowFields: mandatoryWindowFields,
