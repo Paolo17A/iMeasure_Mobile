@@ -209,10 +209,11 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
               onPressed: () {
                 if (mayProceedToInitialQuotationScreen()) {
                   showQuotationDialog(context, ref,
-                      widthController: widthController,
-                      heightController: heightController,
+                      width: double.parse(widthController.text),
+                      height: double.parse(heightController.text),
                       mandatoryWindowFields: mandatoryWindowFields,
-                      optionalWindowFields: optionalWindowFields);
+                      optionalWindowFields: optionalWindowFields,
+                      itemType: ItemTypes.window);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import '../providers/loading_provider.dart';
+import '../providers/profile_image_url_provider.dart';
 import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/navigator_util.dart';
@@ -27,6 +28,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (!hasLoggedInUser()) return;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      ref.read(loadingProvider).toggleLoading(true);
+      final user = await getCurrentUserDoc();
+      final userData = user.data() as Map<dynamic, dynamic>;
+      ref
+          .read(profileImageURLProvider)
+          .setImageURL(userData[UserFields.profileImageURL]);
+      ref.read(profileImageURLProvider).setFormattedName(
+          '${userData[UserFields.firstName]} ${userData[UserFields.lastName]}');
+      ref.read(loadingProvider).toggleLoading(false);
+      Navigator.of(context).pushNamed(NavigatorRoutes.home);
+    });
   }
 
   @override

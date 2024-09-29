@@ -142,6 +142,7 @@ Widget mandatoryWindowSubfield(WidgetRef ref,
     }
   }
   return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Flexible(
@@ -183,6 +184,16 @@ Widget square300NetworkImage(String url) {
   return Container(
     width: 300,
     height: 300,
+    decoration: BoxDecoration(
+        border: Border.all(),
+        image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)),
+  );
+}
+
+Widget square80PercentNetworkImage(BuildContext context, String url) {
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.8,
+    height: MediaQuery.of(context).size.width * 0.8,
     decoration: BoxDecoration(
         border: Border.all(),
         image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
+import 'package:imeasure_mobile/utils/quotation_dialog_util.dart';
 import 'package:imeasure_mobile/widgets/app_bottom_navbar_widget.dart';
 import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
 
@@ -188,17 +189,26 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                     'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
                                     fontSize: 14),
                               if (itemType != ItemTypes.rawMaterial)
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      quicksandBlackRegular(
-                                          'Width: ${quotation[QuotationFields.width]}ft',
-                                          fontSize: 12),
-                                      quicksandBlackRegular(
-                                          'Height: ${quotation[QuotationFields.height]}ft',
-                                          fontSize: 12)
-                                    ])
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          quicksandBlackRegular(
+                                              'Width: ${quotation[QuotationFields.width]}ft',
+                                              fontSize: 12),
+                                          quicksandBlackRegular(
+                                              'Height: ${quotation[QuotationFields.height]}ft',
+                                              fontSize: 12)
+                                        ]),
+                                    if (itemType != ItemTypes.rawMaterial)
+                                      _showQuotationButton(itemType,
+                                          cartData[CartFields.quotation]),
+                                  ],
+                                )
                             ],
                           ),
                         )
@@ -208,6 +218,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // QUANTITY
                         Flexible(
                           flex: 2,
                           child: Row(
@@ -255,6 +266,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             ],
                           ),
                         ),
+
                         Flexible(
                           flex: 2,
                           child: IconButton(
@@ -284,6 +296,20 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ],
           ));
     }
+  }
+
+  Widget _showQuotationButton(
+      String itemType, Map<dynamic, dynamic> quotation) {
+    final mandatoryWindowFields = quotation[QuotationFields.mandatoryMap];
+    final optionalWindowFields =
+        quotation[QuotationFields.optionalMap] as List<dynamic>;
+    return ElevatedButton(
+        onPressed: () => showCartQuotationDialog(context, ref,
+            laborPrice: quotation[QuotationFields.laborPrice],
+            totalOverallPayment: quotation[QuotationFields.itemOverallPrice],
+            mandatoryWindowFields: mandatoryWindowFields,
+            optionalWindowFields: optionalWindowFields),
+        child: montserratWhiteRegular('VIEW\nQUOTATION', fontSize: 10));
   }
 
   Widget _totalAmountWidget() {

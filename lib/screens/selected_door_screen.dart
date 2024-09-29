@@ -208,14 +208,28 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
               onPressed: () {
                 if (mayProceedToInitialQuotationScreen()) {
                   showQuotationDialog(context, ref,
-                      widthController: widthController,
-                      heightController: heightController,
+                      width: double.parse(widthController.text),
+                      height: double.parse(heightController.text),
                       mandatoryWindowFields: mandatoryWindowFields,
-                      optionalWindowFields: optionalWindowFields);
+                      optionalWindowFields: optionalWindowFields,
+                      itemType: ItemTypes.door);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          'Please fill up all the required fields first.')));
+                  if (double.parse(widthController.text.trim()) < minWidth ||
+                      double.parse(widthController.text.trim()) > maxWidth) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Inputted width must be $minWidth = ${maxWidth} ft only.')));
+                  } else if (double.parse(heightController.text.trim()) <
+                          minHeight ||
+                      double.parse(heightController.text.trim()) > maxHeight) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Inputted height must be $minHeight = ${maxHeight} ft only.')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Please fill up all the required fields first.')));
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(

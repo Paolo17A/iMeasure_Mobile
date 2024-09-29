@@ -102,13 +102,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Column(children: [
               quicksandBlackBold('SERVICES', fontSize: 12),
               Gap(4),
-              square100NetworkImage(serviceURL)
+              GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          content: square80PercentNetworkImage(
+                              context, serviceURL))),
+                  child: square100NetworkImage(serviceURL))
             ]),
           if (testimonialURL.isNotEmpty)
             Column(children: [
               quicksandBlackBold('CLIENT TESTIMONIALS', fontSize: 12),
               Gap(4),
-              square100NetworkImage(testimonialURL)
+              GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          content: square80PercentNetworkImage(
+                              context, testimonialURL))),
+                  child: square100NetworkImage(testimonialURL))
             ]),
         ]),
         Gap(30),
@@ -116,7 +128,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Column(children: [
             quicksandBlackBold('PORTFOLIO', fontSize: 12),
             Gap(4),
-            square300NetworkImage(portfolioURL)
+            GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                        content: square80PercentNetworkImage(
+                            context, portfolioURL))),
+                child: square300NetworkImage(portfolioURL))
           ]),
       ],
     ));

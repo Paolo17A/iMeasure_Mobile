@@ -141,7 +141,7 @@ Future logInUser(BuildContext context, WidgetRef ref,
     navigator.pushNamed(NavigatorRoutes.home);
   } catch (error) {
     scaffoldMessenger
-        .showSnackBar(SnackBar(content: Text('Error logging in: $error')));
+        .showSnackBar(SnackBar(content: Text('Incorrect login credentials')));
     ref.read(loadingProvider.notifier).toggleLoading(false);
   }
 }
@@ -454,7 +454,7 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
     required double width,
     required double height,
     required List<dynamic> mandatoryWindowFields,
-    required List<Map<dynamic, dynamic>> optionalWindowFields}) async {
+    required List<dynamic> optionalWindowFields}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   if (!hasLoggedInUser()) {
     scaffoldMessenger.showSnackBar(

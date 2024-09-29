@@ -134,7 +134,12 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
       padding: EdgeInsets.all(12),
       child: Column(
         children: [
-          square150NetworkImage(imageURL),
+          GestureDetector(
+              onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                      content: square80PercentNetworkImage(context, imageURL))),
+              child: square150NetworkImage(imageURL)),
           vertical10Pix(child: quicksandBlackBold(name)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

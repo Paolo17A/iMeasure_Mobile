@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/firebase_util.dart';
 import 'package:imeasure_mobile/utils/string_util.dart';
+import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 import '../utils/color_util.dart';
 import '../utils/navigator_util.dart';
 import 'text_widgets.dart';
@@ -23,7 +24,12 @@ Widget itemEntry(BuildContext context, WidgetRef ref,
       //decoration: BoxDecoration(color: CustomColors.deepNavyBlue),
       child: Column(
         children: [
-          _productImage(imageURL),
+          GestureDetector(
+              onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                      content: square80PercentNetworkImage(context, imageURL))),
+              child: _productImage(imageURL)),
           Container(
             width: 150,
             child: Padding(

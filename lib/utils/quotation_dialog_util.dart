@@ -9,45 +9,49 @@ import '../widgets/custom_padding_widgets.dart';
 import '../widgets/text_widgets.dart';
 import 'string_util.dart';
 
-void showQuotationDialog(
-  BuildContext context,
-  WidgetRef ref, {
-  required TextEditingController widthController,
-  required TextEditingController heightController,
-  required List<dynamic> mandatoryWindowFields,
-  required List<Map<dynamic, dynamic>> optionalWindowFields,
-}) {
+void showQuotationDialog(BuildContext context, WidgetRef ref,
+    {required double width,
+    required double height,
+    required List<dynamic> mandatoryWindowFields,
+    required List<dynamic> optionalWindowFields,
+    required String itemType}) {
   num totalMandatoryPayment = 0;
   num totalGlassPrice = 0;
   num optionalPrice = 0;
   num totalOverallPayment = 0;
 
+  print(mandatoryWindowFields);
+
   //  Calculate Optional Price
-  List<Map<dynamic, dynamic>> _pricedOptionalWindowFields =
-      pricedOptionalWindowFields(ref,
-          width: double.parse(widthController.text),
-          height: double.parse(heightController.text),
-          oldOptionalWindowFields: optionalWindowFields);
+  List<dynamic> _pricedOptionalWindowFields = pricedOptionalWindowFields(ref,
+      width: width,
+      height: height,
+      oldOptionalWindowFields: optionalWindowFields);
   print(_pricedOptionalWindowFields);
   optionalPrice = calculateOptionalPrice(_pricedOptionalWindowFields);
   //  Calculate mandatory payment
   totalMandatoryPayment = calculateTotalMandatoryPayment(ref,
-      width: double.parse(widthController.text),
-      height: double.parse(heightController.text),
+      width: width,
+      height: height,
       mandatoryWindowFields: mandatoryWindowFields);
+  print('mandatory: $totalMandatoryPayment');
 
   //  Calculate glass payment
-  totalGlassPrice = calculateGlassPrice(ref,
-      width: double.parse(widthController.text),
-      height: double.parse(heightController.text));
-  totalOverallPayment = totalMandatoryPayment + totalGlassPrice + optionalPrice;
-  List<Map<dynamic, dynamic>> selectedOptionalFields =
-      _pricedOptionalWindowFields
-          .where((window) => window[OptionalWindowFields.isSelected])
-          .toList();
-  for (var selectedOption in selectedOptionalFields) {
-    print(selectedOption);
+  List<dynamic> selectedOptionalFields = [];
+  if (itemType == ItemTypes.window) {
+    totalGlassPrice = calculateGlassPrice(
+      ref,
+      width: width,
+      height: height,
+    );
+    selectedOptionalFields = _pricedOptionalWindowFields
+        .where((window) => window[OptionalWindowFields.isSelected])
+        .toList();
+    for (var selectedOption in selectedOptionalFields) {
+      print(selectedOption);
+    }
   }
+  totalOverallPayment = totalMandatoryPayment + totalGlassPrice + optionalPrice;
   showDialog(
       context: context,
       barrierDismissible: false,
@@ -78,23 +82,24 @@ void showQuotationDialog(
                                     .toList()
                                     .map((windowFieldModel) =>
                                         mandatoryWindowSubfield(ref,
-                                            width: double.parse(
-                                                widthController.text),
-                                            height: double.parse(
-                                                heightController.text),
+                                            width: width,
+                                            height: height,
                                             windowSubField: windowFieldModel))
                                     .toList()),
 
                             //  Glass
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                quicksandBlackRegular('Glass: ', fontSize: 14),
-                                quicksandBlackRegular(
-                                    'PHP ${formatPrice(totalGlassPrice.toDouble())}',
-                                    fontSize: 14),
-                              ],
-                            ), //  Accessories
+                            if (itemType == ItemTypes.window)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  quicksandBlackRegular('Glass: ',
+                                      fontSize: 14),
+                                  quicksandBlackRegular(
+                                      'PHP ${formatPrice(totalGlassPrice.toDouble())}',
+                                      fontSize: 14),
+                                ],
+                              ), //  Accessories
 
                             Gap(12),
                             Column(
@@ -115,6 +120,7 @@ void showQuotationDialog(
                                       ))
                                   .toList(),
                             ),
+
                             //  TOTAL
 
                             Gap(12),
@@ -137,6 +143,111 @@ void showQuotationDialog(
               ),
             ),
           ));
+}
+
+void showCartQuotationDialog(
+  BuildContext context,
+  WidgetRef ref, {
+  required num totalOverallPayment,
+  required num laborPrice,
+  required List<dynamic> mandatoryWindowFields,
+  required List<dynamic> optionalWindowFields,
+}) {
+  showDialog(
+      context: context,
+      builder: (_) => Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.85,
+            child: SingleChildScrollView(
+              child: all20Pix(
+                child: Column(children: [
+                  quicksandBlackBold('ESTIMATED QUOTATION', fontSize: 16),
+                  //  Mandatory Window Fields
+                  Container(
+                    decoration: BoxDecoration(border: Border.all()),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: mandatoryWindowFields
+                                .toList()
+                                .map((windowFieldModel) => Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: quicksandBlackRegular(
+                                                '${windowFieldModel[OrderBreakdownMap.field]}: ',
+                                                textAlign: TextAlign.left,
+                                                fontSize: 14),
+                                          ),
+                                          Flexible(
+                                            child: quicksandBlackRegular(
+                                                ' PHP ${formatPrice((windowFieldModel[OrderBreakdownMap.breakdownPrice]).toDouble())}',
+                                                textAlign: TextAlign.left,
+                                                fontSize: 14),
+                                          ),
+                                        ]))
+                                .toList()),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: optionalWindowFields
+                                .toList()
+                                .map((windowFieldModel) => Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: quicksandBlackRegular(
+                                                '${windowFieldModel[OrderBreakdownMap.field]}: ',
+                                                textAlign: TextAlign.left,
+                                                fontSize: 14),
+                                          ),
+                                          Flexible(
+                                            child: quicksandBlackRegular(
+                                                ' PHP ${formatPrice((windowFieldModel[OrderBreakdownMap.breakdownPrice]).toDouble())}',
+                                                textAlign: TextAlign.left,
+                                                fontSize: 14),
+                                          ),
+                                        ]))
+                                .toList()),
+                        if (laborPrice > 0)
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                quicksandBlackRegular('Labor Cost',
+                                    fontSize: 14),
+                                quicksandBlackRegular(
+                                    'PHP ${formatPrice(laborPrice.toDouble())}',
+                                    fontSize: 14)
+                              ]),
+                        //  TOTAL
+
+                        Gap(12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            quicksandBlackBold('Total Quotation: ',
+                                fontSize: 14),
+                            quicksandBlackBold(
+                                'PHP ${formatPrice(totalOverallPayment.toDouble())}',
+                                fontSize: 14),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          )));
 }
 
 num calculateGlassPrice(WidgetRef ref,
@@ -206,7 +317,7 @@ num calculateTotalMandatoryPayment(WidgetRef ref,
   return totalMandatoryPayment;
 }
 
-num calculateOptionalPrice(List<Map<dynamic, dynamic>> optionalWindowFields) {
+num calculateOptionalPrice(List<dynamic> optionalWindowFields) {
   num totalOptionalPaymentsPrice = 0;
   for (var optionalFields in optionalWindowFields) {
     if (optionalFields[OptionalWindowFields.isSelected]) {
@@ -216,11 +327,11 @@ num calculateOptionalPrice(List<Map<dynamic, dynamic>> optionalWindowFields) {
   return totalOptionalPaymentsPrice;
 }
 
-List<Map<dynamic, dynamic>> pricedOptionalWindowFields(WidgetRef ref,
+List<dynamic> pricedOptionalWindowFields(WidgetRef ref,
     {required double width,
     required double height,
-    required List<Map<dynamic, dynamic>> oldOptionalWindowFields}) {
-  List<Map<dynamic, dynamic>> optionalWindowFields = oldOptionalWindowFields;
+    required List<dynamic> oldOptionalWindowFields}) {
+  List<dynamic> optionalWindowFields = oldOptionalWindowFields;
   for (int i = 0; i < oldOptionalWindowFields.length; i++) {
     num price = 0;
     print('$i: ${optionalWindowFields[i]}');
