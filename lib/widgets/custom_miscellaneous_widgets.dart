@@ -311,7 +311,7 @@ StreamBuilder pendingPickUpOrdersStreamBuilder() {
           !snapshot.hasData ||
           snapshot.hasError) return Container();
       int availableCollectionCount = snapshot.data!.docs.length;
-      if (availableCollectionCount >= 0)
+      if (availableCollectionCount > 0)
         return Container(
           width: 24,
           height: 24,
