@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imeasure_mobile/providers/cart_provider.dart';
+import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 
 import '../screens/home_screen.dart';
 import '../utils/color_util.dart';
@@ -65,7 +66,8 @@ Widget bottomNavigationBar(BuildContext context, WidgetRef ref,
               label: ''),
         if (hasLoggedInUser())
           BottomNavigationBarItem(
-              icon: _buildIcon(Icons.person_4_outlined, 'PROFILE', index, 3),
+              icon: _buildIcon(Icons.person_4_outlined, 'PROFILE', index, 3,
+                  floatingStream: pendingPickUpOrdersStreamBuilder()),
               backgroundColor: bottomNavButtonColor,
               label: '')
       ],
@@ -77,19 +79,27 @@ Widget bottomNavigationBar(BuildContext context, WidgetRef ref,
 }
 
 Widget _buildIcon(
-    IconData iconData, String label, int currentIndex, int thisIndex) {
-  return Column(
+    IconData iconData, String label, int currentIndex, int thisIndex,
+    {Widget? floatingStream}) {
+  return Stack(
+    clipBehavior: Clip.none,
     children: [
-      Icon(
-        iconData,
-        size: currentIndex == thisIndex ? 30 : 20,
-        color: currentIndex == thisIndex
-            ? CustomColors.emeraldGreen
-            : CustomColors.lavenderMist,
+      Column(
+        children: [
+          Icon(
+            iconData,
+            size: currentIndex == thisIndex ? 30 : 20,
+            color: currentIndex == thisIndex
+                ? CustomColors.emeraldGreen
+                : CustomColors.lavenderMist,
+          ),
+          /* currentIndex == thisIndex
+              ? quicksandEmeraldGreenBold(label, fontSize: 12)
+              : quicksandWhiteBold(label, fontSize: 12)*/
+        ],
       ),
-      /* currentIndex == thisIndex
-          ? quicksandEmeraldGreenBold(label, fontSize: 12)
-          : quicksandWhiteBold(label, fontSize: 12)*/
+      if (floatingStream != null)
+        Positioned(top: -20, right: -20, child: floatingStream)
     ],
   );
 }
