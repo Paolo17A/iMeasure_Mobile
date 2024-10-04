@@ -313,15 +313,14 @@ StreamBuilder pendingPickUpOrdersStreamBuilder() {
       int availableCollectionCount = snapshot.data!.docs.length;
       if (availableCollectionCount > 0)
         return Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle, color: CustomColors.coralRed),
-          child: Center(
-            child: quicksandWhiteRegular(availableCollectionCount.toString(),
-                fontSize: 12),
-          ),
-        );
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: CustomColors.coralRed),
+            child: Center(
+                child: quicksandWhiteRegular(
+                    availableCollectionCount.toString(),
+                    fontSize: 12)));
       else {
         return Container();
       }

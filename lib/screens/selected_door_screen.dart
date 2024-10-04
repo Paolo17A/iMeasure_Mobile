@@ -151,7 +151,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
@@ -159,7 +159,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                 child: all10Pix(
                     child: quicksandBlackBold(name,
                         fontSize: 28, textAlign: TextAlign.left))),
-            Flexible(
+            /*Flexible(
                 child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -167,7 +167,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                 IconButton(
                     onPressed: () {}, icon: Icon(Icons.visibility_outlined))
               ],
-            ))
+            ))*/
           ]),
     );
   }

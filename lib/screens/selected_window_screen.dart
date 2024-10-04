@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/screens/item_model_screen.dart';
 import 'package:imeasure_mobile/utils/color_util.dart';
 
 import '../models/glass_model.dart';
@@ -36,6 +37,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
   num minHeight = 0;
   num maxHeight = 0;
   String imageURL = '';
+  String correspondingModel = '';
 
   //  USER VARIABLES
   final widthController = TextEditingController();
@@ -64,6 +66,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         maxHeight = itemData[ItemFields.maxHeight];
         minWidth = itemData[ItemFields.minWidth];
         maxWidth = itemData[ItemFields.maxWidth];
+        correspondingModel = itemData[ItemFields.correspondingModel];
         //  GET USER DATA
         ref.read(cartProvider).setCartItems(await getCartEntries(context));
         List<dynamic> windowFields = itemData[ItemFields.windowFields];
@@ -152,7 +155,9 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: correspondingModel.isNotEmpty
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
@@ -160,15 +165,23 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                 child: all10Pix(
                     child: quicksandBlackBold(name,
                         fontSize: 28, textAlign: TextAlign.left))),
-            Flexible(
-                child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                quicksandEmeraldGreenBold('3D', fontSize: 28),
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.visibility_outlined))
-              ],
-            ))
+            if (correspondingModel.isNotEmpty)
+              Flexible(
+                  child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  quicksandEmeraldGreenBold('3D', fontSize: 28),
+                  IconButton(
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ItemModelScreen(
+                                    modelPath: AvailableModels
+                                        .getCorrespondingModelPath(
+                                            correspondingModel),
+                                  ))),
+                      icon: Icon(Icons.visibility_outlined))
+                ],
+              ))
           ]),
     );
   }
