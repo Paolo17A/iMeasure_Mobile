@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/screens/rate_item_screen.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
 import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 import 'package:intl/intl.dart';
@@ -84,6 +85,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         (orderData[OrderFields.dateCreated] as Timestamp).toDate();
     Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
     num itemOverallPrice = quotation[QuotationFields.itemOverallPrice];
+    Map<dynamic, dynamic> review = orderData[OrderFields.review];
+
     return FutureBuilder(
         future: getThisItemDoc(itemID),
         builder: (context, snapshot) {
@@ -97,7 +100,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           String name = itemData[ItemFields.name];
           return Container(
             //width: 400,
-            height: 150,
+            height: 180,
             decoration: BoxDecoration(border: Border.all(color: Colors.black)),
             padding: EdgeInsets.all(12),
             child: Row(
@@ -105,7 +108,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
               children: [
                 Container(
                     width: 120,
-                    height: 120,
+                    height: 140,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(imageURL), fit: BoxFit.cover))),
@@ -120,6 +123,26 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                         'Date Ordered: ${DateFormat('MMM dd, yyyy').format(dateCreated)}',
                         fontSize: 14),
                     quicksandBlackRegular('Status: $orderStatus', fontSize: 14),
+                    if (orderStatus == OrderStatuses.pickedUp &&
+                        review.isNotEmpty)
+                      Row(children: [
+                        quicksandBlackRegular('Rating: ', fontSize: 14),
+                        starRating(
+                            (review[ReviewFields.rating] as num).toDouble(),
+                            onUpdate: (newVal) {},
+                            mayMove: false)
+                      ])
+                    else if (orderStatus == OrderStatuses.pickedUp)
+                      SizedBox(
+                        height: 24,
+                        child: ElevatedButton(
+                            onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        RateItemScreen(orderID: orderDoc.id))),
+                            child: quicksandWhiteBold('LEAVE REVIEW',
+                                fontSize: 12)),
+                      ),
                     quicksandBlackBold(
                         'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
                   ],

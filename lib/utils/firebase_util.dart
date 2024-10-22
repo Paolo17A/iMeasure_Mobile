@@ -414,22 +414,6 @@ Future<DocumentSnapshot> getThisItemDoc(String itemID) async {
 }
 
 //==============================================================================
-//WINDOWS=======================================================================
-//==============================================================================
-
-Future<List<DocumentSnapshot>> getSelectedWindowDocs(
-    List<String> windowIDs) async {
-  if (windowIDs.isEmpty) {
-    return [];
-  }
-  final products = await FirebaseFirestore.instance
-      .collection(Collections.windows)
-      .where(FieldPath.documentId, whereIn: windowIDs)
-      .get();
-  return products.docs.map((doc) => doc as DocumentSnapshot).toList();
-}
-
-//==============================================================================
 //==CART========================================================================
 //==============================================================================
 Future<List<DocumentSnapshot>> getCartEntries(BuildContext context) async {
@@ -735,7 +719,8 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
         OrderFields.quotation:
             cartData[CartFields.itemType] != ItemTypes.rawMaterial
                 ? quotation
-                : {QuotationFields.itemOverallPrice: price}
+                : {QuotationFields.itemOverallPrice: price},
+        OrderFields.review: {}
       });
 
       orderIDs.add(orderReference.id);
@@ -790,6 +775,57 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error purchasing this cart item: $error')));
     ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future reviewThisOrder(BuildContext context, WidgetRef ref,
+    {required String orderID,
+    required int rating,
+    required TextEditingController reviewController,
+    File? reviewImageFile}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context);
+  try {
+    if (rating <= 0 || rating > 6) {
+      scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text('Please input a rating between 1 to 5.')));
+      return;
+    }
+
+    ref.read(loadingProvider).toggleLoading(true);
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.review: {
+        ReviewFields.rating: rating,
+        ReviewFields.review: reviewController.text.trim()
+      }
+    });
+
+    if (reviewImageFile != null) {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child(StorageFields.reviews)
+          .child('${orderID}.png');
+      final uploadTask = storageRef.putFile(reviewImageFile);
+      final taskSnapshot = await uploadTask;
+      final downloadURL = await taskSnapshot.ref.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection(Collections.orders)
+          .doc(orderID)
+          .update({
+        OrderFields.review: {ReviewFields.imageURL: downloadURL}
+      });
+    }
+    ref.read(loadingProvider).toggleLoading(false);
+    navigator.pop();
+    navigator.pushReplacementNamed(NavigatorRoutes.orderHistory);
+  } catch (error) {
+    ref.read(loadingProvider).toggleLoading(false);
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error adding a review to this order: $error')));
   }
 }
 //==============================================================================

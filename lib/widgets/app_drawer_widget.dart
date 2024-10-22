@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/providers/profile_image_url_provider.dart';
 import 'package:imeasure_mobile/utils/color_util.dart';
+import 'package:imeasure_mobile/utils/navigator_util.dart';
 import 'package:imeasure_mobile/widgets/custom_padding_widgets.dart';
 
 import 'text_widgets.dart';
@@ -25,7 +26,16 @@ Drawer appDrawer(BuildContext context, WidgetRef ref, {required String route}) {
                 fit: BoxFit.fill,
               ),
             ),
-          quicksandWhiteBold(ref.read(profileImageURLProvider).formattedName)
+          quicksandWhiteBold(ref.read(profileImageURLProvider).formattedName),
+          Divider(),
+          _drawerTile(context,
+              label: 'HOME',
+              onPress: () =>
+                  Navigator.of(context).pushNamed(NavigatorRoutes.home)),
+          _drawerTile(context,
+              label: 'HELP',
+              onPress: () =>
+                  Navigator.of(context).pushNamed(NavigatorRoutes.help)),
         ]),
         _drawerTile(context, label: 'Log-Out', onPress: () {
           FirebaseAuth.instance.signOut().then((value) =>

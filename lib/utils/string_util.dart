@@ -10,6 +10,7 @@ class StorageFields {
   static const String profilePics = 'profilePics';
   static const String windows = 'windows';
   static const String payments = 'payments';
+  static const String reviews = 'reviews';
 }
 
 class UserTypes {
@@ -165,6 +166,7 @@ class OrderFields {
   static const String quotation = 'quotation';
   static const String dateCreated = 'dateCreated';
   static const String datePickedUp = 'datePickedUp';
+  static const String review = 'review';
 }
 
 class OrderStatuses {
@@ -214,6 +216,12 @@ class GalleryTypes {
   static const String service = 'service';
   static const String portfolio = 'portfolio';
   static const String testimonial = 'testimonial';
+}
+
+class ReviewFields {
+  static const String review = 'review';
+  static const String rating = 'rating';
+  static const String imageURL = 'imageURL';
 }
 
 class PathParameters {
