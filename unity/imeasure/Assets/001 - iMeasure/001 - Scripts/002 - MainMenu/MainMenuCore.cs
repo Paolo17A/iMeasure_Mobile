@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using static MainMenuCore;
 
 public class MainMenuCore : MonoBehaviour
 {

@@ -80,6 +80,7 @@
     <Compile Include="Assets\001 - iMeasure\001 - Scripts\003 - Models\SwipeRotate.cs" />
     <Compile Include="Assets\LeanTween\Examples\Scripts\GeneralBasics2d.cs" />
     <Compile Include="Assets\LeanTween\Examples\Scripts\PathSplineTrack.cs" />
+    <Compile Include="Assets\001 - iMeasure\001 - Scripts\003 - Models\GlassDataHandler.cs" />
     <Compile Include="Assets\LeanTween\Examples\Archived\OldGUIExamplesCS.cs" />
     <Compile Include="Assets\LeanTween\Examples\Scripts\PathBezier.cs" />
     <Compile Include="Assets\001 - iMeasure\001 - Scripts\001 - Camera\CanvasUICameraSetter.cs" />

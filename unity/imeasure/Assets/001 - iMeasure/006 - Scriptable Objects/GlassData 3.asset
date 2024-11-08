@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3474253425152c441bbc4110487846dd, type: 3}
   m_Name: GlassData 3
   m_EditorClassIdentifier: 
-  glassTypeName: 
-  thickness: 
-  pricePerSFT: 0
+  glassTypeName: Clear 3/16
+  thickness: 5MM
+  pricePerSFT: 39.5
