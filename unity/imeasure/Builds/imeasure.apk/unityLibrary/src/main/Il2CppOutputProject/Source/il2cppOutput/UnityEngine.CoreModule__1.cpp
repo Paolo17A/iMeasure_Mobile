@@ -129,7 +129,7 @@ struct ColorUsageAttribute_t3386946122DAB4AE3AD314081B423B40ADFDFFC4;
 struct CompareInfo_t1B1A6AC3486B570C76ABA52149C9BD4CD82F9E57;
 struct Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3;
 struct ContextMenu_tAD34D12FC1C28194486FB5BF28B5954D0814E8EF;
-struct Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B;
+struct CreateAssetMenuAttribute_tDF668493A973633E6641C8FD2673DAE205126E9E;
 struct CultureData_tEEFDCF4ECA1BBF6C0C8C94EB3541657245598F9D;
 struct CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0;
 struct DateTimeFormatInfo_t0457520F9FA7B5C8EAAEB3AD50413B6AEEB7458A;
@@ -716,6 +716,11 @@ struct ContextMenu_tAD34D12FC1C28194486FB5BF28B5954D0814E8EF  : public Attribute
 	bool ___validate;
 	int32_t ___priority;
 };
+struct CreateAssetMenuAttribute_tDF668493A973633E6641C8FD2673DAE205126E9E  : public Attribute_tFDA8EFEFB0711976D22474794576DAF28F7440AA
+{
+	String_t* ___U3CmenuNameU3Ek__BackingField;
+	String_t* ___U3CfileNameU3Ek__BackingField;
+};
 struct DefaultExecutionOrder_t77A55C2002E30BC19535AE6460FBDE8B0591FC26  : public Attribute_tFDA8EFEFB0711976D22474794576DAF28F7440AA
 {
 	int32_t ___m_Order;
@@ -1110,18 +1115,6 @@ struct ColorUsageAttribute_t3386946122DAB4AE3AD314081B423B40ADFDFFC4  : public P
 	float ___maxBrightness;
 	float ___minExposureValue;
 	float ___maxExposureValue;
-};
-struct Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B  : public YieldInstruction_tFCE35FD0907950EFEE9BC2890AC664E41C53728D
-{
-	intptr_t ___m_Ptr;
-};
-struct Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_pinvoke : public YieldInstruction_tFCE35FD0907950EFEE9BC2890AC664E41C53728D_marshaled_pinvoke
-{
-	intptr_t ___m_Ptr;
-};
-struct Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_com : public YieldInstruction_tFCE35FD0907950EFEE9BC2890AC664E41C53728D_marshaled_com
-{
-	intptr_t ___m_Ptr;
 };
 struct CursorLockMode_tB70C7D1B9208B821C1C8A614BE904500B92C47D2 
 {
@@ -2708,7 +2701,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Component_t39FBE53E5EFCF4409111FB22C15FF73717
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Component_GetComponentsForListInternal_m7B3A61AF88E5E6F845817EC28E22FD39944EFBC7 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, Type_t* ___0_searchType, RuntimeObject* ___1_resultList, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameObject_CompareTag_m6378BE50D009A93D46036F74CC3F7E2ECB0636E5 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, String_t* ___0_tag, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object__ctor_m2149FA40CEC8D82AC20D3508AB40C0D8EFEF68E6 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* __this, const RuntimeMethod* method) ;
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869 (intptr_t ___0_ptr, const RuntimeMethod* method) ;
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int64_t BitConverter_DoubleToInt64Bits_m4F42741818550F9956B5FBAF88C051F4DE5B0AE6_inline (double ___0_value, const RuntimeMethod* method) ;
 inline void List_1_AddWithResize_mA6DFDBC2B22D6318212C6989A34784BD8303AF33 (List_1_tDBA89B0E21BAC58CFBD3C1F76E4668E3B562761A* __this, Il2CppFullySharedGenericAny ___0_item, const RuntimeMethod* method)
 {
@@ -22470,6 +22462,39 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AddComponentMenu__ctor_mFC3F5A41F4F41587
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CreateAssetMenuAttribute_set_menuName_m2D51E6DFEB3D5F310A643D965304CEDD85A8FCCA (CreateAssetMenuAttribute_tDF668493A973633E6641C8FD2673DAE205126E9E* __this, String_t* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		String_t* L_0 = ___0_value;
+		__this->___U3CmenuNameU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CmenuNameU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CreateAssetMenuAttribute_set_fileName_mBE339C0FE5593AA2C0EE52E61AE2C3A2F1771496 (CreateAssetMenuAttribute_tDF668493A973633E6641C8FD2673DAE205126E9E* __this, String_t* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		String_t* L_0 = ___0_value;
+		__this->___U3CfileNameU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CfileNameU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CreateAssetMenuAttribute__ctor_mE29F1B8C4AD3F80E740FFF5624A4BDB366FCB151 (CreateAssetMenuAttribute_tDF668493A973633E6641C8FD2673DAE205126E9E* __this, const RuntimeMethod* method) 
+{
+	{
+		Attribute__ctor_m79ED1BF1EE36D1E417BA89A0D9F91F8AAD8D19E2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ContextMenu__ctor_mCD05AD13A40676709620DD7D4A1A8DC787CE1351 (ContextMenu_tAD34D12FC1C28194486FB5BF28B5954D0814E8EF* __this, String_t* ___0_itemName, const RuntimeMethod* method) 
 {
 	{
@@ -23596,88 +23621,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Component__ctor_m4319162A6E6B02301078C12
 		Object__ctor_m2149FA40CEC8D82AC20D3508AB40C0D8EFEF68E6(__this, NULL);
 		return;
 	}
-}
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winvalid-offsetof"
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_pinvoke(const Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B& unmarshaled, Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_pinvoke& marshaled)
-{
-	marshaled.___m_Ptr = unmarshaled.___m_Ptr;
-}
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_pinvoke_back(const Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_pinvoke& marshaled, Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B& unmarshaled)
-{
-	intptr_t unmarshaledm_Ptr_temp_0;
-	memset((&unmarshaledm_Ptr_temp_0), 0, sizeof(unmarshaledm_Ptr_temp_0));
-	unmarshaledm_Ptr_temp_0 = marshaled.___m_Ptr;
-	unmarshaled.___m_Ptr = unmarshaledm_Ptr_temp_0;
-}
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_pinvoke_cleanup(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_pinvoke& marshaled)
-{
-}
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_com(const Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B& unmarshaled, Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_com& marshaled)
-{
-	marshaled.___m_Ptr = unmarshaled.___m_Ptr;
-}
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_com_back(const Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_com& marshaled, Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B& unmarshaled)
-{
-	intptr_t unmarshaledm_Ptr_temp_0;
-	memset((&unmarshaledm_Ptr_temp_0), 0, sizeof(unmarshaledm_Ptr_temp_0));
-	unmarshaledm_Ptr_temp_0 = marshaled.___m_Ptr;
-	unmarshaled.___m_Ptr = unmarshaledm_Ptr_temp_0;
-}
-IL2CPP_EXTERN_C void Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshal_com_cleanup(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B_marshaled_com& marshaled)
-{
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Coroutine__ctor_m65324E0C6062163C0378CD4190E903B4C2ED75DD (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* __this, const RuntimeMethod* method) 
-{
-	{
-		YieldInstruction__ctor_m23280B9DFE9C3E80554A656B4E7125BC9B2C027B(__this, NULL);
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Coroutine_Finalize_m83673D20AB464E4C866408F798D5CA1F0391808D (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* __this, const RuntimeMethod* method) 
-{
-	{
-	}
-	{
-		auto __finallyBlock = il2cpp::utils::Finally([&]
-		{
-
-FINALLY_0010:
-			{
-				Object_Finalize_mC98C96301CCABFE00F1A7EF8E15DF507CACD42B2(__this, NULL);
-				return;
-			}
-		});
-		try
-		{
-			intptr_t L_0 = __this->___m_Ptr;
-			Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869(L_0, NULL);
-			goto IL_0018;
-		}
-		catch(Il2CppExceptionWrapper& e)
-		{
-			__finallyBlock.StoreException(e.ex);
-		}
-	}
-
-IL_0018:
-	{
-		return;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869 (intptr_t ___0_ptr, const RuntimeMethod* method) 
-{
-	typedef void (*Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869_ftn) (intptr_t);
-	static Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869_ftn _il2cpp_icall_func;
-	if (!_il2cpp_icall_func)
-	_il2cpp_icall_func = (Coroutine_ReleaseCoroutine_mEEFBA6D7CABF4E6FAF7C115B53BF530B30208869_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.Coroutine::ReleaseCoroutine(System.IntPtr)");
-	_il2cpp_icall_func(___0_ptr);
 }
 #ifdef __clang__
 #pragma clang diagnostic pop

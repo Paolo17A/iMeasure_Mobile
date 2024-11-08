@@ -44,4 +44,6 @@ app.*.map.json
 /android/unityLibrary/
 unity/imeasure/Library
 unity/imeasure/Temp
+unity/imeasure/Builds
 *.zip
+/unity/imeasure/Builds
