@@ -10,6 +10,7 @@ Library: C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Bur
 --target-framework=NetFramework
 --float-mode=Fast
 --assembly-defines=Assembly-CSharp;
+--assembly-defines=Cinemachine;
 --assembly-defines=Mono.Security;
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
@@ -26,6 +27,8 @@ Library: C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Bur
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
 --assembly-defines=Unity.RenderPipelines.Universal.Runtime;
+--assembly-defines=Unity.TextMeshPro;
+--assembly-defines=Unity.Timeline;
 --assembly-defines=UnityEngine;
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Burst
@@ -45,6 +48,7 @@ Library: C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Bur
 --float-precision=Standard
 --target-framework=NetFramework
 --assembly-defines=Assembly-CSharp;
+--assembly-defines=Cinemachine;
 --assembly-defines=Mono.Security;
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
@@ -61,6 +65,8 @@ Library: C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Bur
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
 --assembly-defines=Unity.RenderPipelines.Universal.Runtime;
+--assembly-defines=Unity.TextMeshPro;
+--assembly-defines=Unity.Timeline;
 --assembly-defines=UnityEngine;
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\paolo\Documents\GitHub\imeasure_mobile\unity\imeasure\Temp\Burst
