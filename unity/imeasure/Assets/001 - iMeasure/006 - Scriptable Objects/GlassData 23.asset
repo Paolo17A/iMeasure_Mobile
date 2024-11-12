@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Clear Tempered 10MM 3/8
   thickness: 10MM 3/8
   pricePerSFT: 220
+  glassColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 0.7882353}

@@ -19,6 +19,10 @@ Widget all20Pix({required Widget child}) {
   return Padding(padding: const EdgeInsets.all(20), child: child);
 }
 
+Widget all4Pix({required Widget child}) {
+  return Padding(padding: const EdgeInsets.all(4), child: child);
+}
+
 Widget all10Pix({required Widget child}) {
   return Padding(padding: const EdgeInsets.all(10), child: child);
 }

@@ -113,7 +113,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       return Container();
     else {
       String name = associatedItemDoc[ItemFields.name];
-      String imageURL = associatedItemDoc[ItemFields.imageURL];
+      List<dynamic> imageURLs = associatedItemDoc[ItemFields.imageURLs];
       if (itemType == ItemTypes.rawMaterial) {
         price = associatedItemDoc[ItemFields.price];
       } else {
@@ -122,179 +122,200 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         laborPrice = quotation[QuotationFields.laborPrice];
       }
       //num price = associatedItemDoc[ItemFields.price];
-      return Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: CustomColors.deepCharcoal)),
-          padding: EdgeInsets.all(10),
-          child: Row(
-            children: [
-              //  CHECKBOX
-              Checkbox(
-                  value: ref
-                      .read(cartProvider)
-                      .selectedCartItemIDs
-                      .contains(cartDoc.id),
-                  onChanged: (itemType == ItemTypes.rawMaterial ||
-                          laborPrice > 0)
-                      ? (newVal) {
-                          if (newVal == null) return;
-                          setState(() {
-                            if (newVal) {
-                              ref.read(cartProvider).selectCartItem(cartDoc.id);
-                            } else {
-                              ref
-                                  .read(cartProvider)
-                                  .deselectCartItem(cartDoc.id);
-                            }
-                          });
-                        }
-                      : null),
-              Flexible(
-                flex: 4,
-                child: Column(
-                  children: [
-                    //ITEM DATA
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Container(
-                            width: 96,
-                            height: 96,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(imageURL))),
-                          ),
-                        ),
-                        Gap(24),
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              quicksandBlackBold(name),
-                              Row(
-                                children: [
-                                  quicksandBlackRegular(
-                                      'PHP ${formatPrice(price.toDouble())}',
-                                      fontSize: 16),
-                                ],
-                              ),
-                              if (itemType != ItemTypes.rawMaterial ||
-                                  laborPrice > 0)
-                                quicksandBlackRegular(
-                                    'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
-                                    fontSize: 14),
-                              if (itemType != ItemTypes.rawMaterial)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          quicksandBlackRegular(
-                                              'Width: ${quotation[QuotationFields.width]}ft',
-                                              fontSize: 12),
-                                          quicksandBlackRegular(
-                                              'Height: ${quotation[QuotationFields.height]}ft',
-                                              fontSize: 12)
-                                        ]),
-                                    if (itemType != ItemTypes.rawMaterial)
-                                      _showQuotationButton(itemType,
-                                          cartData[CartFields.quotation]),
-                                  ],
-                                )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    //  CART DATA
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // QUANTITY
-                        Flexible(
-                          flex: 2,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: CustomColors.deepCharcoal)),
-                                  child: TextButton(
-                                      onPressed: quantity == 1
-                                          ? null
-                                          : () => changeCartItemQuantity(
-                                              context, ref,
-                                              cartEntryDoc: cartDoc,
-                                              isIncreasing: false),
-                                      child: quicksandBlackRegular('-',
-                                          fontSize: 16))),
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: CustomColors.deepCharcoal)),
-                                  child: Center(
-                                    child: quicksandBlackRegular(
-                                        quantity.toString(),
-                                        fontSize: 15),
-                                  )),
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: CustomColors.deepCharcoal)),
-                                  child: TextButton(
-                                      onPressed: () => changeCartItemQuantity(
-                                          context, ref,
-                                          cartEntryDoc: cartDoc,
-                                          isIncreasing: true),
-                                      child: quicksandBlackRegular('+',
-                                          fontSize: 16)))
-                            ],
-                          ),
-                        ),
-
-                        Flexible(
-                          flex: 2,
-                          child: IconButton(
-                              onPressed: () => displayDeleteEntryDialog(context,
-                                      message:
-                                          'Are you sure you wish to remove ${name} from your cart?',
-                                      deleteEntry: () {
-                                    if (ref
-                                        .read(cartProvider)
-                                        .selectedCartItemIDs
-                                        .contains(cartDoc.id)) {
+      return Stack(
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: CustomColors.deepCharcoal)),
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  //  CHECKBOX
+                  Checkbox(
+                      value: ref
+                          .read(cartProvider)
+                          .selectedCartItemIDs
+                          .contains(cartDoc.id),
+                      onChanged:
+                          (itemType == ItemTypes.rawMaterial || laborPrice > 0)
+                              ? (newVal) {
+                                  if (newVal == null) return;
+                                  setState(() {
+                                    if (newVal) {
+                                      ref
+                                          .read(cartProvider)
+                                          .selectCartItem(cartDoc.id);
+                                    } else {
                                       ref
                                           .read(cartProvider)
                                           .deselectCartItem(cartDoc.id);
                                     }
-                                    removeCartItem(context, ref,
-                                        cartDoc: cartDoc);
-                                  }),
-                              icon: Icon(Icons.delete,
-                                  color: CustomColors.coralRed)),
-                        )
+                                  });
+                                }
+                              : null),
+                  Flexible(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        //ITEM DATA
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Container(
+                                width: 96,
+                                height: 96,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(imageURLs.first))),
+                              ),
+                            ),
+                            Gap(24),
+                            Flexible(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  quicksandBlackBold(name),
+                                  Row(
+                                    children: [
+                                      quicksandBlackRegular(
+                                          'PHP ${formatPrice(price.toDouble())}',
+                                          fontSize: 16),
+                                    ],
+                                  ),
+                                  if (itemType != ItemTypes.rawMaterial ||
+                                      laborPrice > 0)
+                                    quicksandBlackRegular(
+                                        'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
+                                        fontSize: 14),
+                                  if (itemType != ItemTypes.rawMaterial)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              quicksandBlackRegular(
+                                                  'Width: ${(quotation[QuotationFields.width] as num).toStringAsFixed(2)}ft',
+                                                  fontSize: 12),
+                                              quicksandBlackRegular(
+                                                  'Height: ${(quotation[QuotationFields.height] as num).toStringAsFixed(2)}ft',
+                                                  fontSize: 12)
+                                            ]),
+                                        if (itemType != ItemTypes.rawMaterial)
+                                          _showQuotationButton(itemType,
+                                              cartData[CartFields.quotation]),
+                                      ],
+                                    )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        //  CART DATA
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // QUANTITY
+                            Flexible(
+                              flex: 2,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  CustomColors.deepCharcoal)),
+                                      child: TextButton(
+                                          onPressed: quantity == 1
+                                              ? null
+                                              : () => changeCartItemQuantity(
+                                                  context, ref,
+                                                  cartEntryDoc: cartDoc,
+                                                  isIncreasing: false),
+                                          child: quicksandBlackRegular('-',
+                                              fontSize: 16))),
+                                  Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  CustomColors.deepCharcoal)),
+                                      child: Center(
+                                        child: quicksandBlackRegular(
+                                            quantity.toString(),
+                                            fontSize: 15),
+                                      )),
+                                  Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  CustomColors.deepCharcoal)),
+                                      child: TextButton(
+                                          onPressed: () =>
+                                              changeCartItemQuantity(
+                                                  context, ref,
+                                                  cartEntryDoc: cartDoc,
+                                                  isIncreasing: true),
+                                          child: quicksandBlackRegular('+',
+                                              fontSize: 16)))
+                                ],
+                              ),
+                            ),
+
+                            Flexible(
+                              flex: 2,
+                              child: IconButton(
+                                  onPressed: () => displayDeleteEntryDialog(
+                                          context,
+                                          message:
+                                              'Are you sure you wish to remove ${name} from your cart?',
+                                          deleteEntry: () {
+                                        if (ref
+                                            .read(cartProvider)
+                                            .selectedCartItemIDs
+                                            .contains(cartDoc.id)) {
+                                          ref
+                                              .read(cartProvider)
+                                              .deselectCartItem(cartDoc.id);
+                                        }
+                                        removeCartItem(context, ref,
+                                            cartDoc: cartDoc);
+                                      }),
+                                  icon: Icon(Icons.delete,
+                                      color: CustomColors.coralRed)),
+                            )
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ));
+                  ),
+                ],
+              )),
+          if (laborPrice > 0)
+            Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                ))
+        ],
+      );
     }
   }
 

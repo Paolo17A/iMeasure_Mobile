@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Clear 3/8
   thickness: 10MM
   pricePerSFT: 95
+  glassColor: {r: 0.8396226, g: 0.8356621, b: 0.8356621, a: 0.7372549}

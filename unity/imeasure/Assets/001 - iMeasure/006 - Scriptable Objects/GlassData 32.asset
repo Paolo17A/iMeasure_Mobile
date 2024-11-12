@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Dark Green
   thickness: 6MM
   pricePerSFT: 60
+  glassColor: {r: 0.021355448, g: 0.1981132, b: 0, a: 0.36862746}

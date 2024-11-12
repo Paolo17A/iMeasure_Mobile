@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Mirror (China) 1/16
   thickness: 2MM
   pricePerSFT: 35
+  glassColor: {r: 1, g: 1, b: 1, a: 0.7882353}

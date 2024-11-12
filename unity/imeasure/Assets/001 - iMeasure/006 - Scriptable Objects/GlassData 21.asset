@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Clear w/ SP 12MM 1/2
   thickness: 12MM 1/2
   pricePerSFT: 150
+  glassColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 0.7882353}

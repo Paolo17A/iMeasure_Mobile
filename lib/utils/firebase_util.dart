@@ -13,6 +13,7 @@ import '../providers/bookmarks_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
 
+import '../providers/orders_provider.dart';
 import '../providers/profile_image_url_provider.dart';
 import 'navigator_util.dart';
 import 'quotation_dialog_util.dart';
@@ -447,11 +448,14 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
   }
   try {
     List<Map<dynamic, dynamic>> mandatoryMap = [];
-    mandatoryMap.add({
-      OrderBreakdownMap.field: 'Glass',
-      OrderBreakdownMap.breakdownPrice: calculateGlassPrice(ref,
-          width: width.toDouble(), height: height.toDouble())
-    });
+    if (itemType == ItemTypes.window) {
+      mandatoryMap.add({
+        OrderBreakdownMap.field: 'Glass',
+        OrderBreakdownMap.breakdownPrice: calculateGlassPrice(ref,
+            width: width.toDouble(), height: height.toDouble())
+      });
+    }
+
     for (var windowSubField in mandatoryWindowFields) {
       if (windowSubField[WindowSubfields.priceBasis] == 'HEIGHT') {
         switch (ref.read(cartProvider).selectedColor) {
@@ -579,6 +583,45 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
   }
 }
 
+Future addFurnitureItemToCartFromUnity(BuildContext context, WidgetRef ref,
+    {required String itemID,
+    required String itemType,
+    required double width,
+    required double height,
+    required String glassType,
+    required String color,
+    required List<dynamic> mandatoryMap,
+    required List<dynamic> optionalMap,
+    required double itemOverallPrice}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    await FirebaseFirestore.instance.collection(Collections.cart).add({
+      CartFields.itemID: itemID,
+      CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
+      CartFields.quantity: 1,
+      CartFields.itemType: itemType,
+      CartFields.quotation: {
+        QuotationFields.width: width,
+        QuotationFields.height: height,
+        QuotationFields.glassType: glassType,
+        QuotationFields.color: color,
+        QuotationFields.mandatoryMap: mandatoryMap,
+        QuotationFields.optionalMap: optionalMap,
+        QuotationFields.itemOverallPrice: itemOverallPrice,
+        QuotationFields.laborPrice: 0,
+        QuotationFields.quotationURL: ''
+      }
+    });
+
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Successfully added this item to your cart.')));
+  } catch (error) {
+    ref.read(loadingProvider).toggleLoading(false);
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error adding product to cart: $error')));
+  }
+}
+
 Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
     {required String itemID}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -668,6 +711,14 @@ Future<List<DocumentSnapshot>> getAllOrderDocs() async {
   return orders.docs.reversed.toList();
 }
 
+Future<List<DocumentSnapshot>> getAllItemOrderDocs(String itemID) async {
+  final orders = await FirebaseFirestore.instance
+      .collection(Collections.orders)
+      .where(OrderFields.itemID, isEqualTo: itemID)
+      .get();
+  return orders.docs.map((order) => order as DocumentSnapshot).toList();
+}
+
 Future<DocumentSnapshot> getThisOrderDoc(String orderID) async {
   return await FirebaseFirestore.instance
       .collection(Collections.orders)
@@ -680,6 +731,18 @@ Future<List<DocumentSnapshot>> getUserOrderHistory() async {
       .collection(Collections.orders)
       .where(OrderFields.clientID,
           isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  return orders.docs.reversed
+      .map((order) => order as DocumentSnapshot)
+      .toList();
+}
+
+Future<List<DocumentSnapshot>> getUserPendingPickUpOrderHistory() async {
+  final orders = await FirebaseFirestore.instance
+      .collection(Collections.orders)
+      .where(OrderFields.clientID,
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where(OrderFields.orderStatus, isEqualTo: OrderStatuses.forPickUp)
       .get();
   return orders.docs.reversed
       .map((order) => order as DocumentSnapshot)
@@ -778,11 +841,36 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
   }
 }
 
+Future markOrderAsPickedUp(BuildContext context, WidgetRef ref,
+    {required String orderID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.orderStatus: OrderStatuses.pickedUp,
+      OrderFields.datePickedUp: DateTime.now()
+    });
+    ref.read(ordersProvider).setOrderDocs(await getUserOrderHistory());
+    ref.read(ordersProvider).sortOrdersByDate();
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully marked order as picked up')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error marking order as picked up: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
 Future reviewThisOrder(BuildContext context, WidgetRef ref,
     {required String orderID,
     required int rating,
     required TextEditingController reviewController,
-    File? reviewImageFile}) async {
+    required List<File> reviewImageFiles}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
   try {
@@ -803,20 +891,29 @@ Future reviewThisOrder(BuildContext context, WidgetRef ref,
       }
     });
 
-    if (reviewImageFile != null) {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child(StorageFields.reviews)
-          .child('${orderID}.png');
-      final uploadTask = storageRef.putFile(reviewImageFile);
-      final taskSnapshot = await uploadTask;
-      final downloadURL = await taskSnapshot.ref.getDownloadURL();
+    if (reviewImageFiles.isNotEmpty) {
+      List<dynamic> downloadURLs = [];
+      for (var imageFile in reviewImageFiles) {
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child(StorageFields.reviews)
+            .child(orderID)
+            .child('${generateRandomHexString(6)}.png');
+        final uploadTask = storageRef.putFile(imageFile);
+        final taskSnapshot = await uploadTask;
+        final downloadURL = await taskSnapshot.ref.getDownloadURL();
+        downloadURLs.add(downloadURL);
+      }
 
       await FirebaseFirestore.instance
           .collection(Collections.orders)
           .doc(orderID)
           .update({
-        OrderFields.review: {ReviewFields.imageURL: downloadURL}
+        OrderFields.review: {
+          ReviewFields.imageURLs: downloadURLs,
+          ReviewFields.rating: rating,
+          ReviewFields.review: reviewController.text.trim()
+        }
       });
     }
     ref.read(loadingProvider).toggleLoading(false);

@@ -38,9 +38,11 @@ Text quicksandWhiteRegular(String label,
 Text montserratBlackRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
-    TextOverflow? textOverflow}) {
+    TextOverflow? textOverflow,
+    int? maxLines}) {
   return Text(
     label,
+    maxLines: maxLines,
     textAlign: textAlign,
     overflow: textOverflow,
     style: GoogleFonts.quicksand(fontSize: fontSize, color: Colors.black),

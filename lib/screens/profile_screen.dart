@@ -72,7 +72,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(children: [
               profileDetails(),
               _actionButtons(),
-              _logoutButton()
             ])),
           )),
     );
@@ -82,9 +81,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Column(
       //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildProfileImage(
-            profileImageURL: ref.read(profileImageURLProvider).profileImageURL,
-            radius: MediaQuery.of(context).size.width * 0.15),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(child: Container()),
+            Flexible(
+              child: buildProfileImage(
+                  profileImageURL:
+                      ref.read(profileImageURLProvider).profileImageURL,
+                  radius: MediaQuery.of(context).size.width * 0.15),
+            ),
+            Flexible(flex: 2, child: _logoutButton()),
+          ],
+        ),
         quicksandBlackBold(formattedName, fontSize: 22),
       ],
     );
@@ -92,9 +102,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _actionButtons() {
     return vertical20Pix(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Wrap(
+        alignment: WrapAlignment.spaceAround,
+        spacing: 20,
+        runSpacing: 20,
         children: [
           roundedLavenderMistButton(
               onPress: () =>
@@ -110,9 +121,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Positioned(
                       top: -16,
                       right: -32,
-                      child: pendingPickUpOrdersStreamBuilder())
+                      child: pendingPickUpOrdersStreamBuilder()),
                 ],
-              ))
+              )),
+          roundedLavenderMistButton(
+              onPress: () => Navigator.of(context)
+                  .pushNamed(NavigatorRoutes.completedOrders),
+              child: quicksandBlackRegular('COMPLETED', fontSize: 12))
         ],
       ),
     );
@@ -126,6 +141,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           });
         },
         style: ElevatedButton.styleFrom(backgroundColor: CustomColors.coralRed),
-        child: quicksandWhiteRegular('LOG-OUT', fontSize: 12));
+        child: quicksandWhiteBold('LOG-OUT', fontSize: 8));
   }
 }

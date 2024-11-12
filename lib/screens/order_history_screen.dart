@@ -34,8 +34,17 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           navigator.pop();
           return;
         }
+        List<DocumentSnapshot> orderDocs = await getUserOrderHistory();
+        orderDocs = orderDocs.where((orderDoc) {
+          final orderData = orderDoc.data() as Map<dynamic, dynamic>;
+          Map<dynamic, dynamic> review = orderData[OrderFields.review];
 
-        ref.read(ordersProvider).setOrderDocs(await getUserOrderHistory());
+          return orderData[OrderFields.orderStatus] !=
+                  OrderStatuses.completed ||
+              review.isEmpty;
+        }).toList();
+        ref.read(ordersProvider).setOrderDocs(orderDocs);
+        ref.read(ordersProvider).sortOrdersByDate();
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(SnackBar(
@@ -95,8 +104,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
               snapshot.hasError) return snapshotHandler(snapshot);
 
           final itemData = snapshot.data!.data() as Map<dynamic, dynamic>;
-          //String itemType = itemData[ItemFields.itemType];
-          String imageURL = itemData[ItemFields.imageURL];
+          List<dynamic> imageURLs = itemData[ItemFields.imageURLs];
           String name = itemData[ItemFields.name];
           return Container(
             //width: 400,
@@ -111,7 +119,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                     height: 140,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(imageURL), fit: BoxFit.cover))),
+                            image: NetworkImage(imageURLs.first),
+                            fit: BoxFit.cover))),
                 Gap(12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:imeasure_mobile/screens/item_model_screen.dart';
+import 'package:imeasure_mobile/screens/unity_screen.dart';
 import 'package:imeasure_mobile/utils/color_util.dart';
 
 import '../models/glass_model.dart';
@@ -36,8 +37,9 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
   num maxWidth = 0;
   num minHeight = 0;
   num maxHeight = 0;
-  String imageURL = '';
+  List<dynamic> imageURLs = [];
   String correspondingModel = '';
+  List<DocumentSnapshot> orderDocs = [];
 
   //  USER VARIABLES
   final widthController = TextEditingController();
@@ -61,7 +63,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         name = itemData[ItemFields.name];
         description = itemData[ItemFields.description];
         isAvailable = itemData[ItemFields.isAvailable];
-        imageURL = itemData[ItemFields.imageURL];
+        imageURLs = itemData[ItemFields.imageURLs];
         minHeight = itemData[ItemFields.minHeight];
         maxHeight = itemData[ItemFields.maxHeight];
         minWidth = itemData[ItemFields.minWidth];
@@ -84,6 +86,12 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
             OptionalWindowFields.price: 0
           });
         }
+        orderDocs = await getAllItemOrderDocs(widget.windowID);
+        orderDocs = orderDocs.where((orderDoc) {
+          final orderData = orderDoc.data() as Map<dynamic, dynamic>;
+          Map review = orderData[OrderFields.review];
+          return review.isNotEmpty;
+        }).toList();
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
@@ -125,7 +133,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _itemImagesDisplay(),
+          if (imageURLs.isNotEmpty) _itemImagesDisplay(),
           _nameAnd3D(),
           _descriptionAndSize(),
           _actionButtons(),
@@ -133,6 +141,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
               fontSize: 16),
           Divider(),
           _itemFieldInputs(),
+          if (orderDocs.isNotEmpty) _userReviews()
         ],
       ),
     );
@@ -146,7 +155,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-                fit: BoxFit.fill, image: NetworkImage(imageURL))),
+                fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
       ),
     );
   }
@@ -172,13 +181,10 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                 children: [
                   quicksandEmeraldGreenBold('3D', fontSize: 28),
                   IconButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => ItemModelScreen(
-                                    modelPath: AvailableModels
-                                        .getCorrespondingModelPath(
-                                            correspondingModel),
-                                  ))),
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  UnityScreen(itemID: widget.windowID))),
                       icon: Icon(Icons.visibility_outlined))
                 ],
               ))
@@ -190,9 +196,27 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
     return all10Pix(
         child: Column(
       children: [
-        vertical10Pix(
-            child:
-                montserratBlackRegular(description, textAlign: TextAlign.left)),
+        GestureDetector(
+          onTap: description.length > 300
+              ? () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                            child: SingleChildScrollView(
+                              child: all20Pix(
+                                  child: montserratBlackRegular(description,
+                                      textAlign: TextAlign.left, fontSize: 18)),
+                            ),
+                          ));
+                }
+              : null,
+          child: vertical10Pix(
+              child: montserratBlackRegular(description,
+                  textAlign: TextAlign.left,
+                  fontSize: 18,
+                  maxLines: 6,
+                  textOverflow: TextOverflow.ellipsis)),
+        ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           quicksandDeepCharcoalBold('Minimum Width: ${minWidth.toString()}ft',
               fontSize: 12),
@@ -374,6 +398,98 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                   ],
                 );
               }),
+        ],
+      ),
+    );
+  }
+
+  Widget _userReviews() {
+    return vertical20Pix(
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Divider(),
+          quicksandBlackBold('REVIEWS'),
+          vertical10Pix(
+            child: ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: orderDocs.length,
+                itemBuilder: (context, index) {
+                  final orderData = orderDocs[index];
+                  String clientID = orderData[OrderFields.clientID];
+                  Map<String, dynamic> review = orderData[OrderFields.review];
+                  num rating = review[ReviewFields.rating];
+                  List<dynamic> imageURLs = review[ReviewFields.imageURLs];
+                  String reviewText = review[ReviewFields.review];
+                  return all4Pix(
+                    child: Container(
+                        //height: 100,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white)),
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        FutureBuilder(
+                                            future: getThisUserDoc(clientID),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                      ConnectionState.waiting ||
+                                                  !snapshot.hasData ||
+                                                  snapshot.hasError)
+                                                return Container();
+                                              final userData =
+                                                  snapshot.data!.data()
+                                                      as Map<dynamic, dynamic>;
+                                              String formattedName =
+                                                  '${userData[UserFields.firstName]} ${userData[UserFields.lastName]}';
+
+                                              return quicksandBlackRegular(
+                                                  formattedName);
+                                            }),
+                                        starRating(rating.toDouble(),
+                                            onUpdate: (val) {}, mayMove: false),
+                                        quicksandBlackRegular(reviewText,
+                                            fontSize: 16),
+                                      ]),
+                                ),
+                              ],
+                            ),
+                            if (imageURLs.isNotEmpty)
+                              Flexible(
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: imageURLs
+                                        .map((imageURL) => all4Pix(
+                                              child: Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      image: DecorationImage(
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(
+                                                              imageURL)))),
+                                            ))
+                                        .toList()),
+                              )
+                          ],
+                        )),
+                  );
+                }),
+          ),
         ],
       ),
     );

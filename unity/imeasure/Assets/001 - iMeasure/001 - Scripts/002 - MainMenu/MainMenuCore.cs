@@ -27,9 +27,10 @@ public class MainMenuCore : MonoBehaviour
             Debug.Log("Document fetched successfully");
             string jsonResponse = request.downloadHandler.text;
             // Parse JSON response if needed
-            DocumentResponse document = JsonConvert.DeserializeObject<DocumentResponse>(jsonResponse);
             Debug.Log(jsonResponse); // Log or process data here
-     
+
+            DocumentResponse document = JsonConvert.DeserializeObject<DocumentResponse>(jsonResponse);
+
 
             UnityGameManager.Instance.ItemType = document.fields["itemType"].stringValue;
             UnityGameManager.Instance.Name = document.fields["name"].stringValue;
@@ -42,27 +43,21 @@ public class MainMenuCore : MonoBehaviour
             UnityGameManager.Instance.ItemFields.Clear();
             for (int i = 0; i < document.fields["windowFields"].arrayValue.values.Count; i++)
             {
-                Dictionary<string, Dictionary<string, object>> itemFields = document.fields["windowFields"].arrayValue.values[i]["mapValue"]["fields"];
-                ItemField itemField = new ItemField();
-                itemField.name = itemFields["name"]["stringValue"].ToString();
-                itemField.isMandatory = (bool) itemFields["isMandatory"]["booleanValue"];
-                itemField.priceBasis = itemFields["priceBasis"]["stringValue"].ToString();
+                //Dictionary<string, Dictionary<string, object>> itemFields = document.fields["windowFields"].arrayValue.values[i]["mapValue"]["fields"];
 
-                itemField.brownPrice =  itemFields["brownPrice"].ContainsKey("doubleValue") 
-                    ? float.Parse(itemFields["brownPrice"]["doubleValue"].ToString()) 
-                    : int.Parse(itemFields["brownPrice"]["integerValue"].ToString());
-                itemField.whitePrice = itemFields["whitePrice"].ContainsKey("doubleValue") 
-                    ? float.Parse(itemFields["whitePrice"]["doubleValue"].ToString()) 
-                    : int.Parse(itemFields["whitePrice"]["integerValue"].ToString());
-                itemField.woodFinishPrice = itemFields["woodFinishPrice"].ContainsKey("doubleValue") 
-                    ? float.Parse(itemFields["woodFinishPrice"]["doubleValue"].ToString()) 
-                    : int.Parse(itemFields["woodFinishPrice"]["integerValue"].ToString());
-                itemField.mattBlackPrice = itemFields["mattBlackPrice"].ContainsKey("doubleValue") 
-                    ? float.Parse(itemFields["mattBlackPrice"]["doubleValue"].ToString()) 
-                    : int.Parse(itemFields["mattBlackPrice"]["integerValue"].ToString());
-                itemField.mattGrayPrice = itemFields["mattGrayPrice"].ContainsKey("doubleValue") 
-                    ? float.Parse(itemFields["mattGrayPrice"]["doubleValue"].ToString()) 
-                    : int.Parse(itemFields["mattGrayPrice"]["integerValue"].ToString());
+                FirestoreField itemFieldsMap = document.fields["windowFields"].arrayValue.values[i];
+                Debug.Log("itemFieldsMap: " + itemFieldsMap.mapValue);
+                Dictionary<string, FirestoreField> itemFields = itemFieldsMap.mapValue.fields;
+
+                ItemField itemField = new ItemField();
+                itemField.name = itemFields["name"].stringValue;
+                itemField.isMandatory = (bool)itemFields["isMandatory"].booleanValue;
+                itemField.priceBasis = itemFields["priceBasis"].stringValue;
+                itemField.brownPrice = itemFields["brownPrice"].doubleValue ?? (float)itemFields["brownPrice"].integerValue.GetValueOrDefault();
+                itemField.whitePrice = itemFields["whitePrice"].doubleValue ?? (float)itemFields["whitePrice"].integerValue.GetValueOrDefault();
+                itemField.woodFinishPrice = itemFields["woodFinishPrice"].doubleValue ?? (float)itemFields["woodFinishPrice"].integerValue.GetValueOrDefault();
+                itemField.mattBlackPrice = itemFields["mattBlackPrice"].doubleValue ?? (float)itemFields["mattBlackPrice"].integerValue.GetValueOrDefault();
+                itemField.mattGrayPrice = itemFields["mattGrayPrice"].doubleValue ?? (float)itemFields["mattGrayPrice"].integerValue.GetValueOrDefault();
 
                 UnityGameManager.Instance.ItemFields.Add(itemField);
             }
@@ -73,6 +68,11 @@ public class MainMenuCore : MonoBehaviour
         {
             Debug.LogError("Failed to fetch document: " + request.error);
         }
+    }
+
+    public void QuitGameplay()
+    {
+        UnityGameManager.Instance.UnityMessageManager.SendMessageToFlutter("QUIT");
     }
 
     public class DocumentResponse
@@ -87,11 +87,22 @@ public class MainMenuCore : MonoBehaviour
         public float? doubleValue { get; set; }
         public bool? booleanValue { get; set; }
         public ArrayValue arrayValue { get; set; }
-        public DocumentResponse fields { get; set; }   
+        public MapValue mapValue { get; set; }
+        //public DocumentResponse fields { get; set; }   
     }
+
+    //public class ArrayValue
+    //{
+    //   public List<Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, object>>>>> values;
+    //}
 
     public class ArrayValue
     {
-       public List<Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, object>>>>> values;
+        public List<FirestoreField> values { get; set; }
+    }
+
+    public class MapValue
+    {
+        public Dictionary<string, FirestoreField> fields { get; set; }
     }
 }

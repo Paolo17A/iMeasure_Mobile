@@ -178,7 +178,7 @@ Widget square150NetworkImage(String url) {
     width: 150,
     height: 150,
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        //borderRadius: BorderRadius.circular(10),
         image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)),
   );
 }

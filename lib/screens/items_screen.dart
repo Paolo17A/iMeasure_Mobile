@@ -25,7 +25,7 @@ class ItemsScreen extends ConsumerStatefulWidget {
 class _ItemsScreenState extends ConsumerState<ItemsScreen> {
   List<DocumentSnapshot> itemDocs = [];
   List<DocumentSnapshot> filteredDocs = [];
-  String currentItemType = ItemTypes.window;
+  String currentItemType = '';
 
   @override
   void initState() {
@@ -45,6 +45,12 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
   }
 
   void filterDocsByItemType() {
+    if (currentItemType.isEmpty) {
+      setState(() {
+        filteredDocs = itemDocs;
+      });
+      return;
+    }
     setState(() {
       filteredDocs = itemDocs.where((itemDoc) {
         final itemData = itemDoc.data() as Map<dynamic, dynamic>;
@@ -65,6 +71,7 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
             Column(
               children: [
                 itemTypeNavigator(context),
+                Divider(),
                 filteredItemEntriesDisplay()
               ],
             )));
@@ -74,24 +81,26 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
     return SizedBox(
       height: 50,
       width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          itemButton(context, label: 'WINDOWS', itemType: ItemTypes.window),
-          itemButton(context, label: 'DOORS', itemType: ItemTypes.door),
-          itemButton(context,
-              label: 'RAW MATERIALS', itemType: ItemTypes.rawMaterial),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            itemButton(context, label: 'ALL', itemType: ''),
+            itemButton(context, label: 'WINDOWS', itemType: ItemTypes.window),
+            itemButton(context, label: 'DOORS', itemType: ItemTypes.door),
+            itemButton(context,
+                label: 'RAW MATERIALS', itemType: ItemTypes.rawMaterial),
+          ],
+        ),
       ),
     );
   }
 
   Widget itemButton(BuildContext context,
       {required String label, required String itemType}) {
-    return Flexible(
+    return all10Pix(
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: CustomColors.forestGreen),
           onPressed: () {
             setState(() {
               currentItemType = itemType;
@@ -107,7 +116,7 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
   Widget filteredItemEntriesDisplay() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height - 220,
+      height: MediaQuery.of(context).size.height - 230,
       //decoration: BoxDecoration(border: Border.all()),
       child: filteredDocs.isNotEmpty
           ? SingleChildScrollView(
@@ -125,7 +134,7 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
 
   Widget _filteredItemEntry(DocumentSnapshot itemDoc) {
     final itemData = itemDoc.data() as Map<dynamic, dynamic>;
-    String imageURL = itemData[ItemFields.imageURL];
+    List<dynamic> imageURLs = itemData[ItemFields.imageURLs];
     String name = itemData[ItemFields.name];
     String itemType = itemData[ItemFields.itemType];
     return Container(
@@ -138,9 +147,12 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
               onTap: () => showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                      content: square80PercentNetworkImage(context, imageURL))),
-              child: square150NetworkImage(imageURL)),
-          vertical10Pix(child: quicksandBlackBold(name)),
+                      content: square80PercentNetworkImage(
+                          context, imageURLs.first))),
+              child: square150NetworkImage(imageURLs.first)),
+          vertical10Pix(
+              child: quicksandBlackBold(name,
+                  textOverflow: TextOverflow.ellipsis)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

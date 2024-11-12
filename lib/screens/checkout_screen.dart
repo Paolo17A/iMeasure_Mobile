@@ -52,7 +52,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           num quantity = cartData[CartFields.quantity];
           if (itemType == ItemTypes.rawMaterial) {
             Map<dynamic, dynamic> productEntry = {
-              ItemFields.imageURL: itemData[ItemFields.imageURL],
+              ItemFields.imageURLs: itemData[ItemFields.imageURLs],
               ItemFields.name: itemData[ItemFields.name],
               ItemFields.price: itemData[ItemFields.price],
               CartFields.quantity: cartData[CartFields.quantity]
@@ -66,7 +66,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 (quantity * quotation[QuotationFields.itemOverallPrice]) +
                     quotation[QuotationFields.laborPrice];
             Map<dynamic, dynamic> productEntry = {
-              ItemFields.imageURL: itemData[ItemFields.imageURL],
+              ItemFields.imageURLs: itemData[ItemFields.imageURLs],
               ItemFields.name: itemData[ItemFields.name],
               ItemFields.price: itemPrice,
               CartFields.quantity: cartData[CartFields.quantity]
@@ -139,7 +139,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           child: Row(
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(productEntry[ItemFields.imageURL],
+              Image.network(productEntry[ItemFields.imageURLs],
                   width: 50, height: 50, fit: BoxFit.cover),
               Gap(4),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -14,7 +14,7 @@ Widget itemEntry(BuildContext context, WidgetRef ref,
     required Function onPress,
     Color fontColor = Colors.black}) {
   final productData = productDoc.data() as Map<dynamic, dynamic>;
-  String imageURL = productData[ItemFields.imageURL];
+  List<dynamic> imageURLs = productData[ItemFields.imageURLs];
   String itemName = productData[ItemFields.name];
   String itemType = productData[ItemFields.itemType];
   return GestureDetector(
@@ -28,8 +28,9 @@ Widget itemEntry(BuildContext context, WidgetRef ref,
               onTap: () => showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                      content: square80PercentNetworkImage(context, imageURL))),
-              child: _productImage(imageURL)),
+                      content: square80PercentNetworkImage(
+                          context, imageURLs.first))),
+              child: _productImage(imageURLs.first)),
           Container(
             width: 150,
             child: Padding(

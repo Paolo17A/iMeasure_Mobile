@@ -27,7 +27,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<DocumentSnapshot> itemDocs = [];
 
   //  USER
-  List<DocumentSnapshot> serviceDocs = [];
   List<DocumentSnapshot> testimonialDocs = [];
   List<DocumentSnapshot> portfolioDocs = [];
   @override
@@ -40,8 +39,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final userData = userDoc.data() as Map<dynamic, dynamic>;
       ref.read(bookmarksProvider).bookmarkedProducts =
           userData[UserFields.bookmarks];
-      serviceDocs = await getAllServiceGalleryDocs();
-      serviceDocs.shuffle();
       testimonialDocs = await getAllTestimonialGalleryDocs();
       testimonialDocs.shuffle();
       portfolioDocs = await getAllPortfolioGalleryDocs();
@@ -64,77 +61,115 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
             SingleChildScrollView(
-              child: all20Pix(
-                  child: Column(
+              child: Column(
                 children: [
                   _gallery(),
                   const Divider(color: Colors.black, thickness: 4),
                   _topProducts(),
                 ],
-              )),
+              ),
             )),
       ),
     );
   }
 
   Widget _gallery() {
-    String serviceURL = '';
     String testimonialURL = '';
     String portfolioURL = '';
-    if (serviceDocs.isNotEmpty) {
-      final serviceData = serviceDocs.first.data() as Map<dynamic, dynamic>;
-      serviceURL = serviceData[GalleryFields.imageURL];
-    }
+    String testimonialURL2 = '';
+    String portfolioURL2 = '';
+
     if (testimonialDocs.isNotEmpty) {
       final testimonialData =
           testimonialDocs.first.data() as Map<dynamic, dynamic>;
       testimonialURL = testimonialData[GalleryFields.imageURL];
+      if (testimonialDocs.length > 1) {
+        final testimonialData =
+            testimonialDocs[1].data() as Map<dynamic, dynamic>;
+        testimonialURL2 = testimonialData[GalleryFields.imageURL];
+      }
     }
     if (portfolioDocs.isNotEmpty) {
       final portfolioData = portfolioDocs.first.data() as Map<dynamic, dynamic>;
       portfolioURL = portfolioData[GalleryFields.imageURL];
+      if (portfolioDocs.length > 1) {
+        final portfolioData = portfolioDocs[1].data() as Map<dynamic, dynamic>;
+        portfolioURL2 = portfolioData[GalleryFields.imageURL];
+      }
     }
     return vertical20Pix(
         child: Column(
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          if (serviceURL.isNotEmpty)
-            Column(children: [
-              quicksandBlackBold('SERVICES', fontSize: 12),
-              Gap(4),
-              GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          content: square80PercentNetworkImage(
-                              context, serviceURL))),
-                  child: square100NetworkImage(serviceURL))
-            ]),
-          if (testimonialURL.isNotEmpty)
-            Column(children: [
-              quicksandBlackBold('CLIENT TESTIMONIALS', fontSize: 12),
-              Gap(4),
-              GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          content: square80PercentNetworkImage(
-                              context, testimonialURL))),
-                  child: square100NetworkImage(testimonialURL))
-            ]),
-        ]),
+        if (testimonialURL.isNotEmpty)
+          Column(children: [
+            quicksandBlackBold('CLIENT TESTIMONIALS', fontSize: 16),
+            Gap(4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                    onTap: () => showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            content: square80PercentNetworkImage(
+                                context, testimonialURL))),
+                    child: square150NetworkImage(testimonialURL)),
+                if (testimonialDocs.length > 1)
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(testimonialURL2))),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.5),
+                        child: Center(
+                            child: quicksandWhiteBold(
+                                '+${testimonialDocs.length}')),
+                      ),
+                    ),
+                  )
+              ],
+            )
+          ]),
         Gap(30),
         if (portfolioURL.isNotEmpty)
           Column(children: [
-            quicksandBlackBold('PORTFOLIO', fontSize: 12),
+            quicksandBlackBold('PORTFOLIO', fontSize: 16),
             Gap(4),
-            GestureDetector(
-                onTap: () => showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                        content: square80PercentNetworkImage(
-                            context, portfolioURL))),
-                child: square300NetworkImage(portfolioURL))
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                    onTap: () => showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            content: square80PercentNetworkImage(
+                                context, portfolioURL))),
+                    child: square150NetworkImage(portfolioURL)),
+                if (portfolioDocs.length > 1)
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(portfolioURL2))),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.5),
+                        child: Center(
+                            child:
+                                quicksandWhiteBold('+${portfolioDocs.length}')),
+                      ),
+                    ),
+                  )
+              ],
+            )
           ]),
       ],
     ));
@@ -144,40 +179,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     itemDocs.shuffle();
     return SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: itemDocs.isNotEmpty
-            ? SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: itemDocs.isNotEmpty
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: itemDocs.reversed
-                        .take(6)
-                        .toList()
-                        .map((item) => Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: itemEntry(context, ref,
-                                      productDoc: item, onPress: () {
-                                    final itemData =
-                                        item.data() as Map<dynamic, dynamic>;
-                                    String itemType =
-                                        itemData[ItemFields.itemType];
-                                    if (itemType == ItemTypes.window) {
-                                      NavigatorRoutes.selectedWindow(
-                                          context, ref,
-                                          windowID: item.id);
-                                    }
-                                  }, fontColor: Colors.white),
-                                ),
-                              ],
+        child: Column(
+          children: [
+            quicksandBlackBold('PRODUCTS & ITEMS'),
+            itemDocs.isNotEmpty
+                ? Wrap(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisAlignment: itemDocs.isNotEmpty
+                    //     ? MainAxisAlignment.start
+                    //     : MainAxisAlignment.center,
+
+                    children: itemDocs
+                        .map((item) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: itemEntry(context, ref, productDoc: item,
+                                  onPress: () {
+                                final itemData =
+                                    item.data() as Map<dynamic, dynamic>;
+                                String itemType = itemData[ItemFields.itemType];
+                                if (itemType == ItemTypes.window) {
+                                  NavigatorRoutes.selectedWindow(context, ref,
+                                      windowID: item.id);
+                                }
+                              }, fontColor: Colors.white),
                             ))
-                        .toList()))
-            : all20Pix(
-                child: quicksandBlackBold('NO AVAILABLE PRODUCTS TO DISPLAY'),
-              ));
+                        .toList())
+                : all20Pix(
+                    child:
+                        quicksandBlackBold('NO AVAILABLE PRODUCTS TO DISPLAY')),
+          ],
+        ));
   }
 }

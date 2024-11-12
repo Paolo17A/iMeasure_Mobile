@@ -29,11 +29,11 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
   num quantity = 0;
   num itemOverallPrice = 0;
   DateTime datePickedUp = DateTime.now();
-  String imageURL = '';
+  List<dynamic> imageURLs = [];
   String name = '';
   double initialRating = 0;
   final feedbackController = TextEditingController();
-  File? reviewImageFile;
+  List<File> selectedImages = [];
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
 
         final item = await getThisItemDoc(itemID);
         final itemData = item.data() as Map<dynamic, dynamic>;
-        imageURL = itemData[ItemFields.imageURL];
+        imageURLs = itemData[ItemFields.imageURLs];
         name = itemData[ItemFields.name];
         ref.read(loadingProvider).toggleLoading(false);
       } catch (error) {
@@ -86,7 +86,8 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
                       onPressed: () => reviewThisOrder(context, ref,
                           orderID: widget.orderID,
                           rating: initialRating.toInt(),
-                          reviewController: feedbackController),
+                          reviewController: feedbackController,
+                          reviewImageFiles: selectedImages),
                       child: quicksandWhiteBold('SUBMIT REVIEW'))
                 ],
               )),
@@ -113,7 +114,7 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
             'PHP ${formatPrice(itemOverallPrice.toDouble())}',
             fontSize: 16)
       ]),
-      if (imageURL.isNotEmpty)
+      if (imageURLs.isNotEmpty)
         vertical10Pix(
             child: Container(
           width: MediaQuery.of(context).size.width * 0.9,
@@ -121,7 +122,7 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(imageURL))),
+                  fit: BoxFit.cover, image: NetworkImage(imageURLs.first))),
         )),
       Divider(color: CustomColors.deepCharcoal)
     ]);
@@ -142,21 +143,36 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
               textInputType: TextInputType.multiline,
               displayPrefixIcon: null),
         ),
-        if (reviewImageFile != null)
-          Image.file(reviewImageFile!, width: 300, height: 300),
+        if (selectedImages.isNotEmpty)
+          Row(
+              children: selectedImages
+                  .map((reviewImage) => Column(
+                        children: [
+                          Image.file(reviewImage, width: 300, height: 300),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.delete_outline))
+                        ],
+                      ))
+                  .toList()),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton(
                 onPressed: () async {
                   ImagePicker imagePicker = ImagePicker();
-                  final selectedXFile =
-                      await imagePicker.pickImage(source: ImageSource.gallery);
-                  if (selectedXFile == null) {
+                  List<XFile> selectedXFiles =
+                      await imagePicker.pickMultiImage();
+                  if (selectedXFiles.length + selectedImages.length > 3) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text('You can only select up to three images.')));
                     return;
                   }
                   setState(() {
-                    reviewImageFile = File(selectedXFile.path);
+                    for (XFile image in selectedXFiles) {
+                      selectedImages.add(File(image.path));
+                    }
                   });
                 },
                 child: quicksandWhiteBold('ADD IMAGE'))

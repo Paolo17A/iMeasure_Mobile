@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Bronze / Gray Mirror
   thickness: 6MM
   pricePerSFT: 175
+  glassColor: {r: 0.5188679, g: 0.21954949, b: 0, a: 0.80784315}

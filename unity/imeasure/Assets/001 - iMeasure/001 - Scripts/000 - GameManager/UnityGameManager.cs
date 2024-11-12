@@ -77,4 +77,11 @@ public class UnityGameManager : MonoBehaviour
         SceneController.CurrentScene = "MainMenuScene";
     }
     #endregion
+
+    #region FLUTTER
+    public void SetItem(string message)
+    {
+        ItemID = message;
+    }
+    #endregion
 }

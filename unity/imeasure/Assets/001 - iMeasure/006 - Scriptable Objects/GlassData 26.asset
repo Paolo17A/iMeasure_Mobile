@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Bronze w/ SP 10MM 3/8
   thickness: 10MM 3/8
   pricePerSFT: 150
+  glassColor: {r: 0.735849, g: 0.31686315, b: 0.03123886, a: 0.78039217}

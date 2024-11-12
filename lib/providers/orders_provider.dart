@@ -16,6 +16,15 @@ class OrdersNotifier extends ChangeNotifier {
     });
     notifyListeners();
   }
+
+  void sortOrdersByDate() {
+    orderDocs.sort((a, b) {
+      DateTime aTime = (a[OrderFields.dateCreated] as Timestamp).toDate();
+      DateTime bTime = (b[OrderFields.dateCreated] as Timestamp).toDate();
+      return bTime.compareTo(aTime);
+    });
+    notifyListeners();
+  }
 }
 
 final ordersProvider =

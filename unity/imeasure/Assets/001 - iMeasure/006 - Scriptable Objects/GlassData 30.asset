@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Bronze Tempered 12MM 1/2
   thickness: 12MM 1/2
   pricePerSFT: 275
+  glassColor: {r: 0.735849, g: 0.31686315, b: 0.03123886, a: 0.78039217}

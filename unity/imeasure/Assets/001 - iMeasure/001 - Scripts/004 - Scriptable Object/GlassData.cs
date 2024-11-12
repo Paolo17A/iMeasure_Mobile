@@ -8,4 +8,5 @@ public class GlassData : ScriptableObject
     public string glassTypeName;
     public string thickness;
     public float pricePerSFT;
+    public Color glassColor;
 }

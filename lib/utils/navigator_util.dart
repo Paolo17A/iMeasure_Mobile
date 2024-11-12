@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/screens/completed_orders_screen.dart';
+import 'package:imeasure_mobile/screens/contact_us_screen.dart';
 import 'package:imeasure_mobile/screens/items_screen.dart';
 import 'package:imeasure_mobile/screens/order_history_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
@@ -52,7 +54,9 @@ class NavigatorRoutes {
   static const String checkout = 'checkout';
   static const String bookmarks = 'bookmarks';
   static const String help = 'help';
+  static const String contactUs = 'contactUs';
   static const String orderHistory = 'orderHistory';
+  static const String completedOrders = 'completedOrders';
 }
 
 final Map<String, WidgetBuilder> routes = {
@@ -67,5 +71,7 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.checkout: (context) => const CheckoutScreen(),
   NavigatorRoutes.bookmarks: (context) => const BookmarksScreen(),
   NavigatorRoutes.help: (context) => const HelpScreen(),
-  NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen()
+  NavigatorRoutes.contactUs: (context) => const ContactUsScreen(),
+  NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen(),
+  NavigatorRoutes.completedOrders: (context) => const CompletedOrdersScreen()
 };

@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Bronze 1/4
   thickness: 6MM
   pricePerSFT: 44
+  glassColor: {r: 0.3584906, g: 0.1705626, b: 0.025364896, a: 0.79607844}

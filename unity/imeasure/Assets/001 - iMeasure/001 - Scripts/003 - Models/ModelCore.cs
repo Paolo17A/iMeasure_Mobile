@@ -31,6 +31,7 @@ public class ModelCore : MonoBehaviour
     [SerializeField] private Transform glassEntriesContainer;
     [SerializeField] private GlassDataHandler glassDataEntryPrefab;
     [SerializeField] private GameObject selectedGlassContainer;
+    [SerializeField] private Material glassMaterial;
 
     [Header("QUOTATION")]
     [SerializeField] private GameObject quotationContainer;
@@ -75,7 +76,7 @@ public class ModelCore : MonoBehaviour
     {
         SetSelectedGlass(AllAvailableGlass[0]);
         foreach (Transform child in glassEntriesContainer.transform)
-            Destroy(child);
+            Destroy(child.gameObject);
 
         foreach (GlassData glassData in AllAvailableGlass)
         {
@@ -83,6 +84,7 @@ public class ModelCore : MonoBehaviour
             glassDataHandler.InitializeGlassDataHandler(this, glassData);
             glassDataHandler.gameObject.transform.SetParent(glassEntriesContainer);
             glassDataHandler.gameObject.transform.localScale = Vector3.one;
+            glassDataHandler.gameObject.transform.localPosition = new Vector3(glassDataHandler.gameObject.transform.localPosition.x, glassDataHandler.gameObject.transform.localPosition.y, 0);
         }
     }
 
@@ -125,6 +127,7 @@ public class ModelCore : MonoBehaviour
         SelectedGlassData = glassData;
         SelectedGlassNameTMP.text = SelectedGlassData.glassTypeName;
         CloseGlassContainer();
+        glassMaterial.color = glassData.glassColor;
     }
 
     public void DisplayGlassContainer()
@@ -332,7 +335,7 @@ public class ModelCore : MonoBehaviour
         quotationMap.Add("itemOverallPrice", totalMandatoryPayment);
         string serializedString = JsonConvert.SerializeObject(quotationMap);
         Debug.Log(serializedString);
-        UnityGameManager.Instance.UnityMessageManager.SendMessageToFlutter("CART/" + serializedString);
+        UnityGameManager.Instance.UnityMessageManager.SendMessageToFlutter(serializedString);
         quotationContainer.gameObject.SetActive(false);
         doneContainer.gameObject.SetActive(true);
     }

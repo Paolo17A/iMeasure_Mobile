@@ -46,7 +46,8 @@ class ItemFields {
   static const String name = 'name';
   static const String price = 'price';
   static const String description = 'description';
-  static const String imageURL = 'imageURL';
+  //static const String imageURL = 'imageURL';
+  static const String imageURLs = 'imageURLs';
   static const String itemType = 'itemType';
 
   //  FURNITURE FIELDS
@@ -176,6 +177,7 @@ class OrderStatuses {
   static const String processing = 'PROCESSING';
   static const String forPickUp = 'FOR PICK UP';
   static const String pickedUp = 'PICKED UP';
+  static const String completed = 'COMPLETED';
 }
 
 class CartFields {
@@ -221,7 +223,7 @@ class GalleryTypes {
 class ReviewFields {
   static const String review = 'review';
   static const String rating = 'rating';
-  static const String imageURL = 'imageURL';
+  static const String imageURLs = 'imageURLs';
 }
 
 class PathParameters {

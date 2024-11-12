@@ -15,3 +15,4 @@ MonoBehaviour:
   glassTypeName: Luningning 5.5MM
   thickness: 5.5MM
   pricePerSFT: 40
+  glassColor: {r: 0.51690996, g: 0.9056604, b: 0.8486843, a: 0.8235294}

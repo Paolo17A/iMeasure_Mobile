@@ -16,6 +16,7 @@ import '../widgets/custom_padding_widgets.dart';
 import '../widgets/custom_text_field_widget.dart';
 import '../widgets/dropdown_widget.dart';
 import '../widgets/text_widgets.dart';
+import 'unity_screen.dart';
 
 class SelectedDoorScreen extends ConsumerStatefulWidget {
   final String doorID;
@@ -34,7 +35,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   num maxWidth = 0;
   num minHeight = 0;
   num maxHeight = 0;
-  String imageURL = '';
+  List<dynamic> imageURLs = [];
+  String correspondingModel = '';
 
   //  USER VARIABLES
   final widthController = TextEditingController();
@@ -58,7 +60,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
         name = itemData[ItemFields.name];
         description = itemData[ItemFields.description];
         isAvailable = itemData[ItemFields.isAvailable];
-        imageURL = itemData[ItemFields.imageURL];
+        imageURLs = itemData[ItemFields.imageURLs];
         minHeight = itemData[ItemFields.minHeight];
         maxHeight = itemData[ItemFields.maxHeight];
         minWidth = itemData[ItemFields.minWidth];
@@ -142,7 +144,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-                fit: BoxFit.fill, image: NetworkImage(imageURL))),
+                fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
       ),
     );
   }
@@ -159,15 +161,20 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                 child: all10Pix(
                     child: quicksandBlackBold(name,
                         fontSize: 28, textAlign: TextAlign.left))),
-            /*Flexible(
-                child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                quicksandEmeraldGreenBold('3D', fontSize: 28),
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.visibility_outlined))
-              ],
-            ))*/
+            if (correspondingModel.isNotEmpty)
+              Flexible(
+                  child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  quicksandEmeraldGreenBold('3D', fontSize: 28),
+                  IconButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  UnityScreen(itemID: widget.doorID))),
+                      icon: Icon(Icons.visibility_outlined))
+                ],
+              ))
           ]),
     );
   }
