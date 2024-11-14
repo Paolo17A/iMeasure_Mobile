@@ -137,7 +137,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                             fontSize: 14),
                         quicksandBlackRegular('Status: $orderStatus',
                             fontSize: 14),
-                        if (orderStatus == OrderStatuses.pickedUp &&
+                        if (orderStatus == OrderStatuses.completed &&
                             review.isNotEmpty)
                           Row(children: [
                             quicksandBlackRegular('Rating: ', fontSize: 14),
@@ -146,7 +146,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                 onUpdate: (newVal) {},
                                 mayMove: false)
                           ])
-                        else if (orderStatus == OrderStatuses.pickedUp)
+                        else if (orderStatus == OrderStatuses.completed)
                           SizedBox(
                             height: 24,
                             child: ElevatedButton(
@@ -156,6 +156,20 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                             orderID: orderDoc.id))),
                                 child: quicksandWhiteBold('LEAVE REVIEW',
                                     fontSize: 12)),
+                          )
+                        else if (orderStatus == OrderStatuses.forPickUp)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              vertical10Pix(
+                                child: ElevatedButton(
+                                    onPressed: () => markOrderAsPickedUp(
+                                        context, ref, orderID: orderDoc.id),
+                                    child: quicksandWhiteBold(
+                                        'MARK AS PICKED UP',
+                                        fontSize: 12)),
+                              ),
+                            ],
                           ),
                         quicksandBlackBold(
                             'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')

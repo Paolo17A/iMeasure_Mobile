@@ -116,7 +116,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: square150NetworkImage(testimonialURL)),
                 if (testimonialDocs.length > 1)
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () => Navigator.of(context)
+                        .pushNamed(NavigatorRoutes.testimonies),
                     child: Container(
                       width: 150,
                       height: 150,
@@ -152,7 +153,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: square150NetworkImage(portfolioURL)),
                 if (portfolioDocs.length > 1)
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () => Navigator.of(context)
+                        .pushNamed(NavigatorRoutes.portfolio),
                     child: Container(
                       width: 150,
                       height: 150,

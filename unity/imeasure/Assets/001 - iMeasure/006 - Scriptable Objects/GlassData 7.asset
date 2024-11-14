@@ -15,4 +15,4 @@ MonoBehaviour:
   glassTypeName: Bronze 1/8
   thickness: 3MM
   pricePerSFT: 40
-  glassColor: {r: 0.3584906, g: 0.1705626, b: 0.025364896, a: 0.79607844}
+  glassColor: {r: 0.3584906, g: 0.1705626, b: 0.025364896, a: 0.5882353}

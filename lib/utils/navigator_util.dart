@@ -4,9 +4,11 @@ import 'package:imeasure_mobile/screens/completed_orders_screen.dart';
 import 'package:imeasure_mobile/screens/contact_us_screen.dart';
 import 'package:imeasure_mobile/screens/items_screen.dart';
 import 'package:imeasure_mobile/screens/order_history_screen.dart';
+import 'package:imeasure_mobile/screens/portfolio_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
 import 'package:imeasure_mobile/screens/selected_door_screen.dart';
 import 'package:imeasure_mobile/screens/selected_window_screen.dart';
+import 'package:imeasure_mobile/screens/testimonies_screen.dart';
 import '../screens/bookmarks_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/checkout_screen.dart';
@@ -57,6 +59,8 @@ class NavigatorRoutes {
   static const String contactUs = 'contactUs';
   static const String orderHistory = 'orderHistory';
   static const String completedOrders = 'completedOrders';
+  static const String testimonies = 'testimonies';
+  static const String portfolio = 'portfolio';
 }
 
 final Map<String, WidgetBuilder> routes = {
@@ -73,5 +77,7 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.help: (context) => const HelpScreen(),
   NavigatorRoutes.contactUs: (context) => const ContactUsScreen(),
   NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen(),
-  NavigatorRoutes.completedOrders: (context) => const CompletedOrdersScreen()
+  NavigatorRoutes.completedOrders: (context) => const CompletedOrdersScreen(),
+  NavigatorRoutes.testimonies: (context) => const TestimoniesScreen(),
+  NavigatorRoutes.portfolio: (context) => const PortfolioScreen()
 };

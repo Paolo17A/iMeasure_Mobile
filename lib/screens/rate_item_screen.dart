@@ -146,13 +146,16 @@ class _RateItemScreenState extends ConsumerState<RateItemScreen> {
         if (selectedImages.isNotEmpty)
           Row(
               children: selectedImages
-                  .map((reviewImage) => Column(
-                        children: [
-                          Image.file(reviewImage, width: 300, height: 300),
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.delete_outline))
-                        ],
+                  .map((reviewImage) => all4Pix(
+                        child: Column(
+                          children: [
+                            Image.file(reviewImage,
+                                width: 80, height: 80, fit: BoxFit.cover),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.delete_outline))
+                          ],
+                        ),
                       ))
                   .toList()),
         Row(
