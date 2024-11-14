@@ -131,6 +131,12 @@ Future logInUser(BuildContext context, WidgetRef ref,
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({UserFields.password: passwordController.text});
     }
+    if (userData[UserFields.email] != emailController.text) {
+      await FirebaseFirestore.instance
+          .collection(Collections.users)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({UserFields.email: emailController.text});
+    }
     ref
         .read(profileImageURLProvider)
         .setImageURL(userData[UserFields.profileImageURL]);
@@ -219,7 +225,9 @@ Future<List<DocumentSnapshot>> getAllClientDocs() async {
 Future editClientProfile(BuildContext context, WidgetRef ref,
     {required TextEditingController firstNameController,
     required TextEditingController lastNameController,
-    required TextEditingController mobileNumberController}) async {
+    required TextEditingController mobileNumberController,
+    required TextEditingController addressController,
+    required TextEditingController emailAddressController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
   if (firstNameController.text.isEmpty ||
@@ -245,9 +253,24 @@ Future editClientProfile(BuildContext context, WidgetRef ref,
         .update({
       UserFields.firstName: firstNameController.text.trim(),
       UserFields.lastName: lastNameController.text.trim(),
+      UserFields.address: addressController.text.trim(),
+      UserFields.mobileNumber: mobileNumberController.text.trim()
     });
     ref.read(profileImageURLProvider).setFormattedName(
         '${firstNameController.text.trim()} ${lastNameController.text.trim()}');
+    final userDoc = await getCurrentUserDoc();
+    final userData = userDoc.data() as Map<dynamic, dynamic>;
+    if (emailAddressController.text != userData[UserFields.email]) {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: userData[UserFields.email],
+          password: userData[UserFields.password]);
+      await FirebaseAuth.instance.currentUser!
+          .verifyBeforeUpdateEmail(emailAddressController.text.trim());
+
+      scaffoldMessenger.showSnackBar(SnackBar(
+          content: Text(
+              'A verification email has been sent to the new email address')));
+    }
     ref.read(loadingProvider.notifier).toggleLoading(false);
     navigator.pop();
     navigator.pushReplacementNamed(NavigatorRoutes.profile);

@@ -114,16 +114,16 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
         appBar: appBarWidget(),
         bottomNavigationBar: bottomNavigationBar(context, ref, index: 1),
         body: switchedLoadingContainer(
-            ref.read(loadingProvider).isLoading, _windowsContainer()),
+            ref.read(loadingProvider).isLoading, _doorsContainer()),
       ),
     );
   }
 
-  Widget _windowsContainer() {
+  Widget _doorsContainer() {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _itemImagesDisplay(),
+          if (imageURLs.isNotEmpty) _itemImagesDisplay(),
           _nameAnd3D(),
           _descriptionAndSize(),
           _actionButtons(),
@@ -137,14 +137,36 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   }
 
   Widget _itemImagesDisplay() {
+    List<dynamic> otherImages = [];
+    if (imageURLs.length > 1) otherImages = imageURLs.sublist(1);
     return vertical20Pix(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.width * 0.8,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-                fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                    fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+          ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: otherImages
+                  .map((otherImage) => all4Pix(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.23,
+                          height: MediaQuery.of(context).size.width * 0.23,
+                          decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(otherImage))),
+                        ),
+                      ))
+                  .toList())
+        ],
       ),
     );
   }

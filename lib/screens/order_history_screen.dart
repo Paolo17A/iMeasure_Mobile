@@ -106,58 +106,76 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           final itemData = snapshot.data!.data() as Map<dynamic, dynamic>;
           List<dynamic> imageURLs = itemData[ItemFields.imageURLs];
           String name = itemData[ItemFields.name];
-          return Container(
-            //width: 400,
-            height: 180,
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            padding: EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    width: 120,
-                    height: 140,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(imageURLs.first),
-                            fit: BoxFit.cover))),
-                Gap(12),
-                Column(
+          return Stack(
+            children: [
+              Container(
+                //width: 400,
+                height: 180,
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.black)),
+                padding: EdgeInsets.all(12),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    quicksandBlackBold(name),
-                    quicksandBlackRegular('Quantity: $quantity', fontSize: 14),
-                    quicksandBlackRegular(
-                        'Date Ordered: ${DateFormat('MMM dd, yyyy').format(dateCreated)}',
-                        fontSize: 14),
-                    quicksandBlackRegular('Status: $orderStatus', fontSize: 14),
-                    if (orderStatus == OrderStatuses.pickedUp &&
-                        review.isNotEmpty)
-                      Row(children: [
-                        quicksandBlackRegular('Rating: ', fontSize: 14),
-                        starRating(
-                            (review[ReviewFields.rating] as num).toDouble(),
-                            onUpdate: (newVal) {},
-                            mayMove: false)
-                      ])
-                    else if (orderStatus == OrderStatuses.pickedUp)
-                      SizedBox(
-                        height: 24,
-                        child: ElevatedButton(
-                            onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        RateItemScreen(orderID: orderDoc.id))),
-                            child: quicksandWhiteBold('LEAVE REVIEW',
-                                fontSize: 12)),
-                      ),
-                    quicksandBlackBold(
-                        'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
+                    Container(
+                        width: 120,
+                        height: 140,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(imageURLs.first),
+                                fit: BoxFit.cover))),
+                    Gap(12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        quicksandBlackBold(name),
+                        quicksandBlackRegular('Quantity: $quantity',
+                            fontSize: 14),
+                        quicksandBlackRegular(
+                            'Date Ordered: ${DateFormat('MMM dd, yyyy').format(dateCreated)}',
+                            fontSize: 14),
+                        quicksandBlackRegular('Status: $orderStatus',
+                            fontSize: 14),
+                        if (orderStatus == OrderStatuses.pickedUp &&
+                            review.isNotEmpty)
+                          Row(children: [
+                            quicksandBlackRegular('Rating: ', fontSize: 14),
+                            starRating(
+                                (review[ReviewFields.rating] as num).toDouble(),
+                                onUpdate: (newVal) {},
+                                mayMove: false)
+                          ])
+                        else if (orderStatus == OrderStatuses.pickedUp)
+                          SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (_) => RateItemScreen(
+                                            orderID: orderDoc.id))),
+                                child: quicksandWhiteBold('LEAVE REVIEW',
+                                    fontSize: 12)),
+                          ),
+                        quicksandBlackBold(
+                            'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
+                      ],
+                    )
                   ],
-                )
-              ],
-            ),
+                ),
+              ),
+              if ((orderStatus == OrderStatuses.forPickUp) ||
+                  (orderStatus == OrderStatuses.completed && review.isEmpty))
+                Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.red),
+                    ))
+            ],
           );
         });
   }

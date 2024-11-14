@@ -24,6 +24,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final mobileNumberController = TextEditingController();
+  final addressController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         firstNameController.text = userData[UserFields.firstName];
         lastNameController.text = userData[UserFields.lastName];
         mobileNumberController.text = userData[UserFields.mobileNumber];
+        emailController.text = userData[UserFields.email];
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
@@ -102,7 +105,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             _editProfileHeader(),
                             _firstNameControllerWidget(),
                             _lasttNameControllerWidget(),
-                            _mobileNumberControllerWidget()
+                            _mobileNumberControllerWidget(),
+                            _homeAddressControllerWidget(),
+                            _emailAddressControllerWidget()
                           ],
                         ),
                         submitButton(context,
@@ -110,7 +115,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             onPress: () => editClientProfile(context, ref,
                                 firstNameController: firstNameController,
                                 lastNameController: lastNameController,
-                                mobileNumberController: mobileNumberController))
+                                mobileNumberController: mobileNumberController,
+                                addressController: addressController,
+                                emailAddressController: emailController))
                       ],
                     ),
                   ),
@@ -150,5 +157,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             controller: mobileNumberController,
             textInputType: TextInputType.number,
             displayPrefixIcon: const Icon(Icons.phone)));
+  }
+
+  Widget _homeAddressControllerWidget() {
+    return vertical20Pix(
+        child: CustomTextField(
+      text: 'Address',
+      controller: addressController,
+      textInputType: TextInputType.streetAddress,
+      displayPrefixIcon:
+          const Icon(Icons.house, color: CustomColors.deepCharcoal),
+    ));
+  }
+
+  Widget _emailAddressControllerWidget() {
+    return vertical20Pix(
+        child: CustomTextField(
+            text: 'Email Address',
+            controller: emailController,
+            textInputType: TextInputType.emailAddress,
+            displayPrefixIcon: const Icon(Icons.email)));
   }
 }
