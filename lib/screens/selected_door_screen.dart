@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -37,6 +38,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   num maxHeight = 0;
   List<dynamic> imageURLs = [];
   String correspondingModel = '';
+  bool hasGlass = false;
+  List<DocumentSnapshot> orderDocs = [];
 
   //  USER VARIABLES
   final widthController = TextEditingController();
@@ -65,6 +68,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
         maxHeight = itemData[ItemFields.maxHeight];
         minWidth = itemData[ItemFields.minWidth];
         maxWidth = itemData[ItemFields.maxWidth];
+        hasGlass = itemData[ItemFields.hasGlass];
+        correspondingModel = itemData[ItemFields.correspondingModel];
         //  GET USER DATA
         ref.read(cartProvider).setCartItems(await getCartEntries(context));
         List<dynamic> windowFields = itemData[ItemFields.windowFields];
@@ -82,6 +87,12 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
             OptionalWindowFields.price: 0
           });
         }
+        orderDocs = await getAllItemOrderDocs(widget.doorID);
+        orderDocs = orderDocs.where((orderDoc) {
+          final orderData = orderDoc.data() as Map<dynamic, dynamic>;
+          Map review = orderData[OrderFields.review];
+          return review.isNotEmpty;
+        }).toList();
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
@@ -92,7 +103,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   }
 
   bool mayProceedToInitialQuotationScreen() {
-    return ref.read(cartProvider).selectedGlassType.isNotEmpty &&
+    return ((hasGlass && ref.read(cartProvider).selectedGlassType.isNotEmpty) ||
+            !hasGlass) &&
         ref.read(cartProvider).selectedColor.isNotEmpty &&
         widthController.text.isNotEmpty &&
         double.tryParse(widthController.text) != null &&
@@ -131,6 +143,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
               fontSize: 16),
           Divider(),
           _itemFieldInputs(),
+          if (orderDocs.isNotEmpty) userReviews(orderDocs)
         ],
       ),
     );
@@ -139,33 +152,54 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   Widget _itemImagesDisplay() {
     List<dynamic> otherImages = [];
     if (imageURLs.length > 1) otherImages = imageURLs.sublist(1);
-    return vertical20Pix(
+    return vertical10Pix(
       child: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.width * 0.8,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: DecorationImage(
-                    fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+          GestureDetector(
+            onTap: () => showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                    content:
+                        square80PercentNetworkImage(context, imageURLs.first))),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                      fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+            ),
           ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: otherImages
-                  .map((otherImage) => all4Pix(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.23,
-                          height: MediaQuery.of(context).size.width * 0.23,
-                          decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(otherImage))),
-                        ),
-                      ))
-                  .toList())
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: otherImages
+                      .map((otherImage) => all4Pix(
+                            child: GestureDetector(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                      content: square80PercentNetworkImage(
+                                          context, otherImage))),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.23,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.23,
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: NetworkImage(otherImage))),
+                              ),
+                            ),
+                          ))
+                      .toList()),
+            ),
+          )
         ],
       ),
     );
@@ -175,7 +209,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
@@ -185,17 +219,19 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                         fontSize: 28, textAlign: TextAlign.left))),
             if (correspondingModel.isNotEmpty)
               Flexible(
-                  child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  quicksandEmeraldGreenBold('3D', fontSize: 28),
-                  IconButton(
-                      onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  UnityScreen(itemID: widget.doorID))),
-                      icon: Icon(Icons.visibility_outlined))
-                ],
+                  child: all10Pix(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    quicksandEmeraldGreenBold('3D', fontSize: 28),
+                    IconButton(
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    UnityScreen(itemID: widget.doorID))),
+                        icon: Icon(Icons.visibility_outlined))
+                  ],
+                ),
               ))
           ]),
     );
@@ -205,9 +241,27 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
     return all10Pix(
         child: Column(
       children: [
-        vertical10Pix(
-            child:
-                montserratBlackRegular(description, textAlign: TextAlign.left)),
+        GestureDetector(
+          onTap: description.length > 300
+              ? () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                            child: SingleChildScrollView(
+                              child: all20Pix(
+                                  child: montserratBlackRegular(description,
+                                      textAlign: TextAlign.left, fontSize: 18)),
+                            ),
+                          ));
+                }
+              : null,
+          child: vertical10Pix(
+              child: montserratBlackRegular(description,
+                  textAlign: TextAlign.left,
+                  fontSize: 18,
+                  maxLines: 6,
+                  textOverflow: TextOverflow.ellipsis)),
+        ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           quicksandDeepCharcoalBold('Minimum Width: ${minWidth.toString()}ft',
               fontSize: 12),
@@ -241,19 +295,21 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                       height: double.parse(heightController.text),
                       mandatoryWindowFields: mandatoryWindowFields,
                       optionalWindowFields: optionalWindowFields,
-                      itemType: ItemTypes.door);
+                      itemType: ItemTypes.door,
+                      hasGlass: hasGlass);
                 } else {
-                  if (double.parse(widthController.text.trim()) < minWidth ||
+                  if (double.tryParse(widthController.text) == null ||
+                      double.parse(widthController.text.trim()) < minWidth ||
                       double.parse(widthController.text.trim()) > maxWidth) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
-                            'Inputted width must be $minWidth = ${maxWidth} ft only.')));
-                  } else if (double.parse(heightController.text.trim()) <
-                          minHeight ||
+                            'Inputted width must be $minWidth - ${maxWidth} ft only.')));
+                  } else if (double.tryParse(heightController.text) == null ||
+                      double.parse(heightController.text.trim()) < minHeight ||
                       double.parse(heightController.text.trim()) > maxHeight) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
-                            'Inputted height must be $minHeight = ${maxHeight} ft only.')));
+                            'Inputted height must be $minHeight - ${maxHeight} ft only.')));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
@@ -321,33 +377,35 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                   displayPrefixIcon: null,
                   borderRadius: 4,
                   textInputType: TextInputType.number)),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.45,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
-                (newVal) {
-              ref.read(cartProvider).setGlassType(newVal!);
-            },
-                allGlassModels
-                    .map((glassModel) => glassModel.glassTypeName)
-                    .toList(),
-                'Select your glass type',
-                false),
-          ),
+          SizedBox(
+              width: MediaQuery.of(context).size.width * 0.45,
+              child: CustomTextField(
+                  text: 'Insert Width',
+                  controller: widthController,
+                  displayPrefixIcon: null,
+                  borderRadius: 4,
+                  textInputType: TextInputType.number)),
         ]),
         Gap(20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(
+            if (hasGlass)
+              Container(
                 width: MediaQuery.of(context).size.width * 0.45,
-                child: CustomTextField(
-                    text: 'Insert Width',
-                    controller: widthController,
-                    displayPrefixIcon: null,
-                    borderRadius: 4,
-                    textInputType: TextInputType.number)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+                child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
+                    (newVal) {
+                  ref.read(cartProvider).setGlassType(newVal!);
+                },
+                    allGlassModels
+                        .map((glassModel) => glassModel.glassTypeName)
+                        .toList(),
+                    'Select your glass type',
+                    false),
+              ),
             Container(
               width: MediaQuery.of(context).size.width * 0.45,
               decoration: BoxDecoration(
@@ -361,7 +419,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                 WindowColors.mattBlack,
                 WindowColors.mattGray,
                 WindowColors.woodFinish
-              ], 'Select window color', false),
+              ], 'Select door color', false),
             )
           ],
         ),

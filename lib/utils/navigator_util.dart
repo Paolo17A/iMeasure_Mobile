@@ -7,6 +7,7 @@ import 'package:imeasure_mobile/screens/order_history_screen.dart';
 import 'package:imeasure_mobile/screens/portfolio_screen.dart';
 import 'package:imeasure_mobile/screens/quotation_screen.dart';
 import 'package:imeasure_mobile/screens/selected_door_screen.dart';
+import 'package:imeasure_mobile/screens/selected_raw_material_screen.dart';
 import 'package:imeasure_mobile/screens/selected_window_screen.dart';
 import 'package:imeasure_mobile/screens/testimonies_screen.dart';
 import '../screens/bookmarks_screen.dart';
@@ -39,6 +40,13 @@ class NavigatorRoutes {
       {required String doorID}) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => SelectedDoorScreen(doorID: doorID)));
+  }
+
+  static void selectedRawMaterial(BuildContext context, WidgetRef ref,
+      {required String rawMaterialID}) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            SelectedRawMaterialScreen(rawMaterialID: rawMaterialID)));
   }
 
   static void renterSettlePayment(BuildContext context,

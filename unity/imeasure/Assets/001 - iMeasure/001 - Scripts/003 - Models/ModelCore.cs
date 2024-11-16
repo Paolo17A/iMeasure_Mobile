@@ -221,7 +221,7 @@ public class ModelCore : MonoBehaviour
             }
         }
 
-        if (UnityGameManager.Instance.ItemType == "WINDOW")
+        if (UnityGameManager.Instance.HasGlass)
         {
             float glassPrice = SelectedGlassData.pricePerSFT * widthSlider.value * heightSlider.value;
             QuotationEntryHandler quotationEntry = Instantiate(quotationEntryPrefab);
@@ -242,7 +242,7 @@ public class ModelCore : MonoBehaviour
         Dictionary<string, object> quotationMap = new Dictionary<string, object>
         {
             { "color", frameColorName },
-            { "glassType", SelectedGlassData.glassTypeName },
+            { "glassType", UnityGameManager.Instance.HasGlass ? SelectedGlassData.glassTypeName : "" },
             { "height", heightSlider.value },
             { "width", widthSlider.value },
             { "laborPrice", 0},
@@ -318,7 +318,7 @@ public class ModelCore : MonoBehaviour
             }
             mandatoryMapList.Add(mapContent);
         }
-        if (UnityGameManager.Instance.ItemType == "WINDOW")
+        if (UnityGameManager.Instance.HasGlass)
         {
             float glassPrice = SelectedGlassData.pricePerSFT * widthSlider.value * heightSlider.value;
             Dictionary<string, object> glassPair = new Dictionary<string, object>

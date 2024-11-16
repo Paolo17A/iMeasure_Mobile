@@ -21371,6 +21371,7 @@ struct UnityGameManager_t2D02B37072650AB616DA88C3B90D625C2A459B33  : public Mono
 	float ___U3CMaxWidthU3Ek__BackingField;
 	float ___U3CMinHeightU3Ek__BackingField;
 	float ___U3CMaxHeightU3Ek__BackingField;
+	bool ___U3CHasGlassU3Ek__BackingField;
 	String_t* ___U3CCorrespondingModelU3Ek__BackingField;
 	List_1_t3B5C67DA4632A2952E96B6E7206BEAE79B8371BA* ___U3CItemFieldsU3Ek__BackingField;
 	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___U3CLoadingPanelU3Ek__BackingField;

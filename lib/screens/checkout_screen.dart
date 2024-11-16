@@ -128,6 +128,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   Widget _productEntry(Map<dynamic, dynamic> productEntry) {
+    List<dynamic> imageURLs = productEntry[ItemFields.imageURLs];
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4),
       child: Container(
@@ -139,7 +140,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           child: Row(
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(productEntry[ItemFields.imageURLs],
+              Image.network(imageURLs.first,
                   width: 50, height: 50, fit: BoxFit.cover),
               Gap(4),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

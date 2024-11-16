@@ -14,7 +14,8 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
     required double height,
     required List<dynamic> mandatoryWindowFields,
     required List<dynamic> optionalWindowFields,
-    required String itemType}) {
+    required String itemType,
+    required bool hasGlass}) {
   num totalMandatoryPayment = 0;
   num totalGlassPrice = 0;
   num optionalPrice = 0;
@@ -27,18 +28,16 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
       width: width,
       height: height,
       oldOptionalWindowFields: optionalWindowFields);
-  print(_pricedOptionalWindowFields);
   optionalPrice = calculateOptionalPrice(_pricedOptionalWindowFields);
   //  Calculate mandatory payment
   totalMandatoryPayment = calculateTotalMandatoryPayment(ref,
       width: width,
       height: height,
       mandatoryWindowFields: mandatoryWindowFields);
-  print('mandatory: $totalMandatoryPayment');
 
   //  Calculate glass payment
   List<dynamic> selectedOptionalFields = [];
-  if (itemType == ItemTypes.window) {
+  if (hasGlass) {
     totalGlassPrice = calculateGlassPrice(
       ref,
       width: width,
@@ -47,9 +46,6 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
     selectedOptionalFields = _pricedOptionalWindowFields
         .where((window) => window[OptionalWindowFields.isSelected])
         .toList();
-    for (var selectedOption in selectedOptionalFields) {
-      print(selectedOption);
-    }
   }
   totalOverallPayment = totalMandatoryPayment + totalGlassPrice + optionalPrice;
   showDialog(
@@ -88,7 +84,7 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
                                     .toList()),
 
                             //  Glass
-                            if (itemType == ItemTypes.window)
+                            if (hasGlass)
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

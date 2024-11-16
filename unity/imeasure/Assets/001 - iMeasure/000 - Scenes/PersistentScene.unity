@@ -468,7 +468,6 @@ GameObject:
   - component: {fileID: 380094855}
   - component: {fileID: 380094852}
   - component: {fileID: 380094853}
-  - component: {fileID: 380094856}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: Untagged
@@ -586,23 +585,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1879988194}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &380094856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 380094851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb967ead4362c6c498e57fe9cefc589b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftRatio: 9
-  rightRatio: 16
-  isOrthographicCamera: 1
-  debugging: 0
-  debugger: {fileID: 0}
 --- !u!1 &458658883
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,13 +797,14 @@ MonoBehaviour:
   <SceneController>k__BackingField: {fileID: 458658884}
   <AnimationsLT>k__BackingField: {fileID: 1170744952}
   <UnityMessageManager>k__BackingField: {fileID: 1170744953}
-  <ItemID>k__BackingField: D83tKdzMFSyMkmMDl0sP
+  <ItemID>k__BackingField: TQV77Sl8Mn3cO6mLeCF9
   <ItemType>k__BackingField: 
   <Name>k__BackingField: 
   <MinWidth>k__BackingField: 0
   <MaxWidth>k__BackingField: 0
   <MinHeight>k__BackingField: 0
   <MaxHeight>k__BackingField: 0
+  <HasGlass>k__BackingField: 0
   <CorrespondingModel>k__BackingField: 
   <ItemFields>k__BackingField: []
   <LoadingPanel>k__BackingField: {fileID: 1512463304}
@@ -1392,7 +1375,6 @@ GameObject:
   - component: {fileID: 1879988192}
   - component: {fileID: 1879988196}
   - component: {fileID: 1879988195}
-  - component: {fileID: 1879988197}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1554,23 +1536,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &1879988197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1879988191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb967ead4362c6c498e57fe9cefc589b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftRatio: 9
-  rightRatio: 16
-  isOrthographicCamera: 1
-  debugging: 0
-  debugger: {fileID: 0}
 --- !u!1 &2022149331
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ public class ModelController : MonoBehaviour
     {
         modelCore.DisplayProperModel();
         modelCore.SetInitialSliderValues();
-        if (UnityGameManager.Instance.ItemType == "WINDOW")
+        if (UnityGameManager.Instance.HasGlass)
             modelCore.InitializeGlass();
         else
             modelCore.HideSelectedGlassContainer();

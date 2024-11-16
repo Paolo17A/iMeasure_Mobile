@@ -51,6 +51,7 @@ public class UnityGameManager : MonoBehaviour
     [field: SerializeField] public float MaxWidth { get; set; }
     [field: SerializeField] public float MinHeight { get; set; }
     [field: SerializeField] public float MaxHeight { get; set; }
+    [field: SerializeField] public bool HasGlass { get; set; }
     [field: SerializeField] public string CorrespondingModel { get; set; }
     [field: SerializeField] public List<ItemField> ItemFields { get;set; }
 

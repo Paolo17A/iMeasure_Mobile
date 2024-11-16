@@ -39,7 +39,7 @@ public class MainMenuCore : MonoBehaviour
             UnityGameManager.Instance.MinHeight = document.fields["minHeight"].integerValue ?? 0;
             UnityGameManager.Instance.MaxHeight = document.fields["maxHeight"].integerValue ?? 0;
             UnityGameManager.Instance.CorrespondingModel = document.fields["correspondingModel"].stringValue;
-
+            UnityGameManager.Instance.HasGlass = document.fields["hasGlass"].booleanValue ?? false;
             UnityGameManager.Instance.ItemFields.Clear();
             for (int i = 0; i < document.fields["windowFields"].arrayValue.values.Count; i++)
             {

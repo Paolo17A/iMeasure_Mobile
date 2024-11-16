@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/utils/navigator_util.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
 import 'package:imeasure_mobile/widgets/app_drawer_widget.dart';
@@ -9,7 +8,6 @@ import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 import 'package:imeasure_mobile/widgets/custom_padding_widgets.dart';
 
 import '../providers/loading_provider.dart';
-import '../utils/color_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/app_bottom_navbar_widget.dart';
@@ -156,46 +154,23 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (itemType == ItemTypes.window || itemType == ItemTypes.door)
-                ElevatedButton(
-                    onPressed: () {
-                      if (itemType == ItemTypes.window) {
-                        NavigatorRoutes.selectedWindow(context, ref,
-                            windowID: itemDoc.id);
-                      } else if (itemType == ItemTypes.door) {
-                        NavigatorRoutes.selectedDoor(context, ref,
-                            doorID: itemDoc.id);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    child: Icon(Icons.visibility_outlined, size: 20))
-              else
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.17,
-                  height: 40,
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      color: CustomColors.deepCharcoal,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Center(
-                    child: quicksandWhiteBold(
-                        'PHP ${formatPrice(itemData[ItemFields.price].toDouble())}',
-                        fontSize: 10),
-                  ),
-                ),
-              Gap(4),
-              if (itemType == ItemTypes.rawMaterial)
-                ElevatedButton(
-                    onPressed: () =>
-                        addRawMaterialToCart(context, ref, itemID: itemDoc.id),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(),
-                            borderRadius: BorderRadius.circular(10))),
-                    child: Icon(Icons.shopping_cart, color: Colors.black))
+              ElevatedButton(
+                  onPressed: () {
+                    if (itemType == ItemTypes.window) {
+                      NavigatorRoutes.selectedWindow(context, ref,
+                          windowID: itemDoc.id);
+                    } else if (itemType == ItemTypes.door) {
+                      NavigatorRoutes.selectedDoor(context, ref,
+                          doorID: itemDoc.id);
+                    } else if (itemType == ItemTypes.rawMaterial) {
+                      NavigatorRoutes.selectedRawMaterial(context, ref,
+                          rawMaterialID: itemDoc.id);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                  child: Icon(Icons.visibility_outlined, size: 20)),
             ],
           )
         ],

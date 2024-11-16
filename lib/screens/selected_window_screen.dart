@@ -141,7 +141,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
               fontSize: 16),
           Divider(),
           _itemFieldInputs(),
-          if (orderDocs.isNotEmpty) _userReviews()
+          if (orderDocs.isNotEmpty) userReviews(orderDocs)
         ],
       ),
     );
@@ -153,27 +153,41 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
     return vertical20Pix(
       child: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.width * 0.8,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: DecorationImage(
-                    fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+          GestureDetector(
+            onTap: () => showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                    content:
+                        square80PercentNetworkImage(context, imageURLs.first))),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                      fit: BoxFit.fill, image: NetworkImage(imageURLs.first))),
+            ),
           ),
           Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: otherImages
                   .map((otherImage) => all4Pix(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.23,
-                          height: MediaQuery.of(context).size.width * 0.23,
-                          decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(otherImage))),
+                        child: GestureDetector(
+                          onTap: () => showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                  content: square80PercentNetworkImage(
+                                      context, otherImage))),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.23,
+                            height: MediaQuery.of(context).size.width * 0.23,
+                            decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(otherImage))),
+                          ),
                         ),
                       ))
                   .toList())
@@ -272,7 +286,8 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                       height: double.parse(heightController.text),
                       mandatoryWindowFields: mandatoryWindowFields,
                       optionalWindowFields: optionalWindowFields,
-                      itemType: ItemTypes.window);
+                      itemType: ItemTypes.window,
+                      hasGlass: true);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
@@ -420,98 +435,6 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                   ],
                 );
               }),
-        ],
-      ),
-    );
-  }
-
-  Widget _userReviews() {
-    return vertical20Pix(
-      child: Column(
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(),
-          quicksandBlackBold('REVIEWS'),
-          vertical10Pix(
-            child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: orderDocs.length,
-                itemBuilder: (context, index) {
-                  final orderData = orderDocs[index];
-                  String clientID = orderData[OrderFields.clientID];
-                  Map<String, dynamic> review = orderData[OrderFields.review];
-                  num rating = review[ReviewFields.rating];
-                  List<dynamic> imageURLs = review[ReviewFields.imageURLs];
-                  String reviewText = review[ReviewFields.review];
-                  return all4Pix(
-                    child: Container(
-                        //height: 100,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white)),
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        FutureBuilder(
-                                            future: getThisUserDoc(clientID),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                      ConnectionState.waiting ||
-                                                  !snapshot.hasData ||
-                                                  snapshot.hasError)
-                                                return Container();
-                                              final userData =
-                                                  snapshot.data!.data()
-                                                      as Map<dynamic, dynamic>;
-                                              String formattedName =
-                                                  '${userData[UserFields.firstName]} ${userData[UserFields.lastName]}';
-
-                                              return quicksandBlackRegular(
-                                                  formattedName);
-                                            }),
-                                        starRating(rating.toDouble(),
-                                            onUpdate: (val) {}, mayMove: false),
-                                        quicksandBlackRegular(reviewText,
-                                            fontSize: 16),
-                                      ]),
-                                ),
-                              ],
-                            ),
-                            if (imageURLs.isNotEmpty)
-                              Flexible(
-                                child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: imageURLs
-                                        .map((imageURL) => all4Pix(
-                                              child: Container(
-                                                  width: 60,
-                                                  height: 60,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      image: DecorationImage(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(
-                                                              imageURL)))),
-                                            ))
-                                        .toList()),
-                              )
-                          ],
-                        )),
-                  );
-                }),
-          ),
         ],
       ),
     );

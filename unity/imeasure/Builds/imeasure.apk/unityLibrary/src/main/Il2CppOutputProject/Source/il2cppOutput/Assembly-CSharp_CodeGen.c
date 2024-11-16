@@ -102,6 +102,8 @@ extern void UnityGameManager_get_MinHeight_m3D4667BA34725766840BAEC8FD98079C0C60
 extern void UnityGameManager_set_MinHeight_m6BB7EC3605AA9D7BF3224755CA2923C1E67FFFDC (void);
 extern void UnityGameManager_get_MaxHeight_mB630F3F63FB3AD5496AF7FD191885334FCDA708A (void);
 extern void UnityGameManager_set_MaxHeight_m94A0D8526D8C6780132522E68F87B4FC957297FC (void);
+extern void UnityGameManager_get_HasGlass_mAB29D06AF3AD9A17B17469FDE1BDA8351D2113A0 (void);
+extern void UnityGameManager_set_HasGlass_m25AFE63DF32CF2EF0A85BA831F1F91EA4977A86A (void);
 extern void UnityGameManager_get_CorrespondingModel_mD4963410F4CB16ADB672FCB65211B58E389ABF7B (void);
 extern void UnityGameManager_set_CorrespondingModel_mF47DEAEF1E1911487D123A023203075144C6B8BD (void);
 extern void UnityGameManager_get_ItemFields_m9F31FA419B5A92737D21D5ED304CB8AAA109C24F (void);
@@ -1389,7 +1391,7 @@ extern void MessageHandlerDelegate__ctor_m287CBD25D77011FC5A52D1090F6CC31353AB63
 extern void MessageHandlerDelegate_Invoke_mD1EC9E1841D5014C40A26D4C4BA076482FFC8A4B (void);
 extern void MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D (void);
 extern void MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16 (void);
-static Il2CppMethodPointer s_methodPointers[1390] = 
+static Il2CppMethodPointer s_methodPointers[1392] = 
 {
 	NULL,
 	NULL,
@@ -1489,6 +1491,8 @@ static Il2CppMethodPointer s_methodPointers[1390] =
 	UnityGameManager_set_MinHeight_m6BB7EC3605AA9D7BF3224755CA2923C1E67FFFDC,
 	UnityGameManager_get_MaxHeight_mB630F3F63FB3AD5496AF7FD191885334FCDA708A,
 	UnityGameManager_set_MaxHeight_m94A0D8526D8C6780132522E68F87B4FC957297FC,
+	UnityGameManager_get_HasGlass_mAB29D06AF3AD9A17B17469FDE1BDA8351D2113A0,
+	UnityGameManager_set_HasGlass_m25AFE63DF32CF2EF0A85BA831F1F91EA4977A86A,
 	UnityGameManager_get_CorrespondingModel_mD4963410F4CB16ADB672FCB65211B58E389ABF7B,
 	UnityGameManager_set_CorrespondingModel_mF47DEAEF1E1911487D123A023203075144C6B8BD,
 	UnityGameManager_get_ItemFields_m9F31FA419B5A92737D21D5ED304CB8AAA109C24F,
@@ -2782,7 +2786,7 @@ static Il2CppMethodPointer s_methodPointers[1390] =
 	MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D,
 	MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16,
 };
-static const int32_t s_InvokerIndices[1390] = 
+static const int32_t s_InvokerIndices[1392] = 
 {
 	0,
 	0,
@@ -2882,6 +2886,8 @@ static const int32_t s_InvokerIndices[1390] =
 	2589,
 	2893,
 	2589,
+	2807,
+	2505,
 	2860,
 	2557,
 	2860,
@@ -4179,7 +4185,7 @@ static const Il2CppTokenRangePair s_rgctxIndices[3] =
 {
 	{ 0x02000002, { 0, 29 } },
 	{ 0x02000080, { 29, 11 } },
-	{ 0x06000554, { 40, 2 } },
+	{ 0x06000556, { 40, 2 } },
 };
 extern const uint32_t g_rgctx_U3CU3Ef__AnonymousType0_4_t93FD0713D40011506D6B5581D9D5064D1A1A31B8;
 extern const uint32_t g_rgctx_U3CidU3Ej__TPar_tB4283D6614B0A1B9713411CF590AE6445EC76C76;
@@ -4272,7 +4278,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	1390,
+	1392,
 	s_methodPointers,
 	0,
 	NULL,

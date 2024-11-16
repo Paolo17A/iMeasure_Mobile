@@ -59,6 +59,7 @@ class ItemFields {
   static const String windowFields = 'windowFields';
   static const String accessoryFields = 'accessoryFields';
   static const String correspondingModel = 'correspondingModel';
+  static const String hasGlass = 'hasGlass';
 }
 
 class AvailableModels {

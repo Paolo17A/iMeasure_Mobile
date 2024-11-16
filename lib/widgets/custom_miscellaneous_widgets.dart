@@ -357,3 +357,95 @@ Widget starRating(double rating,
           empty: const Icon(Icons.star, color: Colors.grey)),
       onRatingUpdate: (val) => onUpdate(val));
 }
+
+Widget userReviews(List<DocumentSnapshot> orderDocs) {
+  return vertical20Pix(
+    child: Column(
+      //crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(),
+        quicksandBlackBold('REVIEWS'),
+        vertical10Pix(
+          child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: orderDocs.length,
+              itemBuilder: (context, index) {
+                final orderData = orderDocs[index];
+                String clientID = orderData[OrderFields.clientID];
+                Map<String, dynamic> review = orderData[OrderFields.review];
+                num rating = review[ReviewFields.rating];
+                List<dynamic> imageURLs = review[ReviewFields.imageURLs];
+                String reviewText = review[ReviewFields.review];
+                return all4Pix(
+                  child: Container(
+                      //height: 100,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white)),
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      FutureBuilder(
+                                          future: getThisUserDoc(clientID),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                    ConnectionState.waiting ||
+                                                !snapshot.hasData ||
+                                                snapshot.hasError)
+                                              return Container();
+                                            final userData =
+                                                snapshot.data!.data()
+                                                    as Map<dynamic, dynamic>;
+                                            String formattedName =
+                                                '${userData[UserFields.firstName]} ${userData[UserFields.lastName]}';
+
+                                            return quicksandBlackRegular(
+                                                formattedName);
+                                          }),
+                                      starRating(rating.toDouble(),
+                                          onUpdate: (val) {}, mayMove: false),
+                                      quicksandBlackRegular(reviewText,
+                                          fontSize: 16),
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          if (imageURLs.isNotEmpty)
+                            Flexible(
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: imageURLs
+                                      .map((imageURL) => all4Pix(
+                                            child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        image: NetworkImage(
+                                                            imageURL)))),
+                                          ))
+                                      .toList()),
+                            )
+                        ],
+                      )),
+                );
+              }),
+        ),
+      ],
+    ),
+  );
+}
