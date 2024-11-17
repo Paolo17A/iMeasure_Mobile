@@ -67,7 +67,7 @@ class _CompletedOrdersScreenState extends ConsumerState<CompletedOrdersScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        all10Pix(child: quicksandBlackBold('ORDER HISTORY', fontSize: 32)),
+        all10Pix(child: quicksandBlackBold('COMPLETED ORDERS', fontSize: 32)),
         ref.read(ordersProvider).orderDocs.isNotEmpty
             ? ListView.builder(
                 shrinkWrap: true,

@@ -21,8 +21,6 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
   num optionalPrice = 0;
   num totalOverallPayment = 0;
 
-  print(mandatoryWindowFields);
-
   //  Calculate Optional Price
   List<dynamic> _pricedOptionalWindowFields = pricedOptionalWindowFields(ref,
       width: width,
@@ -141,14 +139,15 @@ void showQuotationDialog(BuildContext context, WidgetRef ref,
           ));
 }
 
-void showCartQuotationDialog(
-  BuildContext context,
-  WidgetRef ref, {
-  required num totalOverallPayment,
-  required num laborPrice,
-  required List<dynamic> mandatoryWindowFields,
-  required List<dynamic> optionalWindowFields,
-}) {
+void showCartQuotationDialog(BuildContext context, WidgetRef ref,
+    {required num totalOverallPayment,
+    required num laborPrice,
+    required List<dynamic> mandatoryWindowFields,
+    required List<dynamic> optionalWindowFields,
+    required num width,
+    required num height,
+    required List<dynamic> imageURLs,
+    required String itemName}) {
   showDialog(
       context: context,
       builder: (_) => Dialog(
@@ -159,6 +158,27 @@ void showCartQuotationDialog(
             child: SingleChildScrollView(
               child: all20Pix(
                 child: Column(children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.network(
+                          imageURLs.first,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        Column(children: [
+                          Image.asset(ImagePaths.heritageIcon, scale: 2),
+                          quicksandBlackBold('iMeasure', fontSize: 24),
+                          quicksandBlackBold('• LOS BAÑOS •', fontSize: 12),
+                        ]),
+                        Gap(200)
+                      ]),
+                  all10Pix(
+                    child: Row(children: [
+                      quicksandBlackBold(itemName, textAlign: TextAlign.left)
+                    ]),
+                  ),
                   quicksandBlackBold('ESTIMATED QUOTATION', fontSize: 16),
                   //  Mandatory Window Fields
                   Container(
@@ -166,6 +186,23 @@ void showCartQuotationDialog(
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              quicksandBlackBold('Width', fontSize: 14),
+                              quicksandBlackBold('${width.toString()} ft',
+                                  fontSize: 14)
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              quicksandBlackBold('Height', fontSize: 14),
+                              quicksandBlackBold('${height.toString()} ft',
+                                  fontSize: 14)
+                            ]),
+                        Gap(12),
                         Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: mandatoryWindowFields

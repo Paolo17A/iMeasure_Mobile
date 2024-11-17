@@ -209,8 +209,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                                   fontSize: 12)
                                             ]),
                                         if (itemType != ItemTypes.rawMaterial)
-                                          _showQuotationButton(itemType,
-                                              cartData[CartFields.quotation]),
+                                          _showQuotationButton(
+                                              itemType,
+                                              cartData[CartFields.quotation],
+                                              name,
+                                              imageURLs),
                                       ],
                                     )
                                 ],
@@ -319,8 +322,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
   }
 
-  Widget _showQuotationButton(
-      String itemType, Map<dynamic, dynamic> quotation) {
+  Widget _showQuotationButton(String itemType, Map<dynamic, dynamic> quotation,
+      String itemName, List<dynamic> imageURLs) {
     final mandatoryWindowFields = quotation[QuotationFields.mandatoryMap];
     final optionalWindowFields =
         quotation[QuotationFields.optionalMap] as List<dynamic>;
@@ -329,7 +332,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             laborPrice: quotation[QuotationFields.laborPrice],
             totalOverallPayment: quotation[QuotationFields.itemOverallPrice],
             mandatoryWindowFields: mandatoryWindowFields,
-            optionalWindowFields: optionalWindowFields),
+            optionalWindowFields: optionalWindowFields,
+            width: quotation[QuotationFields.width],
+            height: quotation[QuotationFields.height],
+            itemName: itemName,
+            imageURLs: imageURLs),
         child: montserratWhiteRegular('VIEW\nQUOTATION', fontSize: 10));
   }
 

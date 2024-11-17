@@ -39,9 +39,10 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           final orderData = orderDoc.data() as Map<dynamic, dynamic>;
           Map<dynamic, dynamic> review = orderData[OrderFields.review];
 
-          return orderData[OrderFields.orderStatus] !=
-                  OrderStatuses.completed ||
-              review.isEmpty;
+          return (orderData[OrderFields.orderStatus] !=
+                  OrderStatuses.completed) ||
+              (orderData[OrderFields.orderStatus] == OrderStatuses.completed &&
+                  review.isEmpty);
         }).toList();
         ref.read(ordersProvider).setOrderDocs(orderDocs);
         ref.read(ordersProvider).sortOrdersByDate();
