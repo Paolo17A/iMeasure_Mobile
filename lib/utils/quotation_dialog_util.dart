@@ -158,26 +158,22 @@ void showCartQuotationDialog(BuildContext context, WidgetRef ref,
             child: SingleChildScrollView(
               child: all20Pix(
                 child: Column(children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.network(
-                          imageURLs.first,
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        Column(children: [
-                          Image.asset(ImagePaths.heritageIcon, scale: 2),
-                          quicksandBlackBold('iMeasure', fontSize: 24),
-                          quicksandBlackBold('• LOS BAÑOS •', fontSize: 12),
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width * 0.85) - 50,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.network(imageURLs.first,
+                              width: 120, height: 120, fit: BoxFit.cover),
+                          Column(children: [
+                            Image.asset(ImagePaths.heritageIcon, scale: 2),
+                            quicksandBlackBold('iMeasure', fontSize: 24),
+                            quicksandBlackBold('• LOS BAÑOS •', fontSize: 12),
+                          ]),
                         ]),
-                        Gap(200)
-                      ]),
+                  ),
                   all10Pix(
-                    child: Row(children: [
-                      quicksandBlackBold(itemName, textAlign: TextAlign.left)
-                    ]),
+                    child: quicksandBlackBold(itemName),
                   ),
                   quicksandBlackBold('ESTIMATED QUOTATION', fontSize: 16),
                   //  Mandatory Window Fields

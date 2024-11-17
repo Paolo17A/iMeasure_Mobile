@@ -56,6 +56,8 @@ class _CompletedOrdersScreenState extends ConsumerState<CompletedOrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(loadingProvider);
+    ref.watch(ordersProvider);
     return Scaffold(
       appBar: appBarWidget(),
       body: switchedLoadingContainer(ref.read(loadingProvider).isLoading,

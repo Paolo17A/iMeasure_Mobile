@@ -57,6 +57,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(loadingProvider);
+    ref.watch(ordersProvider);
     return Scaffold(
       appBar: appBarWidget(),
       body: switchedLoadingContainer(ref.read(loadingProvider).isLoading,
