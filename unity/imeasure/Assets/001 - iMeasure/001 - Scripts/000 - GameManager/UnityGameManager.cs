@@ -54,6 +54,7 @@ public class UnityGameManager : MonoBehaviour
     [field: SerializeField] public bool HasGlass { get; set; }
     [field: SerializeField] public string CorrespondingModel { get; set; }
     [field: SerializeField] public List<ItemField> ItemFields { get;set; }
+    [field: SerializeField] public List<AccessoryField> AccessoryFields { get; set; }
 
     [field: Header("LOADING PANEL")]
     [field: SerializeField] public GameObject LoadingPanel { get; set; }

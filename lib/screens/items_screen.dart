@@ -114,7 +114,7 @@ class _ItemsScreenState extends ConsumerState<ItemsScreen> {
   Widget filteredItemEntriesDisplay() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height - 230,
+      height: MediaQuery.of(context).size.height - 270,
       //decoration: BoxDecoration(border: Border.all()),
       child: filteredDocs.isNotEmpty
           ? SingleChildScrollView(

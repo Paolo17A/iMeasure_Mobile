@@ -220,7 +220,15 @@ public class ModelCore : MonoBehaviour
                     break;
             }
         }
-
+        foreach(AccessoryField accessoryField in UnityGameManager.Instance.AccessoryFields)
+        {
+            QuotationEntryHandler quotationEntry = Instantiate(quotationEntryPrefab);
+            quotationEntry.transform.SetParent(quotationEntriesContainer);
+            quotationEntry.transform.localScale = Vector3.one;
+            quotationEntry.transform.localPosition = new Vector3(quotationEntry.transform.localPosition.x, quotationEntry.transform.localPosition.y, 0);
+            quotationEntry.InitializeQuotationEntry(accessoryField.name, accessoryField.price.ToString("N2"));
+            totalMandatoryPayment += accessoryField.price;
+        }
         if (UnityGameManager.Instance.HasGlass)
         {
             float glassPrice = SelectedGlassData.pricePerSFT * widthSlider.value * heightSlider.value;
@@ -303,7 +311,7 @@ public class ModelCore : MonoBehaviour
                     break;
 
                 case "PERIMETER DOUBLED":
-                    float doubledPerimeter = 2 * 2 * (widthSlider.value + heightSlider.value);
+                    float doubledPerimeter = (2 * heightSlider.value) + (widthSlider.value * 4);
                     mapContent.Add("field", windowSubField.name);
                     mapContent.Add("breakdownPrice", (price * doubledPerimeter));
                     totalMandatoryPayment += price * doubledPerimeter;
@@ -329,7 +337,15 @@ public class ModelCore : MonoBehaviour
                 mandatoryMapList.Add(glassPair);
                 totalMandatoryPayment += glassPrice;                                                                                                                                                    
         }
-
+        foreach (AccessoryField accessoryField in UnityGameManager.Instance.AccessoryFields)
+        {
+            QuotationEntryHandler quotationEntry = Instantiate(quotationEntryPrefab);
+            quotationEntry.transform.SetParent(quotationEntriesContainer);
+            quotationEntry.transform.localScale = Vector3.one;
+            quotationEntry.transform.localPosition = new Vector3(quotationEntry.transform.localPosition.x, quotationEntry.transform.localPosition.y, 0);
+            quotationEntry.InitializeQuotationEntry(accessoryField.name, accessoryField.price.ToString("N2"));
+            totalMandatoryPayment += accessoryField.price;
+        }
 
         quotationMap.Add("mandatoryMap", mandatoryMapList);
         quotationMap.Add("itemOverallPrice", totalMandatoryPayment);
@@ -344,7 +360,7 @@ public class ModelCore : MonoBehaviour
     {
         DisplayProperModel();
         SetInitialSliderValues();
-        if (UnityGameManager.Instance.ItemType == "WINDOW")
+        if (UnityGameManager.Instance.HasGlass)
             InitializeGlass();
         else
             HideSelectedGlassContainer();

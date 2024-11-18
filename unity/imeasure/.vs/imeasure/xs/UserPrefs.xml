@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/001 - iMeasure/001 - Scripts/003 - Models/ModelCore.cs">
+    <Files>
+      <File FileName="Assets/001 - iMeasure/001 - Scripts/003 - Models/ModelCore.cs" Line="350" Column="55" />
+      <File FileName="Assets/001 - iMeasure/001 - Scripts/000 - GameManager/UnityGameManager.cs" Line="58" Column="1" />
+      <File FileName="Assets/001 - iMeasure/001 - Scripts/003 - Models/ItemField.cs" Line="1" Column="13" />
+      <File FileName="Assets/001 - iMeasure/001 - Scripts/003 - Models/AccessoryField.cs" Line="12" Column="1" />
+      <File FileName="Assets/001 - iMeasure/001 - Scripts/002 - MainMenu/MainMenuCore.cs" Line="65" Column="14" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="imeasure" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="001 - iMeasure" expanded="True">
+                <Node name="001 - Scripts" expanded="True">
+                  <Node name="000 - GameManager" expanded="True" />
+                  <Node name="002 - MainMenu" expanded="True" />
+                  <Node name="003 - Models" expanded="True">
+                    <Node name="ModelCore.cs" selected="True" />
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="486a3ec6-c213-4d56-ba92-9e3de72d4200" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

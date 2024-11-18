@@ -113,7 +113,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             children: [
               Container(
                 //width: 400,
-                height: 180,
+                height: 220,
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.black)),
                 padding: EdgeInsets.all(12),

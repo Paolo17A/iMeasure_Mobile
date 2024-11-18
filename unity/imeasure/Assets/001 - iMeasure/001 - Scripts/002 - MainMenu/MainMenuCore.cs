@@ -61,6 +61,16 @@ public class MainMenuCore : MonoBehaviour
 
                 UnityGameManager.Instance.ItemFields.Add(itemField);
             }
+            for(int i = 0; i < document.fields["accessoryFields"].arrayValue.values.Count; i++)
+            {
+                FirestoreField accessoryFieldsMap = document.fields["accessoryFields"].arrayValue.values[i];
+                Dictionary<string, FirestoreField> accessoryFields = accessoryFieldsMap.mapValue.fields;
+
+                AccessoryField accessoryField = new AccessoryField();
+                accessoryField.name = accessoryFields["name"].stringValue;
+                accessoryField.price = accessoryFields["price"].doubleValue ?? (float)accessoryFields["price"].integerValue.GetValueOrDefault();
+                UnityGameManager.Instance.AccessoryFields.Add(accessoryField);
+            }
             UnityGameManager.Instance.LoadingPanel.SetActive(false);
             UnityGameManager.Instance.SceneController.CurrentScene = "ModelScene";
         }

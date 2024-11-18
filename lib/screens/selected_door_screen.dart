@@ -46,6 +46,7 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
   final heightController = TextEditingController();
   List<dynamic> mandatoryWindowFields = [];
   List<Map<dynamic, dynamic>> optionalWindowFields = [];
+  List<dynamic> accesoryFields = [];
   num totalMandatoryPayment = 0;
   num totalGlassPrice = 0;
   num totalOverallPayment = 0;
@@ -70,6 +71,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
         maxWidth = itemData[ItemFields.maxWidth];
         hasGlass = itemData[ItemFields.hasGlass];
         correspondingModel = itemData[ItemFields.correspondingModel];
+        accesoryFields = itemData[ItemFields.accessoryFields];
+
         //  GET USER DATA
         ref.read(cartProvider).setCartItems(await getCartEntries(context));
         List<dynamic> windowFields = itemData[ItemFields.windowFields];
@@ -93,6 +96,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
           Map review = orderData[OrderFields.review];
           return review.isNotEmpty;
         }).toList();
+        ref.read(cartProvider).setGlassType('');
+        ref.read(cartProvider).setSelectedColor('');
         ref.read(loadingProvider.notifier).toggleLoading(false);
       } catch (error) {
         scaffoldMessenger.showSnackBar(
@@ -296,6 +301,8 @@ class _SelectedDoorScreenState extends ConsumerState<SelectedDoorScreen> {
                       mandatoryWindowFields: mandatoryWindowFields,
                       optionalWindowFields: optionalWindowFields,
                       itemType: ItemTypes.door,
+                      accessoryFields: accesoryFields,
+                      imageURLs: imageURLs,
                       hasGlass: hasGlass);
                 } else {
                   if (double.tryParse(widthController.text) == null ||

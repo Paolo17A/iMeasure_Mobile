@@ -105,6 +105,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     Map<dynamic, dynamic> quotation = {};
     num price = 0;
     num laborPrice = 0;
+    String color = '';
     DocumentSnapshot? associatedItemDoc =
         associatedItemDocs.where((productDoc) {
       return productDoc.id == cartData[CartFields.itemID].toString();
@@ -114,12 +115,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     else {
       String name = associatedItemDoc[ItemFields.name];
       List<dynamic> imageURLs = associatedItemDoc[ItemFields.imageURLs];
+      List<dynamic> accesoryField = [];
       if (itemType == ItemTypes.rawMaterial) {
         price = associatedItemDoc[ItemFields.price];
       } else {
         quotation = cartData[CartFields.quotation];
         price = quotation[QuotationFields.itemOverallPrice];
         laborPrice = quotation[QuotationFields.laborPrice];
+        accesoryField = associatedItemDoc[ItemFields.accessoryFields];
+        color = quotation[QuotationFields.color];
       }
       //num price = associatedItemDoc[ItemFields.price];
       return Stack(
@@ -194,28 +198,29 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                         fontSize: 14),
                                   if (itemType != ItemTypes.rawMaterial)
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              quicksandBlackRegular(
-                                                  'Width: ${(quotation[QuotationFields.width] as num).toStringAsFixed(2)}ft',
-                                                  fontSize: 12),
-                                              quicksandBlackRegular(
-                                                  'Height: ${(quotation[QuotationFields.height] as num).toStringAsFixed(2)}ft',
-                                                  fontSize: 12)
-                                            ]),
-                                        if (itemType != ItemTypes.rawMaterial)
-                                          _showQuotationButton(
-                                              itemType,
-                                              cartData[CartFields.quotation],
-                                              name,
-                                              imageURLs),
-                                      ],
-                                    )
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                quicksandBlackRegular(
+                                                    'Width: ${(quotation[QuotationFields.width] as num).toStringAsFixed(2)}ft',
+                                                    fontSize: 12),
+                                                quicksandBlackRegular(
+                                                    'Height: ${(quotation[QuotationFields.height] as num).toStringAsFixed(2)}ft',
+                                                    fontSize: 12)
+                                              ]),
+                                          if (itemType != ItemTypes.rawMaterial)
+                                            _showQuotationButton(
+                                                itemType,
+                                                cartData[CartFields.quotation],
+                                                name,
+                                                imageURLs,
+                                                accesoryField,
+                                                color)
+                                        ])
                                 ],
                               ),
                             )
@@ -322,8 +327,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
   }
 
-  Widget _showQuotationButton(String itemType, Map<dynamic, dynamic> quotation,
-      String itemName, List<dynamic> imageURLs) {
+  Widget _showQuotationButton(
+      String itemType,
+      Map<dynamic, dynamic> quotation,
+      String itemName,
+      List<dynamic> imageURLs,
+      List<dynamic> accessoryFields,
+      String color) {
     final mandatoryWindowFields = quotation[QuotationFields.mandatoryMap];
     final optionalWindowFields =
         quotation[QuotationFields.optionalMap] as List<dynamic>;
@@ -335,7 +345,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             optionalWindowFields: optionalWindowFields,
             width: quotation[QuotationFields.width],
             height: quotation[QuotationFields.height],
+            color: color,
             itemName: itemName,
+            accessoryFields: accessoryFields,
             imageURLs: imageURLs),
         child: montserratWhiteRegular('VIEW\nQUOTATION', fontSize: 10));
   }

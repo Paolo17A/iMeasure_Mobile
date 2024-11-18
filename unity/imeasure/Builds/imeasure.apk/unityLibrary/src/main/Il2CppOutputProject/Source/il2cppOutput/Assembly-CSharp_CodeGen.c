@@ -108,6 +108,8 @@ extern void UnityGameManager_get_CorrespondingModel_mD4963410F4CB16ADB672FCB6521
 extern void UnityGameManager_set_CorrespondingModel_mF47DEAEF1E1911487D123A023203075144C6B8BD (void);
 extern void UnityGameManager_get_ItemFields_m9F31FA419B5A92737D21D5ED304CB8AAA109C24F (void);
 extern void UnityGameManager_set_ItemFields_m1AC3D1D2256558700CDABA6336A28F627FF3CD2E (void);
+extern void UnityGameManager_get_AccessoryFields_m1ED74D1924169DF06FEA0DC85EE8BE2026948D5C (void);
+extern void UnityGameManager_set_AccessoryFields_mB9C5DDB3967616DB8230CCCFFDB99C566DFA6A70 (void);
 extern void UnityGameManager_get_LoadingPanel_mA83EA6E576FA9D78FE833779EC46D5AD37A2A0CD (void);
 extern void UnityGameManager_set_LoadingPanel_m59FDC801EB9A8E4B965498B5C6CEE260899113C8 (void);
 extern void UnityGameManager_Awake_m02795BD695600EDEA2B3320C4A41802CAD81B159 (void);
@@ -161,6 +163,7 @@ extern void U3CGetDocumentCoroutineU3Ed__2_MoveNext_m6EC8090BE0B394F555EC80FFD77
 extern void U3CGetDocumentCoroutineU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mEE2A515F9E6E530E5148120E3269F7F1EDCBB7F4 (void);
 extern void U3CGetDocumentCoroutineU3Ed__2_System_Collections_IEnumerator_Reset_mFFD22E380198A657FDBE0A2EC00B15479607A120 (void);
 extern void U3CGetDocumentCoroutineU3Ed__2_System_Collections_IEnumerator_get_Current_m4AAE4CD4557CBEC0A984641D46A7D7D518F9B8C0 (void);
+extern void AccessoryField__ctor_mE223CB6F863DEDBA472D5E4DF3FA7B2B1430AA2C (void);
 extern void ColorOptionHandler_SelectThisColorForFrame_mD15AF2C20D98415EA8D219382326D40B5E8ABA5B (void);
 extern void ColorOptionHandler__ctor_m130EB723257CBEB5A4A2BA202AF8B29583C4F46A (void);
 extern void GlassDataHandler_InitializeGlassDataHandler_mFED3E2577E3461111277651EF00CB30277A1C941 (void);
@@ -1391,7 +1394,7 @@ extern void MessageHandlerDelegate__ctor_m287CBD25D77011FC5A52D1090F6CC31353AB63
 extern void MessageHandlerDelegate_Invoke_mD1EC9E1841D5014C40A26D4C4BA076482FFC8A4B (void);
 extern void MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D (void);
 extern void MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16 (void);
-static Il2CppMethodPointer s_methodPointers[1392] = 
+static Il2CppMethodPointer s_methodPointers[1395] = 
 {
 	NULL,
 	NULL,
@@ -1497,6 +1500,8 @@ static Il2CppMethodPointer s_methodPointers[1392] =
 	UnityGameManager_set_CorrespondingModel_mF47DEAEF1E1911487D123A023203075144C6B8BD,
 	UnityGameManager_get_ItemFields_m9F31FA419B5A92737D21D5ED304CB8AAA109C24F,
 	UnityGameManager_set_ItemFields_m1AC3D1D2256558700CDABA6336A28F627FF3CD2E,
+	UnityGameManager_get_AccessoryFields_m1ED74D1924169DF06FEA0DC85EE8BE2026948D5C,
+	UnityGameManager_set_AccessoryFields_mB9C5DDB3967616DB8230CCCFFDB99C566DFA6A70,
 	UnityGameManager_get_LoadingPanel_mA83EA6E576FA9D78FE833779EC46D5AD37A2A0CD,
 	UnityGameManager_set_LoadingPanel_m59FDC801EB9A8E4B965498B5C6CEE260899113C8,
 	UnityGameManager_Awake_m02795BD695600EDEA2B3320C4A41802CAD81B159,
@@ -1550,6 +1555,7 @@ static Il2CppMethodPointer s_methodPointers[1392] =
 	U3CGetDocumentCoroutineU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mEE2A515F9E6E530E5148120E3269F7F1EDCBB7F4,
 	U3CGetDocumentCoroutineU3Ed__2_System_Collections_IEnumerator_Reset_mFFD22E380198A657FDBE0A2EC00B15479607A120,
 	U3CGetDocumentCoroutineU3Ed__2_System_Collections_IEnumerator_get_Current_m4AAE4CD4557CBEC0A984641D46A7D7D518F9B8C0,
+	AccessoryField__ctor_mE223CB6F863DEDBA472D5E4DF3FA7B2B1430AA2C,
 	ColorOptionHandler_SelectThisColorForFrame_mD15AF2C20D98415EA8D219382326D40B5E8ABA5B,
 	ColorOptionHandler__ctor_m130EB723257CBEB5A4A2BA202AF8B29583C4F46A,
 	GlassDataHandler_InitializeGlassDataHandler_mFED3E2577E3461111277651EF00CB30277A1C941,
@@ -2786,7 +2792,7 @@ static Il2CppMethodPointer s_methodPointers[1392] =
 	MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D,
 	MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16,
 };
-static const int32_t s_InvokerIndices[1392] = 
+static const int32_t s_InvokerIndices[1395] = 
 {
 	0,
 	0,
@@ -2894,6 +2900,8 @@ static const int32_t s_InvokerIndices[1392] =
 	2557,
 	2860,
 	2557,
+	2860,
+	2557,
 	2936,
 	2936,
 	2557,
@@ -2945,6 +2953,7 @@ static const int32_t s_InvokerIndices[1392] =
 	2860,
 	2936,
 	2860,
+	2936,
 	2936,
 	2936,
 	1746,
@@ -4184,8 +4193,8 @@ static const int32_t s_InvokerIndices[1392] =
 static const Il2CppTokenRangePair s_rgctxIndices[3] = 
 {
 	{ 0x02000002, { 0, 29 } },
-	{ 0x02000080, { 29, 11 } },
-	{ 0x06000556, { 40, 2 } },
+	{ 0x02000081, { 29, 11 } },
+	{ 0x06000559, { 40, 2 } },
 };
 extern const uint32_t g_rgctx_U3CU3Ef__AnonymousType0_4_t93FD0713D40011506D6B5581D9D5064D1A1A31B8;
 extern const uint32_t g_rgctx_U3CidU3Ej__TPar_tB4283D6614B0A1B9713411CF590AE6445EC76C76;
@@ -4278,7 +4287,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	1392,
+	1395,
 	s_methodPointers,
 	0,
 	NULL,
