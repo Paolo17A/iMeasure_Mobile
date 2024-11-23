@@ -24,9 +24,11 @@ Text quicksandWhiteRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
     TextOverflow? textOverflow,
+    int? maxLines,
     TextDecoration? decoration}) {
   return Text(label,
       textAlign: textAlign,
+      maxLines: maxLines,
       style: GoogleFonts.quicksand(
           fontSize: fontSize,
           color: Colors.white,
@@ -52,10 +54,12 @@ Text montserratBlackRegular(String label,
 Text quicksandBlackRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
+    int? maxLines,
     TextOverflow? textOverflow}) {
   return Text(
     label,
     textAlign: textAlign,
+    maxLines: maxLines,
     style: GoogleFonts.quicksand(
         fontSize: fontSize,
         color: Colors.black,
@@ -79,11 +83,13 @@ Text montserratWhiteBold(String label,
 Text montserratWhiteRegular(String label,
     {double fontSize = 20,
     TextAlign textAlign = TextAlign.center,
+    int? maxLines,
     TextOverflow? textOverflow}) {
   return Text(
     label,
     textAlign: textAlign,
     overflow: textOverflow,
+    maxLines: maxLines,
     style: GoogleFonts.quicksand(fontSize: fontSize, color: Colors.white),
   );
 }
@@ -99,6 +105,19 @@ Text quicksandRedBold(String label,
     style: GoogleFonts.quicksand(
         fontSize: fontSize, color: Colors.red, fontWeight: FontWeight.bold),
   );
+}
+
+Text quicksandCoralRedBold(String label,
+    {double fontSize = 20,
+    TextAlign textAlign = TextAlign.center,
+    TextOverflow? textOverflow}) {
+  return Text(label,
+      textAlign: textAlign,
+      style: GoogleFonts.quicksand(
+          fontSize: fontSize,
+          color: CustomColors.coralRed,
+          fontWeight: FontWeight.bold,
+          textStyle: TextStyle(overflow: textOverflow)));
 }
 
 Text quicksandBlackBold(String label,

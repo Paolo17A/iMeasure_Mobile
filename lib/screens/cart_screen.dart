@@ -25,13 +25,17 @@ class CartScreen extends ConsumerStatefulWidget {
   ConsumerState<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends ConsumerState<CartScreen> {
+class _CartScreenState extends ConsumerState<CartScreen>
+    with TickerProviderStateMixin {
+  late TabController tabController;
   List<DocumentSnapshot> associatedItemDocs = [];
   num paidAmount = 0;
+  bool displayCheckout = true;
 
   @override
   void initState() {
     super.initState();
+    tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(loadingProvider).toggleLoading(true);
       final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -59,43 +63,160 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     ref.watch(cartProvider);
     return PopScope(
       onPopInvoked: (didPop) => ref.read(cartProvider).resetSelectedCartItems(),
-      child: Scaffold(
-        appBar: appBarWidget(mayPop: true),
-        drawer: appDrawer(context, ref, route: NavigatorRoutes.cart),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _checkoutBar(),
-            bottomNavigationBar(context, ref, index: 2)
-          ],
-        ),
-        body: switchedLoadingContainer(
+      child: DefaultTabController(
+        initialIndex: 2,
+        length: 3,
+        child: Scaffold(
+          appBar: appBarWidget(mayPop: true),
+          drawer: appDrawer(context, ref, route: NavigatorRoutes.cart),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (displayCheckout) _checkoutBar(),
+              bottomNavigationBar(context, ref, index: 2)
+            ],
+          ),
+          body: switchedLoadingContainer(
             ref.read(loadingProvider).isLoading,
-            SingleChildScrollView(
-              child: _cartEntries(),
-            )),
+            Column(
+              children: [
+                TabBar(
+                    onTap: (value) {
+                      setState(() {
+                        if (value == 2)
+                          displayCheckout = true;
+                        else
+                          displayCheckout = false;
+                      });
+                    },
+                    tabs: [
+                      Tab(
+                          height: 80,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              quicksandBlackBold(
+                                  'NO ADDITIONAL\nCOST REQUESTED: ',
+                                  fontSize: 12),
+                              quicksandCoralRedBold(
+                                  ref
+                                      .read(cartProvider)
+                                      .noAdditionalCostRequestedCartItems
+                                      .length
+                                      .toString(),
+                                  fontSize: 15)
+                            ],
+                          )),
+                      Tab(
+                          height: 80,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              quicksandBlackBold('PENDING\nADDITIONAL COST: ',
+                                  fontSize: 12),
+                              quicksandCoralRedBold(
+                                  ref
+                                      .read(cartProvider)
+                                      .pendingAdditionalCostCartItems
+                                      .length
+                                      .toString(),
+                                  fontSize: 15)
+                            ],
+                          )),
+                      Tab(
+                          height: 80,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              quicksandBlackBold('FOR\nCHECKOUT: ',
+                                  fontSize: 12),
+                              quicksandCoralRedBold(
+                                  ref
+                                      .read(cartProvider)
+                                      .forCheckoutCartItems
+                                      .length
+                                      .toString(),
+                                  fontSize: 15)
+                            ],
+                          ))
+                    ]),
+                SizedBox(
+                  height: displayCheckout
+                      ? MediaQuery.of(context).size.height - 330
+                      : MediaQuery.of(context).size.height - 320,
+                  child: TabBarView(children: [
+                    _noAdditionalCostRequested(),
+                    _pendingAdditionalCostRequested(),
+                    _cartEntries()
+                  ]),
+                )
+              ],
+            ),
+
+            // SingleChildScrollView(
+            //   child: _cartEntries(),
+            // )
+          ),
+        ),
       ),
     );
   }
 
+  Widget _noAdditionalCostRequested() {
+    return ref.read(cartProvider).noAdditionalCostRequestedCartItems.isNotEmpty
+        ? SingleChildScrollView(
+            child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: ref
+                    .read(cartProvider)
+                    .noAdditionalCostRequestedCartItems
+                    .length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return _cartEntry(ref
+                      .read(cartProvider)
+                      .noAdditionalCostRequestedCartItems[index]);
+                }))
+        : Center(
+            child: quicksandBlackBold(
+                'YOU HAVE NO CART ITEMS WHICH NEED TO HAVE ADDITIONAL COSTS REQUESTED'));
+  }
+
+  Widget _pendingAdditionalCostRequested() {
+    return ref.read(cartProvider).pendingAdditionalCostCartItems.isNotEmpty
+        ? SingleChildScrollView(
+            child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: ref
+                    .read(cartProvider)
+                    .pendingAdditionalCostCartItems
+                    .length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return _cartEntry(ref
+                      .read(cartProvider)
+                      .pendingAdditionalCostCartItems[index]);
+                }))
+        : Center(
+            child: quicksandBlackBold(
+                'YOU HAVE NO CART ITEMS PENDING ADDITIONAL COSTS'));
+  }
+
   Widget _cartEntries() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        all10Pix(child: quicksandBlackBold('CART', fontSize: 40)),
-        ref.read(cartProvider).cartItems.isNotEmpty
-            ? ListView.builder(
+    return ref.read(cartProvider).forCheckoutCartItems.isNotEmpty
+        ? SingleChildScrollView(
+            child: ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: ref.read(cartProvider).cartItems.length,
+                itemCount: ref.read(cartProvider).forCheckoutCartItems.length,
                 itemBuilder: (context, index) {
-                  return _cartEntry(ref.read(cartProvider).cartItems[index]);
-                })
-            : vertical20Pix(
-                child: quicksandBlackBold(
-                    'YOU DO NOT HAVE ANY ITEMS IN YOUR CART'))
-      ],
-    );
+                  return _cartEntry(
+                      ref.read(cartProvider).forCheckoutCartItems[index]);
+                }),
+          )
+        : Center(
+            child:
+                quicksandBlackBold('YOU DO NOT HAVE ANY ITEMS IN YOUR CART'));
   }
 
   Widget _cartEntry(DocumentSnapshot cartDoc) {
@@ -106,6 +227,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     num price = 0;
     num laborPrice = 0;
     String color = '';
+    num additionalServicePrice = 0;
+    bool isRequestingAdditionalService = false;
+
     DocumentSnapshot? associatedItemDoc =
         associatedItemDocs.where((productDoc) {
       return productDoc.id == cartData[CartFields.itemID].toString();
@@ -116,6 +240,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       String name = associatedItemDoc[ItemFields.name];
       List<dynamic> imageURLs = associatedItemDoc[ItemFields.imageURLs];
       List<dynamic> accesoryField = [];
+      quotation = cartData[CartFields.quotation];
+
       if (itemType == ItemTypes.rawMaterial) {
         price = associatedItemDoc[ItemFields.price];
       } else {
@@ -125,6 +251,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         accesoryField = associatedItemDoc[ItemFields.accessoryFields];
         color = quotation[QuotationFields.color];
       }
+      additionalServicePrice =
+          quotation[QuotationFields.additionalServicePrice];
+      isRequestingAdditionalService =
+          quotation[QuotationFields.isRequestingAdditionalService];
+      String requestStatus = quotation[QuotationFields.requestStatus];
+
       //num price = associatedItemDoc[ItemFields.price];
       return Stack(
         children: [
@@ -135,28 +267,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               child: Row(
                 children: [
                   //  CHECKBOX
-                  Checkbox(
-                      value: ref
-                          .read(cartProvider)
-                          .selectedCartItemIDs
-                          .contains(cartDoc.id),
-                      onChanged:
-                          (itemType == ItemTypes.rawMaterial || laborPrice > 0)
-                              ? (newVal) {
-                                  if (newVal == null) return;
-                                  setState(() {
-                                    if (newVal) {
-                                      ref
-                                          .read(cartProvider)
-                                          .selectCartItem(cartDoc.id);
-                                    } else {
-                                      ref
-                                          .read(cartProvider)
-                                          .deselectCartItem(cartDoc.id);
-                                    }
-                                  });
-                                }
-                              : null),
+                  if (ref
+                      .read(cartProvider)
+                      .forCheckoutCartItems
+                      .contains(cartDoc))
+                    _selectItemCheckbox(
+                        cartDoc: cartDoc,
+                        laborPrice: laborPrice,
+                        itemType: itemType),
                   Flexible(
                     flex: 4,
                     child: Column(
@@ -191,11 +309,41 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                           fontSize: 16),
                                     ],
                                   ),
-                                  if (itemType != ItemTypes.rawMaterial ||
-                                      laborPrice > 0)
+                                  if (itemType != ItemTypes.rawMaterial)
                                     quicksandBlackRegular(
                                         'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
                                         fontSize: 14),
+                                  if (isRequestingAdditionalService) ...[
+                                    if ((itemType == ItemTypes.window ||
+                                            itemType == ItemTypes.door) &&
+                                        requestStatus ==
+                                            RequestStatuses.approved)
+                                      quicksandBlackRegular(
+                                          'Installation Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
+                                          fontSize: 14)
+                                    else if ((itemType == ItemTypes.window ||
+                                            itemType == ItemTypes.door) &&
+                                        requestStatus == RequestStatuses.denied)
+                                      quicksandBlackRegular(
+                                          'Installation Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
+                                          textAlign: TextAlign.left,
+                                          fontSize: 14)
+                                    else if (itemType ==
+                                            ItemTypes.rawMaterial &&
+                                        (requestStatus ==
+                                            RequestStatuses.approved))
+                                      quicksandBlackRegular(
+                                          'Delivery Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
+                                          fontSize: 14)
+                                    else if (itemType ==
+                                            ItemTypes.rawMaterial &&
+                                        (requestStatus ==
+                                            RequestStatuses.denied))
+                                      quicksandBlackRegular(
+                                          'Delivery Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
+                                          textAlign: TextAlign.left,
+                                          fontSize: 14)
+                                  ],
                                   if (itemType != ItemTypes.rawMaterial)
                                     Row(
                                         mainAxisAlignment:
@@ -231,80 +379,27 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // QUANTITY
-                            Flexible(
-                              flex: 2,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  CustomColors.deepCharcoal)),
-                                      child: TextButton(
-                                          onPressed: quantity == 1
-                                              ? null
-                                              : () => changeCartItemQuantity(
-                                                  context, ref,
-                                                  cartEntryDoc: cartDoc,
-                                                  isIncreasing: false),
-                                          child: quicksandBlackRegular('-',
-                                              fontSize: 16))),
-                                  Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  CustomColors.deepCharcoal)),
-                                      child: Center(
-                                        child: quicksandBlackRegular(
-                                            quantity.toString(),
-                                            fontSize: 15),
-                                      )),
-                                  Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  CustomColors.deepCharcoal)),
-                                      child: TextButton(
-                                          onPressed: () =>
-                                              changeCartItemQuantity(
-                                                  context, ref,
-                                                  cartEntryDoc: cartDoc,
-                                                  isIncreasing: true),
-                                          child: quicksandBlackRegular('+',
-                                              fontSize: 16)))
-                                ],
-                              ),
-                            ),
-
-                            Flexible(
-                              flex: 2,
-                              child: IconButton(
-                                  onPressed: () => displayDeleteEntryDialog(
-                                          context,
-                                          message:
-                                              'Are you sure you wish to remove ${name} from your cart?',
-                                          deleteEntry: () {
-                                        if (ref
-                                            .read(cartProvider)
-                                            .selectedCartItemIDs
-                                            .contains(cartDoc.id)) {
-                                          ref
-                                              .read(cartProvider)
-                                              .deselectCartItem(cartDoc.id);
-                                        }
-                                        removeCartItem(context, ref,
-                                            cartDoc: cartDoc);
-                                      }),
-                                  icon: Icon(Icons.delete,
-                                      color: CustomColors.coralRed)),
-                            )
+                            if (ref
+                                .read(cartProvider)
+                                .forCheckoutCartItems
+                                .contains(cartDoc))
+                              _changeQuantityButtons(
+                                  quantity: quantity, cartDoc: cartDoc),
+                            if (ref
+                                .read(cartProvider)
+                                .noAdditionalCostRequestedCartItems
+                                .contains(cartDoc))
+                              _requestAdditionalCostButton(
+                                  itemType: itemType,
+                                  isRequestingAdditionalService:
+                                      isRequestingAdditionalService,
+                                  cartID: cartDoc.id),
+                            if (!ref
+                                .read(cartProvider)
+                                .pendingAdditionalCostCartItems
+                                .contains(cartDoc))
+                              _deleteFromCartButton(
+                                  name: name, cartDoc: cartDoc)
                           ],
                         ),
                       ],
@@ -325,6 +420,87 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         ],
       );
     }
+  }
+
+  Widget _selectItemCheckbox(
+      {required DocumentSnapshot cartDoc,
+      required num laborPrice,
+      required String itemType}) {
+    return Checkbox(
+        value: ref.read(cartProvider).selectedCartItemIDs.contains(cartDoc.id),
+        onChanged: (itemType == ItemTypes.rawMaterial || laborPrice > 0)
+            ? (newVal) {
+                if (newVal == null) return;
+                setState(() {
+                  if (newVal) {
+                    ref.read(cartProvider).selectCartItem(cartDoc.id);
+                  } else {
+                    ref.read(cartProvider).deselectCartItem(cartDoc.id);
+                  }
+                });
+              }
+            : null);
+  }
+
+  Widget _changeQuantityButtons(
+      {required int quantity, required DocumentSnapshot cartDoc}) {
+    return Flexible(
+      flex: 2,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                  border: Border.all(color: CustomColors.deepCharcoal)),
+              child: TextButton(
+                  onPressed: quantity == 1
+                      ? null
+                      : () => changeCartItemQuantity(context, ref,
+                          cartEntryDoc: cartDoc, isIncreasing: false),
+                  child: quicksandBlackRegular('-', fontSize: 16))),
+          Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                  border: Border.all(color: CustomColors.deepCharcoal)),
+              child: Center(
+                child: quicksandBlackRegular(quantity.toString(), fontSize: 15),
+              )),
+          Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                  border: Border.all(color: CustomColors.deepCharcoal)),
+              child: TextButton(
+                  onPressed: () => changeCartItemQuantity(context, ref,
+                      cartEntryDoc: cartDoc, isIncreasing: true),
+                  child: quicksandBlackRegular('+', fontSize: 16)))
+        ],
+      ),
+    );
+  }
+
+  Widget _deleteFromCartButton(
+      {required String name, required DocumentSnapshot cartDoc}) {
+    return Flexible(
+      flex: 2,
+      child: IconButton(
+          onPressed: () => displayDeleteEntryDialog(context,
+                  message:
+                      'Are you sure you wish to remove ${name} from your cart?',
+                  deleteEntry: () {
+                if (ref
+                    .read(cartProvider)
+                    .selectedCartItemIDs
+                    .contains(cartDoc.id)) {
+                  ref.read(cartProvider).deselectCartItem(cartDoc.id);
+                }
+                removeCartItem(context, ref, cartDoc: cartDoc);
+              }),
+          icon: Icon(Icons.delete, color: CustomColors.coralRed)),
+    );
   }
 
   Widget _showQuotationButton(
@@ -350,6 +526,29 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             accessoryFields: accessoryFields,
             imageURLs: imageURLs),
         child: montserratWhiteRegular('VIEW\nQUOTATION', fontSize: 10));
+  }
+
+  Widget _requestAdditionalCostButton(
+      {required String itemType,
+      required bool isRequestingAdditionalService,
+      required String cartID}) {
+    bool isFurniture =
+        itemType == ItemTypes.window || itemType == ItemTypes.door;
+    return all20Pix(
+      child: SizedBox(
+        width: 200,
+        child: ElevatedButton(
+            onPressed: () =>
+                requestForAdditionalCosts(context, ref, cartID: cartID),
+            child: isFurniture && isRequestingAdditionalService
+                ? quicksandWhiteRegular('REQUEST LABOR &\n INSTALLATION COST',
+                    fontSize: 12)
+                : isFurniture && !isRequestingAdditionalService
+                    ? quicksandWhiteRegular('REQUEST LABOR COST', fontSize: 12)
+                    : quicksandWhiteRegular('REQUEST DELIVERY COST',
+                        fontSize: 12)),
+      ),
+    );
   }
 
   Widget _totalAmountWidget() {
@@ -378,11 +577,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (itemData[ItemFields.itemType] == ItemTypes.rawMaterial) {
         num price = itemData[ItemFields.price];
         totalAmount += quantity * price;
+        Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+        num additionalServicePrice =
+            quotation[QuotationFields.additionalServicePrice] ?? 0;
+        totalAmount += additionalServicePrice;
       } else {
         Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
         totalAmount +=
             (quantity * quotation[QuotationFields.itemOverallPrice]) +
                 quotation[QuotationFields.laborPrice];
+        num additionalServicePrice =
+            quotation[QuotationFields.additionalServicePrice] ?? 0;
+        totalAmount += additionalServicePrice;
       }
     }
     paidAmount = totalAmount;

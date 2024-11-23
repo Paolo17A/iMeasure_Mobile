@@ -518,3 +518,30 @@ Widget userReviews(List<DocumentSnapshot> orderDocs) {
     ),
   );
 }
+
+void showEnlargedPics(BuildContext context, {required String imageURL}) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+              content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: quicksandBlackBold('X'))
+                ],
+              ),
+              Container(
+                width: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 0.6,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(imageURL), fit: BoxFit.fill)),
+              ),
+            ]),
+          )));
+}

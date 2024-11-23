@@ -28,6 +28,7 @@ class Collections {
   static const String galleries = 'galleries';
   static const String items = 'items';
   static const String payments = 'payments';
+  static const String appointments = 'appointments';
 }
 
 class UserFields {
@@ -179,6 +180,18 @@ class OrderStatuses {
   static const String forPickUp = 'FOR PICK UP';
   static const String pickedUp = 'PICKED UP';
   static const String completed = 'COMPLETED';
+
+  //  SPECIAL INSTALLATION-RELATED STATUSES
+  static const String pendingInstallation = 'PENDING INSTALLATION';
+  static const String installationPendingApproval =
+      'INSTALLATION PENDING APPROVAL';
+  static const String forInstallation = 'FOR INSTALLATION';
+  static const String installed = 'INSTALLED';
+  //  SPECIAL DELIVERY-RELATED STATUSES
+  static const String pendingDelivery = 'PENDING DELIVERY';
+  static const String deliveryPendingApproval = 'DELIVERY PENDING APPROVAL';
+  static const String forDelivery = 'FOR DELIVERY';
+  static const String delivered = 'DELIVERED';
 }
 
 class CartFields {
@@ -187,6 +200,7 @@ class CartFields {
   static const String quantity = 'quantity';
   static const String itemType = 'itemType';
   static const String quotation = 'quotation';
+  static const String dateLastModified = 'dateLastModified';
 }
 
 class PaymentStatuses {
@@ -206,6 +220,25 @@ class QuotationFields {
   static const String itemOverallPrice = 'itemOverallPrice';
   static const String laborPrice = 'laborPrice';
   static const String quotationURL = 'quotationURL';
+
+  //  REQUESTS
+  static const String isRequestingAdditionalService =
+      'isRequestingAdditionalService';
+  static const String additionalServicePrice = 'additionalServicePrice';
+  static const String requestStatus = 'requestStatus';
+  static const String requestAddress = 'requestAddress';
+  static const String requestContactNumber = 'requestContactNumber';
+  static const String requestDenialReason = 'requestDenialReason';
+
+  //  NOT FOR CART
+  static const String requestedDates = 'requestedDates';
+  static const String selectedDate = 'requestedDate';
+}
+
+class RequestStatuses {
+  static const String pending = 'PENDING';
+  static const String approved = 'APPROVED';
+  static const String denied = 'DENIED';
 }
 
 class GalleryFields {
@@ -225,6 +258,21 @@ class ReviewFields {
   static const String review = 'review';
   static const String rating = 'rating';
   static const String imageURLs = 'imageURLs';
+}
+
+class AppointmentFields {
+  static const String clientID = 'clientID';
+  static const String proposedDates = 'proposedDates';
+  static const String selectedDate = 'selectedDate';
+  static const String appointmentStatus = 'appointmentStatus';
+  static const String denialReason = 'denialReason';
+  static const String dateCreated = 'dateCreated';
+}
+
+class AppointmentStatuses {
+  static const String pending = 'PENDING';
+  static const String approved = 'APPROVED';
+  static const String denied = 'DENIED';
 }
 
 class PathParameters {

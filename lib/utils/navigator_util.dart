@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:imeasure_mobile/screens/appointment_history_screen.dart';
 import 'package:imeasure_mobile/screens/completed_orders_screen.dart';
 import 'package:imeasure_mobile/screens/contact_us_screen.dart';
 import 'package:imeasure_mobile/screens/items_screen.dart';
@@ -9,7 +10,9 @@ import 'package:imeasure_mobile/screens/quotation_screen.dart';
 import 'package:imeasure_mobile/screens/selected_door_screen.dart';
 import 'package:imeasure_mobile/screens/selected_raw_material_screen.dart';
 import 'package:imeasure_mobile/screens/selected_window_screen.dart';
+import 'package:imeasure_mobile/screens/set_appointment_screen.dart';
 import 'package:imeasure_mobile/screens/testimonies_screen.dart';
+import 'package:imeasure_mobile/screens/transaction_history_screen.dart';
 import '../screens/bookmarks_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/checkout_screen.dart';
@@ -69,6 +72,9 @@ class NavigatorRoutes {
   static const String completedOrders = 'completedOrders';
   static const String testimonies = 'testimonies';
   static const String portfolio = 'portfolio';
+  static const String transactionHistory = 'transactionHistory';
+  static const String appointmentHistory = 'appointmentHistory';
+  static const String setAppointment = 'setAppointment';
 }
 
 final Map<String, WidgetBuilder> routes = {
@@ -87,5 +93,10 @@ final Map<String, WidgetBuilder> routes = {
   NavigatorRoutes.orderHistory: (context) => const OrderHistoryScreen(),
   NavigatorRoutes.completedOrders: (context) => const CompletedOrdersScreen(),
   NavigatorRoutes.testimonies: (context) => const TestimoniesScreen(),
-  NavigatorRoutes.portfolio: (context) => const PortfolioScreen()
+  NavigatorRoutes.portfolio: (context) => const PortfolioScreen(),
+  NavigatorRoutes.transactionHistory: (context) =>
+      const TransactionHistoryScreen(),
+  NavigatorRoutes.appointmentHistory: (context) =>
+      const AppointmentHistoryScreen(),
+  NavigatorRoutes.setAppointment: (context) => const SetAppointmentScreen()
 };

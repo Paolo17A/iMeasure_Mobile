@@ -462,11 +462,22 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
     required double width,
     required double height,
     required List<dynamic> mandatoryWindowFields,
-    required List<dynamic> optionalWindowFields}) async {
+    required List<dynamic> optionalWindowFields,
+    required List<dynamic> accessoryFields,
+    required bool requestingService,
+    required TextEditingController addressController,
+    required TextEditingController contactNumberController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   if (!hasLoggedInUser()) {
     scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text('Please log-in to your account first.')));
+    return;
+  }
+  if (requestingService &&
+      (addressController.text.isEmpty ||
+          contactNumberController.text.isEmpty)) {
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Please provide a valid address and contact number.')));
     return;
   }
   try {
@@ -557,6 +568,137 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
             });
             break;
         }
+      } else if (windowSubField[WindowSubfields.priceBasis] == 'PERIMETER') {
+        num perimeter = (2 * width) + (2 * height);
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * perimeter
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * perimeter
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) *
+                      perimeter
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) *
+                      perimeter
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
+                      perimeter
+            });
+            break;
+        }
+      } else if (windowSubField[WindowSubfields.priceBasis] ==
+          'PERIMETER DOUBLED') {
+        num perimeter = (4 * width) + (2 * height);
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) * perimeter
+            });
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) * perimeter
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) *
+                      perimeter
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) *
+                      perimeter
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
+                      perimeter
+            });
+            break;
+        }
+      } else if (windowSubField[WindowSubfields.priceBasis] ==
+          'STACKED WIDTH') {
+        num stackedValue = (2 * height) + (6 * width);
+        switch (ref.read(cartProvider).selectedColor) {
+          case WindowColors.brown:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.brownPrice] / 21) *
+                      stackedValue
+            });
+
+            break;
+          case WindowColors.white:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.whitePrice] / 21) *
+                      stackedValue
+            });
+            break;
+          case WindowColors.mattBlack:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattBlackPrice] / 21) *
+                      stackedValue
+            });
+            break;
+          case WindowColors.mattGray:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.mattGrayPrice] / 21) *
+                      stackedValue
+            });
+            break;
+          case WindowColors.woodFinish:
+            mandatoryMap.add({
+              OrderBreakdownMap.field: windowSubField[WindowSubfields.name],
+              OrderBreakdownMap.breakdownPrice:
+                  (windowSubField[WindowSubfields.woodFinishPrice] / 21) *
+                      stackedValue
+            });
+            break;
+        }
       }
     }
 
@@ -571,6 +713,11 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
               windowSubField[OptionalWindowFields.price]
         });
       }
+    }
+
+    double accesoriesPrice = 0;
+    for (var accessory in accessoryFields) {
+      accesoriesPrice += accessory[WindowAccessorySubfields.price];
     }
 
     await FirebaseFirestore.instance.collection(Collections.cart).add({
@@ -591,9 +738,18 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
                     width: width,
                     height: height,
                     mandatoryWindowFields: mandatoryWindowFields) +
-                calculateOptionalPrice(optionalWindowFields),
+                calculateOptionalPrice(optionalWindowFields) +
+                accesoriesPrice,
         QuotationFields.laborPrice: 0,
-        QuotationFields.quotationURL: ''
+        QuotationFields.quotationURL: '',
+        //REQUESTS
+        QuotationFields.isRequestingAdditionalService: requestingService,
+        QuotationFields.additionalServicePrice: 0,
+        QuotationFields.requestAddress: addressController.text.trim(),
+        QuotationFields.requestContactNumber:
+            contactNumberController.text.trim(),
+        QuotationFields.requestStatus: '',
+        QuotationFields.requestDenialReason: ''
       }
     });
 
@@ -646,7 +802,11 @@ Future addFurnitureItemToCartFromUnity(BuildContext context, WidgetRef ref,
 }
 
 Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
-    {required String itemID}) async {
+    {required String itemID,
+    required bool requestingService,
+    required num itemOverallPrice,
+    required TextEditingController addressController,
+    required TextEditingController contactNumberController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   try {
     if (ref.read(cartProvider).cartContainsThisItem(itemID)) {
@@ -654,12 +814,30 @@ Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
           const SnackBar(content: Text('This item is already in your cart.')));
       return;
     }
+    if (requestingService &&
+        (addressController.text.isEmpty ||
+            contactNumberController.text.isEmpty)) {
+      scaffoldMessenger.showSnackBar(const SnackBar(
+          content: Text('Please provide a valid address and contact number.')));
+      return;
+    }
     final cartDocReference =
         await FirebaseFirestore.instance.collection(Collections.cart).add({
       CartFields.itemID: itemID,
       CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
       CartFields.quantity: 1,
-      CartFields.itemType: ItemTypes.rawMaterial
+      CartFields.itemType: ItemTypes.rawMaterial,
+      CartFields.dateLastModified: DateTime.now(),
+      CartFields.quotation: {
+        QuotationFields.isRequestingAdditionalService: requestingService,
+        QuotationFields.additionalServicePrice: 0,
+        QuotationFields.requestAddress: addressController.text.trim(),
+        QuotationFields.requestContactNumber:
+            contactNumberController.text.trim(),
+        QuotationFields.requestStatus: '',
+        QuotationFields.itemOverallPrice: itemOverallPrice,
+        QuotationFields.requestDenialReason: ''
+      }
     });
     ref.read(cartProvider.notifier).addCartItem(await cartDocReference.get());
     scaffoldMessenger.showSnackBar(
@@ -709,6 +887,31 @@ Future changeCartItemQuantity(BuildContext context, WidgetRef ref,
   }
 }
 
+Future requestForAdditionalCosts(BuildContext context, WidgetRef ref,
+    {required String cartID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    final cartDoc = await getThisCartEntry(cartID);
+    final cartData = cartDoc.data() as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+    quotation[QuotationFields.requestStatus] = RequestStatuses.pending;
+    await FirebaseFirestore.instance
+        .collection(Collections.cart)
+        .doc(cartID)
+        .update({
+      CartFields.quotation: quotation,
+      CartFields.dateLastModified: DateTime.now()
+    });
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content:
+            Text('Sucessfully requested for additional cost calculation.')));
+    ref.read(cartProvider).setCartItems(await getCartEntries(context));
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error requesting for additional costs.')));
+  }
+}
+
 //==============================================================================
 //==FAQS========================================================================
 //==============================================================================
@@ -740,6 +943,21 @@ Future<List<DocumentSnapshot>> getAllItemOrderDocs(String itemID) async {
       .where(OrderFields.itemID, isEqualTo: itemID)
       .get();
   return orders.docs.map((order) => order as DocumentSnapshot).toList();
+}
+
+Future<List<DocumentSnapshot>> getAllClientUncompletedOrderDocs(
+    String clientID) async {
+  final orders = await FirebaseFirestore.instance
+      .collection(Collections.orders)
+      .where(OrderFields.clientID, isEqualTo: clientID)
+      .get();
+  return orders.docs.where((order) {
+    final orderData = order.data() as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> review = orderData[OrderFields.review];
+    return orderData[OrderFields.orderStatus] != OrderStatuses.completed ||
+        (orderData[OrderFields.orderStatus] == OrderStatuses.completed &&
+            review.isEmpty);
+  }).toList();
 }
 
 Future<DocumentSnapshot> getThisOrderDoc(String orderID) async {
@@ -783,17 +1001,17 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
     for (var cartItem in ref.read(cartProvider).selectedCartItemIDs) {
       final cartDoc = await getThisCartEntry(cartItem);
       final cartData = cartDoc.data() as Map<dynamic, dynamic>;
-      Map<dynamic, dynamic> quotation = {};
-      num price = 0;
-      if (cartData[CartFields.itemType] != ItemTypes.rawMaterial) {
-        quotation = cartData[CartFields.quotation];
-        quotation[QuotationFields.laborPrice] = 0;
-      } else {
-        String itemID = cartData[CartFields.itemID];
-        final item = await getThisItemDoc(itemID);
-        final itemData = item.data() as Map<dynamic, dynamic>;
-        price = itemData[ItemFields.price];
-      }
+      Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+      // num price = 0;
+      // if (cartData[CartFields.itemType] != ItemTypes.rawMaterial) {
+      //   quotation = cartData[CartFields.quotation];
+      //   quotation[QuotationFields.laborPrice] = 0;
+      // } else {
+      //   String itemID = cartData[CartFields.itemID];
+      //   final item = await getThisItemDoc(itemID);
+      //   final itemData = item.data() as Map<dynamic, dynamic>;
+      //   price = itemData[ItemFields.price];
+      // }
 
       DocumentReference orderReference =
           await FirebaseFirestore.instance.collection(Collections.orders).add({
@@ -802,10 +1020,7 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
         OrderFields.quantity: cartData[CartFields.quantity],
         OrderFields.orderStatus: OrderStatuses.pending,
         OrderFields.dateCreated: DateTime.now(),
-        OrderFields.quotation:
-            cartData[CartFields.itemType] != ItemTypes.rawMaterial
-                ? quotation
-                : {QuotationFields.itemOverallPrice: price},
+        OrderFields.quotation: quotation,
         OrderFields.review: {}
       });
 
@@ -860,6 +1075,119 @@ Future purchaseSelectedCartItems(BuildContext context, WidgetRef ref,
   } catch (error) {
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error purchasing this cart item: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future markOrderAsInstalled(BuildContext context, WidgetRef ref,
+    {required String orderID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.orderStatus: OrderStatuses.installed,
+      OrderFields.datePickedUp: DateTime.now()
+    });
+    ref.read(ordersProvider).setOrderDocs(
+        await getAllClientUncompletedOrderDocs(
+            FirebaseAuth.instance.currentUser!.uid));
+    ref.read(ordersProvider).sortOrdersByDate();
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully marked order as picked up')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error marking order as picked up: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future markOrderAsDelivered(BuildContext context, WidgetRef ref,
+    {required String orderID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.orderStatus: OrderStatuses.delivered,
+      OrderFields.datePickedUp: DateTime.now()
+    });
+    ref.read(ordersProvider).setOrderDocs(
+        await getAllClientUncompletedOrderDocs(
+            FirebaseAuth.instance.currentUser!.uid));
+    ref.read(ordersProvider).sortOrdersByDate();
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully marked order as picked up')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error marking order as picked up: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future markOrderAsPendingInstallationApproval(
+    BuildContext context, WidgetRef ref,
+    {required String orderID, required List<DateTime> requestedDates}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    final order = await getThisOrderDoc(orderID);
+    final orderData = order.data() as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
+    quotation[QuotationFields.requestedDates] = requestedDates;
+    quotation[QuotationFields.selectedDate] = DateTime(1970);
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.quotation: quotation,
+      OrderFields.orderStatus: OrderStatuses.installationPendingApproval
+    });
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Successfully marked order as pending installation approval.')));
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacementNamed(NavigatorRoutes.orderHistory);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+            'Error marking order as pending installation approval: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
+Future markOrderAsPendingDeliveryApproval(BuildContext context, WidgetRef ref,
+    {required String orderID, required List<DateTime> requestedDates}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    final order = await getThisOrderDoc(orderID);
+    final orderData = order.data() as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
+    quotation[QuotationFields.requestedDates] = requestedDates;
+    quotation[QuotationFields.selectedDate] = DateTime(1970);
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.quotation: quotation,
+      OrderFields.orderStatus: OrderStatuses.deliveryPendingApproval
+    });
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content:
+            Text('Successfully marked order as pending delivery approval.')));
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacementNamed(NavigatorRoutes.orderHistory);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(SnackBar(
+        content:
+            Text('Error marking order as pending delivery approval: $error')));
     ref.read(loadingProvider.notifier).toggleLoading(false);
   }
 }
@@ -987,4 +1315,55 @@ Future<List<DocumentSnapshot>> getAllPortfolioGalleryDocs() async {
       .get();
 
   return gallery.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+//==============================================================================
+//TRANSACTIONS-=================================================================
+//==============================================================================
+Future<List<DocumentSnapshot>> getAllUserTransactionDocs() async {
+  final transactions = await FirebaseFirestore.instance
+      .collection(Collections.transactions)
+      .where(TransactionFields.clientID,
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  return transactions.docs
+      .map((transaction) => transaction as DocumentSnapshot)
+      .toList();
+}
+
+//==============================================================================
+//==APPOINTMENT=================================================================
+//==============================================================================
+Future<List<DocumentSnapshot>> getAllUserAppointments() async {
+  final appointments = await FirebaseFirestore.instance
+      .collection(Collections.appointments)
+      .where(AppointmentFields.clientID,
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  return appointments.docs.map((e) => e as DocumentSnapshot).toList();
+}
+
+Future requestForAppointment(BuildContext context, WidgetRef ref,
+    {required List<DateTime> requestedDates}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context);
+  try {
+    ref.read(loadingProvider).toggleLoading(true);
+    await FirebaseFirestore.instance.collection(Collections.appointments).add({
+      AppointmentFields.clientID: FirebaseAuth.instance.currentUser!.uid,
+      AppointmentFields.proposedDates: requestedDates,
+      AppointmentFields.appointmentStatus: AppointmentStatuses.pending,
+      AppointmentFields.selectedDate: DateTime.now(),
+      AppointmentFields.denialReason: '',
+      AppointmentFields.dateCreated: DateTime.now()
+    });
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully requested for an appointment.')));
+    ref.read(loadingProvider).toggleLoading(false);
+    navigator.pop();
+  } catch (error) {
+    ref.read(loadingProvider).toggleLoading(false);
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error requesting for an appointment.')));
+  }
 }

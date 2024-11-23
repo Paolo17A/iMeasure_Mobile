@@ -9,11 +9,11 @@ class OrdersNotifier extends ChangeNotifier {
 
   void setOrderDocs(List<DocumentSnapshot> orders) {
     _orderDocs = orders;
-    _orderDocs.sort((a, b) {
-      DateTime aTime = (a[OrderFields.dateCreated] as Timestamp).toDate();
-      DateTime bTime = (b[OrderFields.dateCreated] as Timestamp).toDate();
-      return bTime.compareTo(aTime);
-    });
+    // _orderDocs.sort((a, b) {
+    //   DateTime aTime = (a[OrderFields.dateCreated] as Timestamp).toDate();
+    //   DateTime bTime = (b[OrderFields.dateCreated] as Timestamp).toDate();
+    //   return bTime.compareTo(aTime);
+    // });
     notifyListeners();
   }
 
@@ -21,7 +21,7 @@ class OrdersNotifier extends ChangeNotifier {
     orderDocs.sort((a, b) {
       DateTime aTime = (a[OrderFields.dateCreated] as Timestamp).toDate();
       DateTime bTime = (b[OrderFields.dateCreated] as Timestamp).toDate();
-      return bTime.compareTo(aTime);
+      return aTime.compareTo(bTime);
     });
     notifyListeners();
   }

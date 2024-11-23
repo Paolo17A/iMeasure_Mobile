@@ -33,6 +33,10 @@ Drawer appDrawer(BuildContext context, WidgetRef ref, {required String route}) {
               onPress: () =>
                   Navigator.of(context).pushNamed(NavigatorRoutes.home)),
           _drawerTile(context,
+              label: 'Set an Appointment',
+              onPress: () => Navigator.of(context)
+                  .pushNamed(NavigatorRoutes.setAppointment)),
+          _drawerTile(context,
               label: 'Contact Us',
               onPress: () =>
                   Navigator.of(context).pushNamed(NavigatorRoutes.contactUs)),

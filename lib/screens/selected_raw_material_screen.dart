@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
@@ -10,6 +11,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/app_bottom_navbar_widget.dart';
 import '../widgets/custom_miscellaneous_widgets.dart';
 import '../widgets/custom_padding_widgets.dart';
+import '../widgets/custom_text_field_widget.dart';
 import '../widgets/text_widgets.dart';
 
 class SelectedRawMaterialScreen extends ConsumerStatefulWidget {
@@ -30,6 +32,9 @@ class _SelectedRawMaterialScreenState
   num price = 0;
   List<dynamic> imageURLs = [];
   List<DocumentSnapshot> orderDocs = [];
+  bool requestingService = false;
+  final addressController = TextEditingController();
+  final contactNumberController = TextEditingController();
 
   @override
   void initState() {
@@ -45,6 +50,7 @@ class _SelectedRawMaterialScreenState
         description = itemData[ItemFields.description];
         isAvailable = itemData[ItemFields.isAvailable];
         imageURLs = itemData[ItemFields.imageURLs];
+        price = itemData[ItemFields.price];
         //  GET USER DATA
         ref.read(cartProvider).setCartItems(await getCartEntries(context));
 
@@ -84,7 +90,9 @@ class _SelectedRawMaterialScreenState
         children: [
           if (imageURLs.isNotEmpty) _itemImagesDisplay(),
           _nameAnd3D(),
+          quicksandBlackBold('PHP ${formatPrice(price.toDouble())}'),
           _description(),
+          _availInstallation(),
           _actionButtons(),
           quicksandBlackBold('Is Available: ${isAvailable ? 'YES' : 'NO'}',
               fontSize: 16),
@@ -184,6 +192,53 @@ class _SelectedRawMaterialScreenState
     );
   }
 
+  Widget _availInstallation() {
+    return vertical20Pix(
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                  value: requestingService,
+                  onChanged: (newVal) {
+                    setState(() {
+                      requestingService = newVal!;
+                    });
+                  }),
+              quicksandBlackBold('AVAIL INSTALLATION SERVICE', fontSize: 20)
+            ],
+          ),
+          if (requestingService)
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  quicksandBlackBold('Installation Address'),
+                  CustomTextField(
+                      text: 'Installation Address',
+                      controller: addressController,
+                      displayPrefixIcon: null,
+                      borderRadius: 4,
+                      textInputType: TextInputType.streetAddress),
+                  Gap(20),
+                  quicksandBlackBold('Mobile Number'),
+                  CustomTextField(
+                      text: 'Contact Number',
+                      controller: contactNumberController,
+                      displayPrefixIcon: null,
+                      borderRadius: 4,
+                      textInputType: TextInputType.phone),
+                ],
+              ),
+            )
+        ],
+      ),
+    );
+  }
+
   Widget _actionButtons() {
     return all20Pix(
       child: SizedBox(
@@ -192,7 +247,11 @@ class _SelectedRawMaterialScreenState
             onPressed: isAvailable
                 ? () {
                     addRawMaterialToCart(context, ref,
-                        itemID: widget.rawMaterialID);
+                        itemID: widget.rawMaterialID,
+                        requestingService: requestingService,
+                        addressController: addressController,
+                        itemOverallPrice: price,
+                        contactNumberController: contactNumberController);
                   }
                 : null,
             style: ElevatedButton.styleFrom(

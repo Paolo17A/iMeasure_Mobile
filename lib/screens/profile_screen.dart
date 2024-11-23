@@ -112,6 +112,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Navigator.of(context).pushNamed(NavigatorRoutes.editProfile),
               child: quicksandBlackRegular('EDIT PROFILE INFO', fontSize: 12)),
           roundedLavenderMistButton(
+              onPress: () => Navigator.of(context)
+                  .pushNamed(NavigatorRoutes.transactionHistory),
+              child:
+                  quicksandBlackRegular('TRANSACTION HISTORY', fontSize: 12)),
+          roundedLavenderMistButton(
               onPress: () =>
                   Navigator.of(context).pushNamed(NavigatorRoutes.orderHistory),
               child: Stack(
@@ -127,7 +132,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           roundedLavenderMistButton(
               onPress: () => Navigator.of(context)
                   .pushNamed(NavigatorRoutes.completedOrders),
-              child: quicksandBlackRegular('COMPLETED', fontSize: 12))
+              child: quicksandBlackRegular('COMPLETED', fontSize: 12)),
+          roundedLavenderMistButton(
+              onPress: () => Navigator.of(context)
+                  .pushNamed(NavigatorRoutes.appointmentHistory),
+              child:
+                  quicksandBlackRegular('APPOINTMENT HISTORY ', fontSize: 12)),
         ],
       ),
     );

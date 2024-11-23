@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:imeasure_mobile/screens/rate_item_screen.dart';
+import 'package:imeasure_mobile/screens/set_service_date_screen.dart';
 import 'package:imeasure_mobile/widgets/app_bar_widget.dart';
 import 'package:imeasure_mobile/widgets/custom_miscellaneous_widgets.dart';
 import 'package:intl/intl.dart';
@@ -113,7 +114,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             children: [
               Container(
                 //width: 400,
-                height: 220,
+                //height: 220,
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.black)),
                 padding: EdgeInsets.all(12),
@@ -132,14 +133,20 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        quicksandBlackBold(name),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width - 160,
+                            child: quicksandBlackBold(name,
+                                textAlign: TextAlign.left)),
                         quicksandBlackRegular('Quantity: $quantity',
                             fontSize: 14),
                         quicksandBlackRegular(
                             'Date Ordered: ${DateFormat('MMM dd, yyyy').format(dateCreated)}',
                             fontSize: 14),
-                        quicksandBlackRegular('Status: $orderStatus',
-                            fontSize: 14),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 160,
+                          child: quicksandBlackRegular('Status: $orderStatus',
+                              textAlign: TextAlign.left, fontSize: 14),
+                        ),
                         if (orderStatus == OrderStatuses.completed &&
                             review.isNotEmpty)
                           Row(children: [
@@ -165,15 +172,62 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               vertical10Pix(
-                                child: ElevatedButton(
-                                    onPressed: () => markOrderAsPickedUp(
-                                        context, ref, orderID: orderDoc.id),
-                                    child: quicksandWhiteBold(
-                                        'MARK AS PICKED UP',
-                                        fontSize: 12)),
+                                child: SizedBox(
+                                  height: 24,
+                                  child: ElevatedButton(
+                                      onPressed: () => markOrderAsPickedUp(
+                                          context, ref, orderID: orderDoc.id),
+                                      child: quicksandWhiteBold(
+                                          'MARK AS PICKED UP',
+                                          fontSize: 12)),
+                                ),
                               ),
                             ],
-                          ),
+                          )
+                        else if (orderStatus == OrderStatuses.forPickUp)
+                          vertical10Pix(
+                              child: SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => markOrderAsPickedUp(
+                                    context, ref, orderID: orderDoc.id),
+                                child: quicksandWhiteBold('MARK AS PICKED UP',
+                                    fontSize: 12)),
+                          ))
+                        else if (orderStatus == OrderStatuses.forDelivery)
+                          vertical10Pix(
+                              child: SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => markOrderAsDelivered(
+                                    context, ref, orderID: orderDoc.id),
+                                child: quicksandWhiteBold('MARK AS DELIVERED',
+                                    fontSize: 12)),
+                          ))
+                        else if (orderStatus == OrderStatuses.forInstallation)
+                          vertical10Pix(
+                              child: SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => markOrderAsInstalled(
+                                    context, ref, orderID: orderDoc.id),
+                                child: quicksandWhiteBold('MARK AS INSTALLED',
+                                    fontSize: 12)),
+                          ))
+                        else if (orderStatus == OrderStatuses.pendingDelivery ||
+                            orderStatus == OrderStatuses.pendingInstallation)
+                          vertical10Pix(
+                              child: SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (_) => SetServiceDateScreen(
+                                            orderID: orderDoc.id))),
+                                child: quicksandWhiteBold(
+                                    'SELECT ${orderStatus == OrderStatuses.pendingDelivery ? 'DELIVERY' : 'INSTALLATION'} DATES',
+                                    fontSize: 10)),
+                          )),
                         quicksandBlackBold(
                             'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
                       ],

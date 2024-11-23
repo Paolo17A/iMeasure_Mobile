@@ -44,12 +44,15 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
   //  USER VARIABLES
   final widthController = TextEditingController();
   final heightController = TextEditingController();
+  final addressController = TextEditingController();
+  final contactNumberController = TextEditingController();
   List<dynamic> mandatoryWindowFields = [];
   List<Map<dynamic, dynamic>> optionalWindowFields = [];
   List<dynamic> accesoryFields = [];
   num totalMandatoryPayment = 0;
   num totalGlassPrice = 0;
   num totalOverallPayment = 0;
+  bool requestingService = false;
 
   @override
   void initState() {
@@ -140,6 +143,7 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
           if (imageURLs.isNotEmpty) _itemImagesDisplay(),
           _nameAnd3D(),
           _descriptionAndSize(),
+          _availInstallation(),
           _actionButtons(),
           quicksandBlackBold('Is Available: ${isAvailable ? 'YES' : 'NO'}',
               fontSize: 16),
@@ -325,7 +329,11 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                                 ref,
                                 width: double.parse(widthController.text),
                                 height: double.parse(heightController.text),
-                                oldOptionalWindowFields: optionalWindowFields));
+                                oldOptionalWindowFields: optionalWindowFields),
+                            accessoryFields: accesoryFields,
+                            requestingService: requestingService,
+                            addressController: addressController,
+                            contactNumberController: contactNumberController);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
@@ -354,25 +362,37 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
         Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           SizedBox(
               width: MediaQuery.of(context).size.width * 0.45,
-              child: CustomTextField(
-                  text: 'Insert Height',
-                  controller: heightController,
-                  displayPrefixIcon: null,
-                  borderRadius: 4,
-                  textInputType: TextInputType.number)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  quicksandBlackBold('Height', fontSize: 16),
+                  CustomTextField(
+                      text: 'Insert Height',
+                      controller: heightController,
+                      displayPrefixIcon: null,
+                      borderRadius: 4,
+                      textInputType: TextInputType.number),
+                ],
+              )),
           Container(
             width: MediaQuery.of(context).size.width * 0.45,
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: dropdownWidget(ref.read(cartProvider).selectedGlassType,
-                (newVal) {
-              ref.read(cartProvider).setGlassType(newVal!);
-            },
-                allGlassModels
-                    .map((glassModel) => glassModel.glassTypeName)
-                    .toList(),
-                'Select your glass type',
-                false),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                quicksandBlackBold('Glass Type', fontSize: 16),
+                dropdownWidget(ref.read(cartProvider).selectedGlassType,
+                    (newVal) {
+                  ref.read(cartProvider).setGlassType(newVal!);
+                },
+                    allGlassModels
+                        .map((glassModel) => glassModel.glassTypeName)
+                        .toList(),
+                    'Select your glass type',
+                    false),
+              ],
+            ),
           ),
         ]),
         Gap(20),
@@ -381,32 +401,90 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
           children: [
             SizedBox(
                 width: MediaQuery.of(context).size.width * 0.45,
-                child: CustomTextField(
-                    text: 'Insert Width',
-                    controller: widthController,
-                    displayPrefixIcon: null,
-                    borderRadius: 4,
-                    textInputType: TextInputType.number)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    quicksandBlackBold('Width', fontSize: 16),
+                    CustomTextField(
+                        text: 'Insert Width',
+                        controller: widthController,
+                        displayPrefixIcon: null,
+                        borderRadius: 4,
+                        textInputType: TextInputType.number),
+                  ],
+                )),
             Container(
               width: MediaQuery.of(context).size.width * 0.45,
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(5)),
-              child: dropdownWidget(ref.read(cartProvider).selectedColor,
-                  (newVal) {
-                ref.read(cartProvider).setSelectedColor(newVal!);
-              }, [
-                WindowColors.brown,
-                WindowColors.white,
-                WindowColors.mattBlack,
-                WindowColors.mattGray,
-                WindowColors.woodFinish
-              ], 'Select window color', false),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  quicksandBlackBold('Window Color', fontSize: 16),
+                  dropdownWidget(ref.read(cartProvider).selectedColor,
+                      (newVal) {
+                    ref.read(cartProvider).setSelectedColor(newVal!);
+                  }, [
+                    WindowColors.brown,
+                    WindowColors.white,
+                    WindowColors.mattBlack,
+                    WindowColors.mattGray,
+                    WindowColors.woodFinish
+                  ], 'Select window color', false),
+                ],
+              ),
             )
           ],
         ),
         if (optionalWindowFields.isNotEmpty) _optionalWindowFields(),
         Gap(20)
       ],
+    );
+  }
+
+  Widget _availInstallation() {
+    return vertical20Pix(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                  value: requestingService,
+                  onChanged: (newVal) {
+                    setState(() {
+                      requestingService = newVal!;
+                    });
+                  }),
+              quicksandBlackBold('AVAIL INSTALLATION SERVICE', fontSize: 20)
+            ],
+          ),
+          if (requestingService)
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  quicksandWhiteBold('Installation Address'),
+                  CustomTextField(
+                      text: 'Installation Address',
+                      controller: addressController,
+                      displayPrefixIcon: null,
+                      borderRadius: 4,
+                      textInputType: TextInputType.streetAddress),
+                  Gap(20),
+                  quicksandWhiteBold('Mobile Number'),
+                  CustomTextField(
+                      text: 'Contact Number',
+                      controller: contactNumberController,
+                      displayPrefixIcon: null,
+                      borderRadius: 4,
+                      textInputType: TextInputType.phone),
+                ],
+              ),
+            )
+        ],
+      ),
     );
   }
 
