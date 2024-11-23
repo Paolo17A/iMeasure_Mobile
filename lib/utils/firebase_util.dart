@@ -788,7 +788,14 @@ Future addFurnitureItemToCartFromUnity(BuildContext context, WidgetRef ref,
         QuotationFields.optionalMap: optionalMap,
         QuotationFields.itemOverallPrice: itemOverallPrice,
         QuotationFields.laborPrice: 0,
-        QuotationFields.quotationURL: ''
+        QuotationFields.quotationURL: '',
+        //REQUESTS
+        QuotationFields.isRequestingAdditionalService: false,
+        QuotationFields.additionalServicePrice: 0,
+        QuotationFields.requestAddress: '',
+        QuotationFields.requestContactNumber: '',
+        QuotationFields.requestStatus: '',
+        QuotationFields.requestDenialReason: ''
       }
     });
 

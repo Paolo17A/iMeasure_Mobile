@@ -3,32 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|c:\\users\\paolo\\documents\\github\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\003 - models\\modelcore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\003 - models\\modelcore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelCore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelCore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\002 - mainmenu\\mainmenucore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\002 - mainmenu\\mainmenucore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\002 - MainMenu\\MainMenuCore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\002 - MainMenu\\MainMenuCore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\000 - gamemanager\\unitygamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\000 - gamemanager\\unitygamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\000 - GameManager\\UnityGameManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\000 - GameManager\\UnityGameManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\003 - models\\modelcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\003 - models\\modelcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\GlassDataHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\GlassDataHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\004 - scriptable object\\glassdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\004 - scriptable object\\glassdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\004 - Scriptable Object\\GlassData.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\004 - Scriptable Object\\GlassData.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\003 - models\\glassdatahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\003 - models\\glassdatahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\QuotationEntryHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\QuotationEntryHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\assets\\001 - imeasure\\001 - scripts\\003 - models\\quotationentryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BCAF7AAF-90D7-2D67-E33D-80B0C8F30B69}|Assembly-CSharp.csproj|solutionrelative:assets\\001 - imeasure\\001 - scripts\\003 - models\\quotationentryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\002 - MainMenu\\MainMenuCore.cs",
               "ToolTip": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\002 - MainMenu\\MainMenuCore.cs",
               "RelativeToolTip": "Assets\\001 - iMeasure\\001 - Scripts\\002 - MainMenu\\MainMenuCore.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAowEsAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowC8AAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T12:10:03.625Z"
             },
@@ -60,13 +60,13 @@
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\000 - GameManager\\UnityGameManager.cs",
               "ToolTip": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\000 - GameManager\\UnityGameManager.cs",
               "RelativeToolTip": "Assets\\001 - iMeasure\\001 - Scripts\\000 - GameManager\\UnityGameManager.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAiwE4AAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAkwDUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-08T17:11:03.382Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "GlassDataHandler.cs",
               "DocumentMoniker": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\GlassDataHandler.cs",
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\GlassDataHandler.cs",
@@ -90,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "QuotationEntryHandler.cs",
               "DocumentMoniker": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\QuotationEntryHandler.cs",
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\QuotationEntryHandler.cs",
@@ -108,20 +108,20 @@
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelCore.cs",
               "ToolTip": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelCore.cs",
               "RelativeToolTip": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelCore.cs",
-              "ViewState": "AgIAABcBAAAAAAAAAAAowDkBAABBAAAAAAAAAA==",
+              "ViewState": "AgIAAEoBAAAAAAAAAAAIwAcAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-06T17:01:36.898Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "ModelController.cs",
               "DocumentMoniker": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs",
               "RelativeDocumentMoniker": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs",
               "ToolTip": "C:\\Users\\paolo\\Documents\\GitHub\\imeasure_mobile\\unity\\imeasure\\Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs",
               "RelativeToolTip": "Assets\\001 - iMeasure\\001 - Scripts\\003 - Models\\ModelController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAtwBIAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-06T17:36:35.531Z"
             }
