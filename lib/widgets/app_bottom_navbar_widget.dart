@@ -61,7 +61,8 @@ Widget bottomNavigationBar(BuildContext context, WidgetRef ref,
             label: ''),
         if (hasLoggedInUser())
           BottomNavigationBarItem(
-              icon: _buildIcon(Icons.shopping_cart_outlined, 'CART', index, 2),
+              icon: _buildIcon(Icons.shopping_cart_outlined, 'CART', index, 2,
+                  floatingStream: pendingCheckOutStreamBuilder()),
               backgroundColor: bottomNavButtonColor,
               label: ''),
         if (hasLoggedInUser())

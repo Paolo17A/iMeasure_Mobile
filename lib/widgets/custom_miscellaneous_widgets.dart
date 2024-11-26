@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:imeasure_mobile/widgets/custom_text_field_widget.dart';
 
 import '../providers/bookmarks_provider.dart';
 import '../providers/cart_provider.dart';
@@ -368,6 +369,56 @@ Widget _bookmarkedProductEntry(WidgetRef ref, String windowID) {
       });
 }
 
+StreamBuilder pendingCheckOutStreamBuilder() {
+  return StreamBuilder(
+    stream: FirebaseFirestore.instance
+        .collection(Collections.cart)
+        .where(CartFields.clientID,
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting ||
+          !snapshot.hasData ||
+          snapshot.hasError) return Container();
+      List<DocumentSnapshot> filteredCartItems = snapshot.data!.docs;
+      filteredCartItems = filteredCartItems.where((cart) {
+        final cartData = cart.data() as Map<dynamic, dynamic>;
+        String itemType = cartData[CartFields.itemType];
+        Map<dynamic, dynamic> quotation = cartData[CartFields.quotation];
+        String requestStatus = quotation[QuotationFields.requestStatus];
+        bool isRequestingAdditionalService =
+            quotation[QuotationFields.isRequestingAdditionalService];
+        bool isFurniture =
+            (itemType == ItemTypes.window || itemType == ItemTypes.door);
+        return (isFurniture &&
+                (requestStatus == RequestStatuses.approved ||
+                    requestStatus == RequestStatuses.denied)) ||
+            (!isFurniture && !isRequestingAdditionalService) ||
+            (!isFurniture &&
+                isRequestingAdditionalService &&
+                (requestStatus == RequestStatuses.approved ||
+                    requestStatus == RequestStatuses.denied));
+      }).toList();
+      //int availableCollectionCount = snapshot.data!.docs.length;
+
+      if (filteredCartItems.length > 0)
+        return Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color: CustomColors.coralRed),
+          child: Center(
+            child: quicksandWhiteRegular(filteredCartItems.length.toString(),
+                fontSize: 12),
+          ),
+        );
+      else {
+        return Container();
+      }
+    },
+  );
+}
+
 StreamBuilder pendingPickUpOrdersStreamBuilder() {
   return StreamBuilder(
     stream: FirebaseFirestore.instance
@@ -544,4 +595,73 @@ void showEnlargedPics(BuildContext context, {required String imageURL}) {
               ),
             ]),
           )));
+}
+
+Widget addressGroup(BuildContext context,
+    {required TextEditingController streetController,
+    required TextEditingController barangayController,
+    required TextEditingController municipalityController,
+    required TextEditingController zipCodeController,
+    bool isWhite = false}) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          isWhite
+              ? quicksandWhiteBold('Street Number & Name')
+              : quicksandBlackBold('Street Number & Name'),
+          CustomTextField(
+              text: 'Street number & Name',
+              displayPrefixIcon: null,
+              borderRadius: 4,
+              controller: streetController,
+              textInputType: TextInputType.text)
+        ],
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          isWhite
+              ? quicksandWhiteBold('Barangay')
+              : quicksandBlackBold('Barangay'),
+          CustomTextField(
+              text: 'Barangay',
+              displayPrefixIcon: null,
+              borderRadius: 4,
+              controller: barangayController,
+              textInputType: TextInputType.text)
+        ],
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          isWhite
+              ? quicksandWhiteBold('Municipality')
+              : quicksandBlackBold('Municipality'),
+          CustomTextField(
+              text: 'Municipality',
+              displayPrefixIcon: null,
+              borderRadius: 4,
+              controller: municipalityController,
+              textInputType: TextInputType.text)
+        ],
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          isWhite
+              ? quicksandWhiteBold('Zip Code')
+              : quicksandBlackBold('Zip Code'),
+          CustomTextField(
+              text: 'Zip Code',
+              displayPrefixIcon: null,
+              controller: zipCodeController,
+              borderRadius: 4,
+              textInputType: TextInputType.number)
+        ],
+      ),
+    ],
+  );
 }

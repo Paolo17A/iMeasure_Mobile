@@ -256,7 +256,9 @@ class _CartScreenState extends ConsumerState<CartScreen>
       isRequestingAdditionalService =
           quotation[QuotationFields.isRequestingAdditionalService];
       String requestStatus = quotation[QuotationFields.requestStatus];
-
+      String requestAddress = quotation[QuotationFields.requestAddress];
+      String requestContactNumber =
+          quotation[QuotationFields.requestContactNumber];
       //num price = associatedItemDoc[ItemFields.price];
       return Stack(
         children: [
@@ -275,136 +277,23 @@ class _CartScreenState extends ConsumerState<CartScreen>
                         cartDoc: cartDoc,
                         laborPrice: laborPrice,
                         itemType: itemType),
-                  Flexible(
-                    flex: 4,
-                    child: Column(
-                      children: [
-                        //ITEM DATA
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Container(
-                                width: 96,
-                                height: 96,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(imageURLs.first))),
-                              ),
-                            ),
-                            Gap(24),
-                            Flexible(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  quicksandBlackBold(name),
-                                  Row(
-                                    children: [
-                                      quicksandBlackRegular(
-                                          'PHP ${formatPrice(price.toDouble())}',
-                                          fontSize: 16),
-                                    ],
-                                  ),
-                                  if (itemType != ItemTypes.rawMaterial)
-                                    quicksandBlackRegular(
-                                        'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
-                                        fontSize: 14),
-                                  if (isRequestingAdditionalService) ...[
-                                    if ((itemType == ItemTypes.window ||
-                                            itemType == ItemTypes.door) &&
-                                        requestStatus ==
-                                            RequestStatuses.approved)
-                                      quicksandBlackRegular(
-                                          'Installation Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
-                                          fontSize: 14)
-                                    else if ((itemType == ItemTypes.window ||
-                                            itemType == ItemTypes.door) &&
-                                        requestStatus == RequestStatuses.denied)
-                                      quicksandBlackRegular(
-                                          'Installation Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
-                                          textAlign: TextAlign.left,
-                                          fontSize: 14)
-                                    else if (itemType ==
-                                            ItemTypes.rawMaterial &&
-                                        (requestStatus ==
-                                            RequestStatuses.approved))
-                                      quicksandBlackRegular(
-                                          'Delivery Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
-                                          fontSize: 14)
-                                    else if (itemType ==
-                                            ItemTypes.rawMaterial &&
-                                        (requestStatus ==
-                                            RequestStatuses.denied))
-                                      quicksandBlackRegular(
-                                          'Delivery Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
-                                          textAlign: TextAlign.left,
-                                          fontSize: 14)
-                                  ],
-                                  if (itemType != ItemTypes.rawMaterial)
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                quicksandBlackRegular(
-                                                    'Width: ${(quotation[QuotationFields.width] as num).toStringAsFixed(2)}ft',
-                                                    fontSize: 12),
-                                                quicksandBlackRegular(
-                                                    'Height: ${(quotation[QuotationFields.height] as num).toStringAsFixed(2)}ft',
-                                                    fontSize: 12)
-                                              ]),
-                                          if (itemType != ItemTypes.rawMaterial)
-                                            _showQuotationButton(
-                                                itemType,
-                                                cartData[CartFields.quotation],
-                                                name,
-                                                imageURLs,
-                                                accesoryField,
-                                                color)
-                                        ])
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        //  CART DATA
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // QUANTITY
-                            if (ref
-                                .read(cartProvider)
-                                .forCheckoutCartItems
-                                .contains(cartDoc))
-                              _changeQuantityButtons(
-                                  quantity: quantity, cartDoc: cartDoc),
-                            if (ref
-                                .read(cartProvider)
-                                .noAdditionalCostRequestedCartItems
-                                .contains(cartDoc))
-                              _requestAdditionalCostButton(
-                                  itemType: itemType,
-                                  isRequestingAdditionalService:
-                                      isRequestingAdditionalService,
-                                  cartID: cartDoc.id),
-                            if (!ref
-                                .read(cartProvider)
-                                .pendingAdditionalCostCartItems
-                                .contains(cartDoc))
-                              _deleteFromCartButton(
-                                  name: name, cartDoc: cartDoc)
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  _orderDataWidgets(
+                      imageURLs: imageURLs,
+                      name: name,
+                      quantity: quantity,
+                      price: price,
+                      itemType: itemType,
+                      laborPrice: laborPrice,
+                      isRequestingAdditionalService:
+                          isRequestingAdditionalService,
+                      requestStatus: requestStatus,
+                      cartDoc: cartDoc,
+                      address: requestAddress,
+                      quotation: quotation,
+                      accesoryField: accesoryField,
+                      requestContactNumber: requestContactNumber,
+                      additionalServicePrice: additionalServicePrice,
+                      color: color),
                 ],
               )),
           if (laborPrice > 0)
@@ -440,6 +329,203 @@ class _CartScreenState extends ConsumerState<CartScreen>
                 });
               }
             : null);
+  }
+
+  Widget _orderDataWidgets(
+      {required List<dynamic> imageURLs,
+      required int quantity,
+      required String name,
+      required num price,
+      required String itemType,
+      required num laborPrice,
+      required bool isRequestingAdditionalService,
+      required String requestStatus,
+      required DocumentSnapshot cartDoc,
+      required Map<dynamic, dynamic> quotation,
+      required List<dynamic> accesoryField,
+      required num additionalServicePrice,
+      required String address,
+      required String requestContactNumber,
+      required String color}) {
+    return Flexible(
+      flex: 4,
+      child: Column(
+        children: [
+          //ITEM DATA
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(imageURLs.first))),
+                ),
+              ),
+              Gap(24),
+              Flexible(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    quicksandBlackBold(name),
+                    Row(
+                      children: [
+                        quicksandBlackRegular(
+                            'PHP ${formatPrice(price.toDouble())}',
+                            fontSize: 16),
+                      ],
+                    ),
+                    if (itemType != ItemTypes.rawMaterial)
+                      quicksandBlackRegular(
+                          'Labor Price: PHP ${laborPrice > 0 ? laborPrice : 'TBA'}',
+                          fontSize: 14),
+                    if (isRequestingAdditionalService) ...[
+                      if ((itemType == ItemTypes.window ||
+                              itemType == ItemTypes.door) &&
+                          (requestStatus == RequestStatuses.pending ||
+                              requestStatus == RequestStatuses.approved))
+                        quicksandBlackRegular(
+                            'Installation Address:\n${address} ',
+                            fontSize: 12,
+                            textAlign: TextAlign.left)
+                      else if (itemType == ItemTypes.rawMaterial &&
+                          (requestStatus == RequestStatuses.pending ||
+                              requestStatus == RequestStatuses.approved))
+                        quicksandBlackRegular('Delivery Address:\n${address}',
+                            textAlign: TextAlign.left, fontSize: 12),
+                      if (requestStatus == RequestStatuses.pending ||
+                          requestStatus == RequestStatuses.approved)
+                        quicksandBlackRegular(
+                            'Contact Number: ${requestContactNumber}',
+                            textAlign: TextAlign.left,
+                            fontSize: 14),
+                      if ((itemType == ItemTypes.window ||
+                              itemType == ItemTypes.door) &&
+                          requestStatus == RequestStatuses.approved)
+                        quicksandBlackRegular(
+                            'Installation Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
+                            fontSize: 14)
+                      else if (itemType == ItemTypes.rawMaterial &&
+                          (requestStatus == RequestStatuses.approved))
+                        quicksandBlackRegular(
+                            'Delivery Fee: PHP ${formatPrice(additionalServicePrice.toDouble())} ',
+                            fontSize: 14)
+                      else if (itemType == ItemTypes.rawMaterial &&
+                          (requestStatus == RequestStatuses.denied))
+                        GestureDetector(
+                          onTap: quotation[QuotationFields.requestDenialReason]
+                                      .toString()
+                                      .length >
+                                  30
+                              ? () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => Dialog(
+                                            child: SingleChildScrollView(
+                                              child: Container(
+                                                padding: EdgeInsets.all(20),
+                                                child: quicksandBlackRegular(
+                                                    'Denial Reason: ${quotation[QuotationFields.requestDenialReason].toString()}',
+                                                    textAlign: TextAlign.left,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          ));
+                                }
+                              : null,
+                          child: quicksandBlackRegular(
+                              'Delivery Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
+                              textAlign: TextAlign.left,
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis,
+                              fontSize: 14),
+                        )
+                      else if ((itemType == ItemTypes.window ||
+                              itemType == ItemTypes.door) &&
+                          requestStatus == RequestStatuses.denied)
+                        GestureDetector(
+                          onTap: quotation[QuotationFields.requestDenialReason]
+                                      .toString()
+                                      .length >
+                                  30
+                              ? () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => Dialog(
+                                            child: SingleChildScrollView(
+                                              child: Container(
+                                                padding: EdgeInsets.all(20),
+                                                child: quicksandBlackRegular(
+                                                    'Denial Reason: ${quotation[QuotationFields.requestDenialReason].toString()}',
+                                                    textAlign: TextAlign.left,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          ));
+                                }
+                              : null,
+                          child: quicksandBlackRegular(
+                              'Installation Request Denied: ${quotation[QuotationFields.requestDenialReason]}',
+                              textAlign: TextAlign.left,
+                              fontSize: 14),
+                        )
+                    ],
+                    if (itemType != ItemTypes.rawMaterial)
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  quicksandBlackRegular(
+                                      'Width: ${(quotation[QuotationFields.width] as num).toStringAsFixed(2)}ft',
+                                      fontSize: 12),
+                                  quicksandBlackRegular(
+                                      'Height: ${(quotation[QuotationFields.height] as num).toStringAsFixed(2)}ft',
+                                      fontSize: 12)
+                                ]),
+                            if (itemType != ItemTypes.rawMaterial)
+                              _showQuotationButton(itemType, quotation, name,
+                                  imageURLs, accesoryField, color)
+                          ])
+                  ],
+                ),
+              )
+            ],
+          ),
+          //  CART DATA
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // QUANTITY
+              if (ref.read(cartProvider).forCheckoutCartItems.contains(cartDoc))
+                _changeQuantityButtons(quantity: quantity, cartDoc: cartDoc),
+              if (ref
+                  .read(cartProvider)
+                  .noAdditionalCostRequestedCartItems
+                  .contains(cartDoc)) ...[
+                _requestAdditionalCostButton(
+                    itemType: itemType,
+                    isRequestingAdditionalService:
+                        isRequestingAdditionalService,
+                    cartID: cartDoc.id)
+              ],
+              if (!ref
+                  .read(cartProvider)
+                  .pendingAdditionalCostCartItems
+                  .contains(cartDoc))
+                _deleteFromCartButton(name: name, cartDoc: cartDoc)
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _changeQuantityButtons(
@@ -549,6 +635,29 @@ class _CartScreenState extends ConsumerState<CartScreen>
                         fontSize: 12)),
       ),
     );
+  }
+
+  void _viewRequestDetailsDialog(BuildContext context,
+      {required String address,
+      required requestStatus,
+      required String contactNumber}) {
+    showDialog(
+        context: context,
+        builder: (_) => Dialog(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    quicksandBlackBold('REQUEST DETAILS', fontSize: 24),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [],
+                    )
+                  ],
+                ),
+              ),
+            ));
   }
 
   Widget _totalAmountWidget() {

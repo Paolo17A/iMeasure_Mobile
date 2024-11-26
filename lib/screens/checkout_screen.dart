@@ -188,7 +188,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           child: dropdownWidget(ref.read(cartProvider).selectedPaymentMethod,
               (newVal) {
             ref.read(cartProvider).setSelectedPaymentMethod(newVal!);
-          }, ['GCASH', 'PAYMAYA'], 'Select your payment method', false),
+          }, ['GCASH', 'BANK TRANSFER'], 'Select your payment method', false),
         ),
       ],
     ));
@@ -205,12 +205,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               children: [
                 quicksandWhiteBold('SEND YOUR PAYMENT HERE'),
                 if (ref.read(cartProvider).selectedPaymentMethod == 'GCASH')
-                  quicksandWhiteBold('GCASH:\n09484548667\nJonas Banca',
-                      fontSize: 14)
+                  quicksandWhiteBold('GCASH:\n09462348829\nEunice Pambago',
+                      fontSize: 14, textAlign: TextAlign.left)
                 else if (ref.read(cartProvider).selectedPaymentMethod ==
-                    'PAYMAYA')
-                  quicksandWhiteBold('PAYMAYA:\n09484548667\nJonas Banca',
-                      fontSize: 14)
+                    'BANK TRANSFER')
+                  quicksandWhiteBold('CIMB HASC:\n20867602518671\nTERENCE SY',
+                      fontSize: 14, textAlign: TextAlign.left)
               ],
             )
           ],

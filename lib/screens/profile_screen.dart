@@ -136,8 +136,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           roundedLavenderMistButton(
               onPress: () => Navigator.of(context)
                   .pushNamed(NavigatorRoutes.appointmentHistory),
-              child:
-                  quicksandBlackRegular('APPOINTMENT HISTORY ', fontSize: 12)),
+              child: quicksandBlackRegular('APPOINTMENTS ', fontSize: 12)),
         ],
       ),
     );

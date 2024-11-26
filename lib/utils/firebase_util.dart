@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../providers/appointments_provider.dart';
 import '../providers/bookmarks_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/loading_provider.dart';
@@ -1199,6 +1200,41 @@ Future markOrderAsPendingDeliveryApproval(BuildContext context, WidgetRef ref,
   }
 }
 
+Future cancelOrderDeliveryService(BuildContext context, WidgetRef ref,
+    {required String orderID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider.notifier).toggleLoading(true);
+    final order = await getThisOrderDoc(orderID);
+    print('MADE IT HERE');
+    final orderData = order.data() as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
+    quotation[QuotationFields.isRequestingAdditionalService] = false;
+    await FirebaseFirestore.instance
+        .collection(Collections.orders)
+        .doc(orderID)
+        .update({
+      OrderFields.orderStatus: OrderStatuses.forPickUp,
+      OrderFields.quotation: quotation
+    });
+    ref.read(ordersProvider).setOrderDocs(
+        await getAllClientUncompletedOrderDocs(
+            FirebaseAuth.instance.currentUser!.uid));
+    ref.read(ordersProvider).sortOrdersByDate();
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+
+    // Navigator.of(context).pop();
+    // Navigator.of(context).pushReplacementNamed(NavigatorRoutes.orderHistory);
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully cancelled additional service.')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  } catch (error) {
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error cancelling additional service: $error')));
+    ref.read(loadingProvider.notifier).toggleLoading(false);
+  }
+}
+
 Future markOrderAsPickedUp(BuildContext context, WidgetRef ref,
     {required String orderID}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -1351,9 +1387,24 @@ Future<List<DocumentSnapshot>> getAllUserAppointments() async {
 }
 
 Future requestForAppointment(BuildContext context, WidgetRef ref,
-    {required List<DateTime> requestedDates}) async {
+    {required List<DateTime> requestedDates,
+    required TextEditingController streetController,
+    required TextEditingController barangayController,
+    required TextEditingController municipalityController,
+    required TextEditingController zipCodeController,
+    required TextEditingController contactNumberController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
+  if ((streetController.text.isEmpty ||
+      barangayController.text.isEmpty ||
+      municipalityController.text.isEmpty ||
+      zipCodeController.text.isEmpty ||
+      double.tryParse(zipCodeController.text) == null ||
+      contactNumberController.text.isEmpty)) {
+    scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Please provide a valid address and contact number.')));
+    return;
+  }
   try {
     ref.read(loadingProvider).toggleLoading(true);
     await FirebaseFirestore.instance.collection(Collections.appointments).add({
@@ -1362,7 +1413,9 @@ Future requestForAppointment(BuildContext context, WidgetRef ref,
       AppointmentFields.appointmentStatus: AppointmentStatuses.pending,
       AppointmentFields.selectedDate: DateTime.now(),
       AppointmentFields.denialReason: '',
-      AppointmentFields.dateCreated: DateTime.now()
+      AppointmentFields.dateCreated: DateTime.now(),
+      AppointmentFields.address:
+          '${streetController.text.trim()}, ${barangayController.text.trim()}, ${municipalityController.text.trim()}, ${zipCodeController.text.trim()}'
     });
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Successfully requested for an appointment.')));
@@ -1372,5 +1425,34 @@ Future requestForAppointment(BuildContext context, WidgetRef ref,
     ref.read(loadingProvider).toggleLoading(false);
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error requesting for an appointment.')));
+  }
+}
+
+Future cancelPendingAppointment(BuildContext context, WidgetRef ref,
+    {required String appointmentID}) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  try {
+    ref.read(loadingProvider).toggleLoading(true);
+    await FirebaseFirestore.instance
+        .collection(Collections.appointments)
+        .doc(appointmentID)
+        .update({
+      AppointmentFields.appointmentStatus: AppointmentStatuses.cancelled
+    });
+    ref
+        .read(appointmentsProvider)
+        .setAppointmentDocs(await getAllUserAppointments());
+    ref.read(appointmentsProvider).appointmentDocs.sort((a, b) {
+      DateTime aTime = (a[AppointmentFields.dateCreated] as Timestamp).toDate();
+      DateTime bTime = (b[AppointmentFields.dateCreated] as Timestamp).toDate();
+      return bTime.compareTo(aTime);
+    });
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Successfully cancelled this appointment.')));
+    ref.read(loadingProvider).toggleLoading(false);
+  } catch (error) {
+    ref.read(loadingProvider).toggleLoading(false);
+    scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error deleting pending appointment.')));
   }
 }

@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 import '../providers/loading_provider.dart';
 import '../providers/orders_provider.dart';
+import '../utils/delete_entry_dialog_util.dart';
 import '../utils/firebase_util.dart';
 import '../utils/string_util.dart';
 import '../widgets/custom_padding_widgets.dart';
@@ -99,7 +100,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     Map<dynamic, dynamic> quotation = orderData[OrderFields.quotation];
     num itemOverallPrice = quotation[QuotationFields.itemOverallPrice];
     Map<dynamic, dynamic> review = orderData[OrderFields.review];
-
+    bool isRequestingAdditionalService =
+        quotation[QuotationFields.isRequestingAdditionalService] ?? false;
+    String requestAddress = quotation[QuotationFields.requestAddress] ?? '';
+    String requestContactNumber =
+        quotation[QuotationFields.requestContactNumber] ?? '';
     return FutureBuilder(
         future: getThisItemDoc(itemID),
         builder: (context, snapshot) {
@@ -110,6 +115,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           final itemData = snapshot.data!.data() as Map<dynamic, dynamic>;
           List<dynamic> imageURLs = itemData[ItemFields.imageURLs];
           String name = itemData[ItemFields.name];
+          bool isFurniture =
+              itemData[ItemFields.itemType] != ItemTypes.rawMaterial;
           return Stack(
             children: [
               Container(
@@ -119,12 +126,13 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                     BoxDecoration(border: Border.all(color: Colors.black)),
                 padding: EdgeInsets.all(12),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                         width: 120,
                         height: 140,
                         decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
                                 image: NetworkImage(imageURLs.first),
                                 fit: BoxFit.cover))),
@@ -147,6 +155,25 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                           child: quicksandBlackRegular('Status: $orderStatus',
                               textAlign: TextAlign.left, fontSize: 14),
                         ),
+                        if (isRequestingAdditionalService) ...[
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width - 160,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Divider(),
+                                quicksandBlackRegular(
+                                    '${isFurniture ? 'Installation' : 'Delivery'} Address: $requestAddress',
+                                    textAlign: TextAlign.left,
+                                    fontSize: 14),
+                                quicksandBlackRegular(
+                                    'Contact Number: ${requestContactNumber}',
+                                    fontSize: 14),
+                                Divider(),
+                              ],
+                            ),
+                          )
+                        ],
                         if (orderStatus == OrderStatuses.completed &&
                             review.isNotEmpty)
                           Row(children: [
@@ -215,7 +242,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     fontSize: 12)),
                           ))
                         else if (orderStatus == OrderStatuses.pendingDelivery ||
-                            orderStatus == OrderStatuses.pendingInstallation)
+                            orderStatus ==
+                                OrderStatuses.pendingInstallation) ...[
                           vertical10Pix(
                               child: SizedBox(
                             height: 24,
@@ -228,6 +256,22 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     'SELECT ${orderStatus == OrderStatuses.pendingDelivery ? 'DELIVERY' : 'INSTALLATION'} DATES',
                                     fontSize: 10)),
                           )),
+                          SizedBox(
+                            height: 24,
+                            child: ElevatedButton(
+                                onPressed: () => displayDeleteEntryDialog(
+                                    context,
+                                    message:
+                                        'Are you sure you wish to cancel ${orderStatus == OrderStatuses.pendingDelivery ? 'delivery' : 'installation'} services and pick up your order instead?',
+                                    deleteWord: 'Yes',
+                                    deleteEntry: () =>
+                                        cancelOrderDeliveryService(context, ref,
+                                            orderID: orderDoc.id)),
+                                child: quicksandWhiteBold(
+                                    'CANCEL ${orderStatus == OrderStatuses.pendingDelivery ? 'DELIVERY' : 'INSTALLATION'} SERVICE',
+                                    fontSize: 10)),
+                          )
+                        ],
                         quicksandBlackBold(
                             'PHP ${formatPrice(itemOverallPrice * quantity.toDouble())}')
                       ],
