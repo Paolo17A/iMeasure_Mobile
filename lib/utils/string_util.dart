@@ -275,6 +275,7 @@ class AppointmentStatuses {
   static const String approved = 'APPROVED';
   static const String denied = 'DENIED';
   static const String cancelled = 'CANCELLED';
+  static const String completed = 'COMPLETED';
 }
 
 class PathParameters {

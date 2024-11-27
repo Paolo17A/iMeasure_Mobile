@@ -133,10 +133,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               onPress: () => Navigator.of(context)
                   .pushNamed(NavigatorRoutes.completedOrders),
               child: quicksandBlackRegular('COMPLETED', fontSize: 12)),
-          roundedLavenderMistButton(
-              onPress: () => Navigator.of(context)
-                  .pushNamed(NavigatorRoutes.appointmentHistory),
-              child: quicksandBlackRegular('APPOINTMENTS ', fontSize: 12)),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              roundedLavenderMistButton(
+                  onPress: () => Navigator.of(context)
+                      .pushNamed(NavigatorRoutes.appointmentHistory),
+                  child: quicksandBlackRegular('APPOINTMENTS ', fontSize: 12)),
+              Positioned(
+                  top: -4,
+                  right: -4,
+                  child: approvedAppointmentsStreamBuilder()),
+            ],
+          ),
         ],
       ),
     );

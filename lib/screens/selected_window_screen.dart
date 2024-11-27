@@ -44,7 +44,10 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
   //  USER VARIABLES
   final widthController = TextEditingController();
   final heightController = TextEditingController();
-  final addressController = TextEditingController();
+  final streetController = TextEditingController();
+  final barangayController = TextEditingController();
+  final municipalityController = TextEditingController();
+  final zipCodeController = TextEditingController();
   final contactNumberController = TextEditingController();
   List<dynamic> mandatoryWindowFields = [];
   List<Map<dynamic, dynamic>> optionalWindowFields = [];
@@ -332,7 +335,10 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                                 oldOptionalWindowFields: optionalWindowFields),
                             accessoryFields: accesoryFields,
                             requestingService: requestingService,
-                            addressController: addressController,
+                            streetController: streetController,
+                            barangayController: barangayController,
+                            municipalityController: municipalityController,
+                            zipCodeController: zipCodeController,
                             contactNumberController: contactNumberController);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -376,21 +382,24 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
               )),
           Container(
             width: MediaQuery.of(context).size.width * 0.45,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 quicksandBlackBold('Glass Type', fontSize: 16),
-                dropdownWidget(ref.read(cartProvider).selectedGlassType,
-                    (newVal) {
-                  ref.read(cartProvider).setGlassType(newVal!);
-                },
-                    allGlassModels
-                        .map((glassModel) => glassModel.glassTypeName)
-                        .toList(),
-                    'Select your glass type',
-                    false),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: dropdownWidget(
+                      ref.read(cartProvider).selectedGlassType, (newVal) {
+                    ref.read(cartProvider).setGlassType(newVal!);
+                  },
+                      allGlassModels
+                          .map((glassModel) => glassModel.glassTypeName)
+                          .toList(),
+                      'Select your glass type',
+                      false),
+                ),
               ],
             ),
           ),
@@ -415,22 +424,25 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
                 )),
             Container(
               width: MediaQuery.of(context).size.width * 0.45,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(5)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   quicksandBlackBold('Window Color', fontSize: 16),
-                  dropdownWidget(ref.read(cartProvider).selectedColor,
-                      (newVal) {
-                    ref.read(cartProvider).setSelectedColor(newVal!);
-                  }, [
-                    WindowColors.brown,
-                    WindowColors.white,
-                    WindowColors.mattBlack,
-                    WindowColors.mattGray,
-                    WindowColors.woodFinish
-                  ], 'Select window color', false),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: dropdownWidget(ref.read(cartProvider).selectedColor,
+                        (newVal) {
+                      ref.read(cartProvider).setSelectedColor(newVal!);
+                    }, [
+                      WindowColors.brown,
+                      WindowColors.white,
+                      WindowColors.mattBlack,
+                      WindowColors.mattGray,
+                      WindowColors.woodFinish
+                    ], 'Select window color', false),
+                  ),
                 ],
               ),
             )
@@ -465,15 +477,14 @@ class _SelectedWindowScreenState extends ConsumerState<SelectedWindowScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  quicksandWhiteBold('Installation Address'),
-                  CustomTextField(
-                      text: 'Installation Address',
-                      controller: addressController,
-                      displayPrefixIcon: null,
-                      borderRadius: 4,
-                      textInputType: TextInputType.streetAddress),
+                  quicksandBlackBold('Installation Address'),
+                  addressGroup(context,
+                      streetController: streetController,
+                      barangayController: barangayController,
+                      municipalityController: municipalityController,
+                      zipCodeController: zipCodeController),
                   Gap(20),
-                  quicksandWhiteBold('Mobile Number'),
+                  quicksandBlackBold('Mobile Number'),
                   CustomTextField(
                       text: 'Contact Number',
                       controller: contactNumberController,

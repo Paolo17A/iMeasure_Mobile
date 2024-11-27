@@ -33,7 +33,10 @@ class _SelectedRawMaterialScreenState
   List<dynamic> imageURLs = [];
   List<DocumentSnapshot> orderDocs = [];
   bool requestingService = false;
-  final addressController = TextEditingController();
+  final streetController = TextEditingController();
+  final barangayController = TextEditingController();
+  final municipalityController = TextEditingController();
+  final zipCodeController = TextEditingController();
   final contactNumberController = TextEditingController();
 
   @override
@@ -217,12 +220,11 @@ class _SelectedRawMaterialScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   quicksandBlackBold('Installation Address'),
-                  CustomTextField(
-                      text: 'Installation Address',
-                      controller: addressController,
-                      displayPrefixIcon: null,
-                      borderRadius: 4,
-                      textInputType: TextInputType.streetAddress),
+                  addressGroup(context,
+                      streetController: streetController,
+                      barangayController: barangayController,
+                      municipalityController: municipalityController,
+                      zipCodeController: zipCodeController),
                   Gap(20),
                   quicksandBlackBold('Mobile Number'),
                   CustomTextField(
@@ -249,7 +251,10 @@ class _SelectedRawMaterialScreenState
                     addRawMaterialToCart(context, ref,
                         itemID: widget.rawMaterialID,
                         requestingService: requestingService,
-                        addressController: addressController,
+                        streetController: streetController,
+                        barangayController: barangayController,
+                        municipalityController: municipalityController,
+                        zipCodeController: zipCodeController,
                         itemOverallPrice: price,
                         contactNumberController: contactNumberController);
                   }

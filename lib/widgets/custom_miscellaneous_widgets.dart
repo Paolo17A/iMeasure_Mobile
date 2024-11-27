@@ -438,7 +438,6 @@ StreamBuilder pendingPickUpOrdersStreamBuilder() {
         return (orderStatus == OrderStatuses.forPickUp) ||
             (orderStatus == OrderStatuses.completed && review.isEmpty);
       }).toList();
-      //int availableCollectionCount = snapshot.data!.docs.length;
 
       if (filteredOrders.length > 0)
         return Container(
@@ -448,6 +447,43 @@ StreamBuilder pendingPickUpOrdersStreamBuilder() {
                 shape: BoxShape.circle, color: CustomColors.coralRed),
             child: Center(
                 child: quicksandWhiteRegular(filteredOrders.length.toString(),
+                    fontSize: 12)));
+      else {
+        return Container();
+      }
+    },
+  );
+}
+
+StreamBuilder approvedAppointmentsStreamBuilder() {
+  return StreamBuilder(
+    stream: FirebaseFirestore.instance
+        .collection(Collections.appointments)
+        .where(AppointmentFields.clientID,
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting ||
+          !snapshot.hasData ||
+          snapshot.hasError) return Container();
+      List<DocumentSnapshot> filteredAppointments = snapshot.data!.docs;
+
+      filteredAppointments = filteredAppointments.where((appointment) {
+        final appointmentData = appointment.data() as Map<dynamic, dynamic>;
+        String appointmentStatus =
+            appointmentData[AppointmentFields.appointmentStatus];
+        return appointmentStatus == AppointmentStatuses.approved;
+      }).toList();
+
+      if (filteredAppointments.length > 0)
+        return Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: CustomColors.coralRed),
+            child: Center(
+                child: quicksandWhiteRegular(
+                    filteredAppointments.length.toString(),
                     fontSize: 12)));
       else {
         return Container();
@@ -501,7 +537,7 @@ Widget userReviews(List<DocumentSnapshot> orderDocs) {
                   child: Container(
                       //height: 100,
                       decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white)),
+                          border: Border.all(color: Colors.black)),
                       padding: EdgeInsets.all(10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

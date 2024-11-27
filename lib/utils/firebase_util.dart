@@ -466,7 +466,10 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
     required List<dynamic> optionalWindowFields,
     required List<dynamic> accessoryFields,
     required bool requestingService,
-    required TextEditingController addressController,
+    required TextEditingController streetController,
+    required TextEditingController barangayController,
+    required TextEditingController municipalityController,
+    required TextEditingController zipCodeController,
     required TextEditingController contactNumberController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   if (!hasLoggedInUser()) {
@@ -475,7 +478,11 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
     return;
   }
   if (requestingService &&
-      (addressController.text.isEmpty ||
+      (streetController.text.isEmpty ||
+          barangayController.text.isEmpty ||
+          municipalityController.text.isEmpty ||
+          zipCodeController.text.isEmpty ||
+          double.tryParse(zipCodeController.text) == null ||
           contactNumberController.text.isEmpty)) {
     scaffoldMessenger.showSnackBar(const SnackBar(
         content: Text('Please provide a valid address and contact number.')));
@@ -726,6 +733,7 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
       CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
       CartFields.quantity: 1,
       CartFields.itemType: itemType,
+      CartFields.dateLastModified: DateTime.now(),
       CartFields.quotation: {
         QuotationFields.width: width,
         QuotationFields.height: height,
@@ -746,7 +754,8 @@ Future addFurnitureItemToCart(BuildContext context, WidgetRef ref,
         //REQUESTS
         QuotationFields.isRequestingAdditionalService: requestingService,
         QuotationFields.additionalServicePrice: 0,
-        QuotationFields.requestAddress: addressController.text.trim(),
+        QuotationFields.requestAddress:
+            '${streetController.text.trim()}, ${barangayController.text.trim()}, ${municipalityController.text.trim()}, ${zipCodeController.text.trim()}',
         QuotationFields.requestContactNumber:
             contactNumberController.text.trim(),
         QuotationFields.requestStatus: '',
@@ -780,6 +789,7 @@ Future addFurnitureItemToCartFromUnity(BuildContext context, WidgetRef ref,
       CartFields.clientID: FirebaseAuth.instance.currentUser!.uid,
       CartFields.quantity: 1,
       CartFields.itemType: itemType,
+      CartFields.dateLastModified: DateTime.now(),
       CartFields.quotation: {
         QuotationFields.width: width,
         QuotationFields.height: height,
@@ -813,7 +823,10 @@ Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
     {required String itemID,
     required bool requestingService,
     required num itemOverallPrice,
-    required TextEditingController addressController,
+    required TextEditingController streetController,
+    required TextEditingController barangayController,
+    required TextEditingController municipalityController,
+    required TextEditingController zipCodeController,
     required TextEditingController contactNumberController}) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   try {
@@ -823,7 +836,11 @@ Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
       return;
     }
     if (requestingService &&
-        (addressController.text.isEmpty ||
+        (streetController.text.isEmpty ||
+            barangayController.text.isEmpty ||
+            municipalityController.text.isEmpty ||
+            zipCodeController.text.isEmpty ||
+            double.tryParse(zipCodeController.text) == null ||
             contactNumberController.text.isEmpty)) {
       scaffoldMessenger.showSnackBar(const SnackBar(
           content: Text('Please provide a valid address and contact number.')));
@@ -839,7 +856,8 @@ Future addRawMaterialToCart(BuildContext context, WidgetRef ref,
       CartFields.quotation: {
         QuotationFields.isRequestingAdditionalService: requestingService,
         QuotationFields.additionalServicePrice: 0,
-        QuotationFields.requestAddress: addressController.text.trim(),
+        QuotationFields.requestAddress:
+            '${streetController.text.trim()}, ${barangayController.text.trim()}, ${municipalityController.text.trim()}, ${zipCodeController.text.trim()}',
         QuotationFields.requestContactNumber:
             contactNumberController.text.trim(),
         QuotationFields.requestStatus: '',

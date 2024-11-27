@@ -142,7 +142,7 @@ class _CartScreenState extends ConsumerState<CartScreen>
                     ]),
                 SizedBox(
                   height: displayCheckout
-                      ? MediaQuery.of(context).size.height - 330
+                      ? MediaQuery.of(context).size.height - 335
                       : MediaQuery.of(context).size.height - 320,
                   child: TabBarView(children: [
                     _noAdditionalCostRequested(),
