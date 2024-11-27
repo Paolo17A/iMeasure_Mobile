@@ -52,7 +52,7 @@ class CartNotifier extends ChangeNotifier {
     _cartItems.sort((a, b) {
       DateTime aTime = (a[CartFields.dateLastModified] as Timestamp).toDate();
       DateTime bTime = (b[CartFields.dateLastModified] as Timestamp).toDate();
-      return aTime.compareTo(bTime);
+      return bTime.compareTo(aTime);
     });
     updateCartSubLists();
     notifyListeners();
