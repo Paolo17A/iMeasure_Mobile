@@ -1433,7 +1433,8 @@ Future requestForAppointment(BuildContext context, WidgetRef ref,
       AppointmentFields.denialReason: '',
       AppointmentFields.dateCreated: DateTime.now(),
       AppointmentFields.address:
-          '${streetController.text.trim()}, ${barangayController.text.trim()}, ${municipalityController.text.trim()}, ${zipCodeController.text.trim()}'
+          '${streetController.text.trim()}, ${barangayController.text.trim()}, ${municipalityController.text.trim()}, ${zipCodeController.text.trim()}',
+      AppointmentFields.contactNumber: contactNumberController.text.trim()
     });
     scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Successfully requested for an appointment.')));
