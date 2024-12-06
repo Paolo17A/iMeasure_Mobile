@@ -89,12 +89,14 @@ class _TransactionHistoryScreenState
         transactionData[TransactionFields.transactionStatus];
     num paidAmount = transactionData[TransactionFields.paidAmount];
     String paymentMethod = transactionData[TransactionFields.paymentMethod];
+    String denialReason =
+        transactionData[TransactionFields.denialReason] ?? 'N/A';
     return Container(
         width: MediaQuery.of(context).size.width,
         //height: 250,
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         padding: EdgeInsets.all(10),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Row(children: [
           GestureDetector(
             onTap: () => showEnlargedPics(context, imageURL: proofOfPayment),
             child: Container(
@@ -107,34 +109,61 @@ class _TransactionHistoryScreenState
                         fit: BoxFit.cover))),
           ),
           Gap(12),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              quicksandBlackBold('Paid Amount: ', fontSize: 15),
-              quicksandBlackRegular('PHP ${formatPrice(paidAmount.toDouble())}',
-                  fontSize: 15)
-            ]),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              quicksandBlackBold('Payment Method: ', fontSize: 15),
-              quicksandBlackRegular(paymentMethod, fontSize: 15)
-            ]),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              quicksandBlackBold('Date Created: ', fontSize: 15),
-              quicksandBlackRegular(
-                  DateFormat('MMM dd, yyyy').format(dateCreated),
-                  fontSize: 15)
-            ]),
-            if (transactionStatus == TransactionStatuses.approved)
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 150 - 20 - 15,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                quicksandBlackBold('Date Approved: ', fontSize: 15),
+                quicksandBlackBold('Paid Amount: ', fontSize: 15),
                 quicksandBlackRegular(
-                    DateFormat('MMM dd, yyyy').format(dateApproved),
+                    'PHP ${formatPrice(paidAmount.toDouble())}',
                     fontSize: 15)
               ]),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              quicksandBlackBold('Status:  ', fontSize: 15),
-              quicksandBlackRegular(transactionStatus, fontSize: 15)
-            ])
-          ])
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                quicksandBlackBold('Payment Method: ', fontSize: 15),
+                quicksandBlackRegular(paymentMethod, fontSize: 15)
+              ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                quicksandBlackBold('Date Created: ', fontSize: 15),
+                quicksandBlackRegular(
+                    DateFormat('MMM dd, yyyy').format(dateCreated),
+                    fontSize: 15)
+              ]),
+              if (transactionStatus == TransactionStatuses.approved)
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  quicksandBlackBold('Date Approved: ', fontSize: 15),
+                  quicksandBlackRegular(
+                      DateFormat('MMM dd, yyyy').format(dateApproved),
+                      fontSize: 15)
+                ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                quicksandBlackBold('Status:  ', fontSize: 15),
+                quicksandBlackRegular(transactionStatus, fontSize: 15)
+              ]),
+              if (transactionStatus == TransactionStatuses.denied)
+                GestureDetector(
+                  onTap: denialReason.length > 30
+                      ? () => showDialog(
+                          context: context,
+                          builder: (_) => Dialog(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      quicksandBlackBold('DENIAL REASION'),
+                                      quicksandBlackRegular(denialReason)
+                                    ],
+                                  ),
+                                ),
+                              ))
+                      : null,
+                  child: quicksandBlackRegular('Denial Reason: $denialReason',
+                      maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      fontSize: 14),
+                )
+            ]),
+          )
         ]));
   }
 }

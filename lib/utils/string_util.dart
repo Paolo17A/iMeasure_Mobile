@@ -153,6 +153,7 @@ class TransactionFields {
   static const String paymentVerified = 'paymentVerified';
   static const String dateCreated = 'dateCreated';
   static const String dateApproved = 'dateApproved';
+  static const String denialReason = 'denialReason';
 }
 
 class TransactionStatuses {
