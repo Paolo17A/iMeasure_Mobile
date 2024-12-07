@@ -529,10 +529,11 @@ Widget userReviews(List<DocumentSnapshot> orderDocs) {
               itemBuilder: (context, index) {
                 final orderData = orderDocs[index];
                 String clientID = orderData[OrderFields.clientID];
-                Map<String, dynamic> review = orderData[OrderFields.review];
-                num rating = review[ReviewFields.rating];
-                List<dynamic> imageURLs = review[ReviewFields.imageURLs];
-                String reviewText = review[ReviewFields.review];
+                Map<String, dynamic> review =
+                    orderData[OrderFields.review] ?? {};
+                num rating = review[ReviewFields.rating] ?? 0;
+                List<dynamic> imageURLs = review[ReviewFields.imageURLs] ?? [];
+                String reviewText = review[ReviewFields.review] ?? '';
                 return all4Pix(
                   child: Container(
                       //height: 100,

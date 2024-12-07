@@ -37,12 +37,12 @@ Future registerNewUser(BuildContext context, WidgetRef ref,
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   final navigator = Navigator.of(context);
   try {
-    if (emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        confirmPasswordController.text.isEmpty ||
-        firstNameController.text.isEmpty ||
-        lastNameController.text.isEmpty ||
-        mobileNumberController.text.isEmpty) {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        confirmPasswordController.text.trim().isEmpty ||
+        firstNameController.text.trim().isEmpty ||
+        lastNameController.text.trim().isEmpty ||
+        mobileNumberController.text.trim().isEmpty) {
       scaffoldMessenger.showSnackBar(
           const SnackBar(content: Text('Please fill up all given fields.')));
       return;
@@ -1309,7 +1309,8 @@ Future reviewThisOrder(BuildContext context, WidgetRef ref,
         .update({
       OrderFields.review: {
         ReviewFields.rating: rating,
-        ReviewFields.review: reviewController.text.trim()
+        ReviewFields.review: reviewController.text.trim(),
+        ReviewFields.imageURLs: []
       }
     });
 
